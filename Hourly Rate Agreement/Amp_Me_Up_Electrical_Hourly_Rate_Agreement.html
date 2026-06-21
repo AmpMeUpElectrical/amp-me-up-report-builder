@@ -58,7 +58,7 @@
   .fld input:focus{outline:none;border-bottom-color:var(--orange)}
 
   /* Clauses */
-  .clause{margin-top:12px;break-inside:avoid}
+  .clause{margin-top:11px;break-inside:avoid}
   .clause h3{font-size:13.5px;font-weight:800;letter-spacing:.01em;margin-bottom:5px;color:var(--dark)}
   .clause h3 .n{color:var(--orange);margin-right:7px}
   .clause p{font-size:11.7px;color:#2c2c2a;margin:4px 0}
@@ -96,7 +96,7 @@
   .secdiv{margin-top:26px;border-top:2px solid var(--dark);padding-top:6px}
   .optnote{font-size:10.5px;color:var(--hint);font-style:italic;margin-bottom:4px}
 
-  .docfoot{margin-top:10px;border-top:1px solid var(--line);padding-top:9px;font-size:10px;color:var(--hint);line-height:1.55}
+  .docfoot{margin-top:9px;border-top:1px solid var(--line);padding-top:8px;font-size:10px;color:var(--hint);line-height:1.5}
 
   #splitSection{display:none}
 
@@ -104,7 +104,7 @@
   @media print{
     /* keep brand colours (dark header band, orange accent, dark table headers) in the PDF */
     *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
-    @page{size:A4;margin:12mm 14mm;
+    @page{size:A4;margin:11mm 14mm;
       @bottom-right{content:"Page " counter(page) " of " counter(pages);font-family:'Manrope',sans-serif;font-size:8pt;color:#9a9a94}
       @bottom-left{content:"Amp Me Up Electrical — Hourly Rate Works Agreement";font-family:'Manrope',sans-serif;font-size:8pt;color:#9a9a94}
     }
@@ -186,12 +186,15 @@
           </thead>
           <tbody>
             <tr>
-              <td><span class="rlabel">Per hour</span><br><span class="rate-in"><span class="dollar">$</span><input class="rate" id="bhRate" type="number" min="0" step="5"></span></td>
-              <td><span class="rlabel">Per hour</span><br><span class="rate-in"><span class="dollar">$</span><input class="rate" id="ahRate" type="number" min="0" step="5"></span></td>
+              <td><span class="rlabel">First hour</span><br><span class="rate-in"><span class="dollar">$</span><input class="rate" id="bhFirst" type="number" min="0" step="5"></span></td>
+              <td><span class="rlabel">First hour</span><br><span class="rate-in"><span class="dollar">$</span><input class="rate" id="ahFirst" type="number" min="0" step="5"></span></td>
+            </tr>
+            <tr>
+              <td><span class="rlabel">Each additional hour</span><br><span class="rate-in"><span class="dollar">$</span><input class="rate" id="bhAdd" type="number" min="0" step="5"></span></td>
+              <td><span class="rlabel">Each additional hour</span><br><span class="rate-in"><span class="dollar">$</span><input class="rate" id="ahAdd" type="number" min="0" step="5"></span></td>
             </tr>
           </tbody>
         </table>
-        <p class="ratenote"><strong>Minimum charge:</strong> a minimum charge of <span class="rate-in"><span class="dollar">$</span><input class="rate" id="minCharge" type="number" min="0" step="5"></span> excluding GST applies to each attendance.</p>
         <p class="ratenote"><strong>After hours:</strong> if works are arranged within business hours but Amp Me Up Electrical is unable to attend within business hours, after-hours rates will apply.</p>
         <p class="ratenote"><strong>For all works:</strong> time is charged from arrival on site, and is billed in minimum increments of 15 minutes, rounded up.</p>
         <p class="gstline">All rates and fees in this agreement are exclusive of GST. GST will be applied to the final tax invoice.</p>
@@ -248,7 +251,7 @@
         <p class="lead">The client acknowledges and agrees that:</p>
         <ul>
           <li>If Amp Me Up Electrical has been engaged and has commenced travel to site, a minimum fee of <span class="rate-in"><span class="dollar">$</span><input class="rate rate-inline" id="travelMin" type="number" min="0" step="5"></span> excluding GST will be charged.</li>
-          <li>If Amp Me Up Electrical arrives on site and the client cancels or declines to proceed, the minimum charge applicable to the time of attendance will be charged.</li>
+          <li>If Amp Me Up Electrical arrives on site and the client cancels or declines to proceed, the full first-hour rate applicable to the time of attendance will be charged.</li>
         </ul>
       </div>
 
@@ -312,7 +315,7 @@
           <li>The full outstanding balance becomes immediately due and payable, including any agreed split-payment amounts.</li>
           <li>Amp Me Up Electrical reserves the right to suspend or refuse any further work or services.</li>
           <li>The client agrees to be liable for any reasonable costs incurred in recovering the debt, including but not limited to debt collection fees, administrative costs, and legal expenses.</li>
-          <li>Interest will be charged on overdue amounts at a rate of 20% per annum, calculated daily on the outstanding balance.</li>
+          <li>Overdue amounts will incur a late-payment fee of $10 per day for each day the invoice remains unpaid where the total invoice is under $10,000; where the total invoice is $10,000 or more, interest will be charged at 20% per annum, calculated daily on the outstanding balance.</li>
         </ul>
         <p><strong>Progress invoicing:</strong> for works that extend beyond a single attendance or a substantial duration, Amp Me Up Electrical may issue progress invoices for the time and materials incurred to date, payable on the terms above.</p>
         <p><strong>Split payment arrangement (if applicable):</strong> split payment arrangements may be made upon agreement by both parties. If a split payment plan is agreed, the total amount, payment amounts, and payment frequency will be clearly outlined in the Split Payment Agreement below, and a separate signature is required to confirm acceptance.</p>
@@ -415,8 +418,8 @@
 
 <script>
 (function(){
-  var RATE_IDS=['bhRate','ahRate','minCharge','travelMin'];
-  var DEFAULTS={bhRate:150,ahRate:200,minCharge:150,travelMin:150};
+  var RATE_IDS=['bhFirst','bhAdd','ahFirst','ahAdd','travelMin'];
+  var DEFAULTS={bhFirst:150,bhAdd:130,ahFirst:200,ahAdd:180,travelMin:150};
   var STORE='amue_hr_rates';
 
   function $(id){return document.getElementById(id);}

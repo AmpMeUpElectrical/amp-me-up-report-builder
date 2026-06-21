@@ -29,7 +29,7 @@ The client's typed details print as filled text; the **signature lines are inten
 | After hours / weekends — each additional hour | $300 |
 | Change-of-mind / travel minimum | $150 |
 
-All rates and fees are exclusive of GST (stated on the document). Fixed policy figures that are **not** per-job inputs: 7-day payment terms, 20% p.a. overdue interest, $30 bulky-waste disposal fee.
+All rates and fees are exclusive of GST (stated on the document). Fixed policy figures that are **not** per-job inputs: 7-day payment terms, late-payment fees ($10/day for invoices under $10,000, otherwise 20% p.a. calculated daily), $30 bulky-waste disposal fee.
 
 ---
 
