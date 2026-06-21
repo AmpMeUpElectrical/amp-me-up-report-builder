@@ -29,7 +29,7 @@ The client's typed details print as filled text; the **signature lines are inten
 | After hours / weekends — each additional hour | $300 |
 | Change-of-mind / travel minimum | $150 |
 
-All rates and fees are exclusive of GST (stated on the document). Fixed policy figures that are **not** per-job inputs: 7-day payment terms, 20% p.a. overdue interest, $500 variation approval threshold, $30 bulky-waste disposal fee.
+All rates and fees are exclusive of GST (stated on the document). Fixed policy figures that are **not** per-job inputs: 7-day payment terms, 20% p.a. overdue interest, $30 bulky-waste disposal fee.
 
 ---
 
@@ -38,7 +38,7 @@ All rates and fees are exclusive of GST (stated on the document). Fixed policy f
 Two signing parties (**Client** and **Amp Me Up Electrical**) each get blank, labelled lines:
 
 - Client: signature · full name · date
-- Amp Me Up Electrical: signature · *(electrician name pre-filled: Logan James Allen)* · date
+- Amp Me Up Electrical: signature · electrician full name (blank, fillable — typed by whichever electrician attends) · date
 
 The optional Split Payment Agreement has its own matching pair of signature blocks. In DocuSign, place the recipient's Signature and Date fields directly on these lines. (If you later want DocuSign **anchor text tags** to auto-place fields from a saved template, that's a future enhancement — the current version uses plain lines for maximum flexibility.)
 
@@ -71,16 +71,16 @@ The optional Split Payment Agreement has its own matching pair of signature bloc
 This agreement merges the original **Emergency Callout Terms of Service** with the company's **Standard Terms & Conditions** (`../Terms and Conditions/`), removing duplicates so each point appears once.
 
 **Merged (duplicates removed, kept once):**
-- Payment terms — both sources stated 7 days / 20% p.a.; combined into one clause (§17) with the default & late-payment points.
-- Compliance & Australian Standards — emergency duty-of-care points + the standard AS/NZS 3000 rectification clause combined (§7).
-- Site access — emergency access points + standard site-access clause combined (§11).
-- Power isolation & inconvenience — emergency "power may remain isolated" tied into the standard inconvenience/incidental-loss clause (§15).
+- Payment terms — both sources stated 7 days / 20% p.a.; combined into one clause (§16) with the default & late-payment points.
+- Compliance & Australian Standards — emergency duty-of-care points + the standard AS/NZS 3000 rectification clause combined (§6).
+- Site access — emergency access points + standard site-access clause combined (§10).
+- Power isolation & inconvenience — emergency "power may remain isolated" tied into the standard inconvenience/incidental-loss clause (§14).
 
 **Kept from the emergency TOS (callout-specific):** scope, editable callout rates, materials, nature of fault finding, authority to proceed, cease-work-by-client, change-of-mind/cancellation, no guarantee of immediate resolution, the safety carve-outs (no temporary/non-compliant fixes; won't risk the licence), and the optional split-payment agreement.
 
-**Folded in from the standard T&Cs (relevant, were missing):** variations ($500 verbal/written threshold), roof/building damage, client-supplied equipment, workmanship warranty, limitation of liability, retention of title, a trimmed exclusions list (asbestos / building works / distributor costs), waste disposal, privacy, photography & marketing.
+**Folded in from the standard T&Cs (relevant, were missing):** roof/building damage, client-supplied equipment, workmanship warranty, limitation of liability, retention of title, a trimmed exclusions list (asbestos / building works / distributor costs), waste disposal, privacy, photography & marketing.
 
-**Deliberately dropped (quote-only, not relevant to an hourly emergency callout):** 30-day quotation validity, and the 50% deposit-before-scheduling clause. Emergency work is billed hourly from arrival with a travel/first-hour cancellation fee instead.
+**Deliberately dropped (not relevant to an hourly emergency callout):** the 30-day quotation validity and the 50% deposit-before-scheduling clause (emergency work is billed hourly from arrival, with a travel/first-hour cancellation fee instead), and the **Variations** clause — extra work found mid-callout is simply charged at the hourly rate, so a separate $500 variation-approval process doesn't apply.
 
 > Not legal advice. Give the assembled document a final read before relying on it.
 
@@ -89,4 +89,4 @@ This agreement merges the original **Emergency Callout Terms of Service** with t
 ## 7. Tech notes
 
 - Vanilla HTML/CSS/JS in one file. Export uses `window.print()` + an `@media print` stylesheet (A4, page numbers in the footer). No PDF library, no dependencies.
-- The dark brand header renders as a clean light letterhead in print; toolbar and input borders are hidden; the rate inputs print as plain text.
+- `print-color-adjust:exact` keeps the dark header band and orange accent in the printed PDF; the toolbar and input borders are hidden, and the rate inputs print as plain text (sized to content so figures read with a single trailing space).
