@@ -90,3 +90,5 @@ This agreement merges the original **Emergency Callout Terms of Service** with t
 
 - Vanilla HTML/CSS/JS in one file. Export uses `window.print()` + an `@media print` stylesheet (A4, page numbers in the footer). No PDF library, no dependencies.
 - `print-color-adjust:exact` keeps the dark header band and orange accent in the printed PDF; the toolbar and input borders are hidden, and the rate inputs print as plain text (sized to content so figures read with a single trailing space).
+- A **"← Tools"** link in the toolbar (no-print) returns to the landing page (`../index.html`).
+- **Page budget:** the agreement is tuned to fit exactly **4 pages** with the split-payment section off — via the clause/signature spacing and a 12 mm page margin. Turning on split-payment adds the 5th page (intended). If you add clauses or text, re-check the page count (render with headless Chrome `--print-to-pdf` and count) so it doesn't spill to a stray 5th page.

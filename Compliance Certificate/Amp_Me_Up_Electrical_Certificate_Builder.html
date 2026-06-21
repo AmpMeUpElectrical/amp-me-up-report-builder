@@ -25,6 +25,7 @@
   .btn:active{transform:scale(.98)}
   .btn.primary{background:var(--orange);border-color:var(--orange);color:#131313;font-weight:700}
   .btn.primary:hover{filter:brightness(1.05)}
+  a.btn{text-decoration:none;display:inline-flex;align-items:center;gap:6px}
 
   /* Sheet */
   .wrap{max-width:850px;margin:22px auto;padding:0 14px}
@@ -76,7 +77,10 @@
   canvas#sig{width:100%;height:100px;touch-action:none;color:var(--dark);background:#fff;border:1px solid #cfcdc6;border-radius:6px;display:block;cursor:crosshair}
   .sigimg{display:none;width:100%;height:100px;object-fit:contain;border-bottom:1px solid var(--dark)}
   .signame{font-size:11px;margin-top:6px;font-weight:700}
+  .signame-in{font-family:var(--sans);font-size:11px;font-weight:700;color:var(--dark);border:none;border-bottom:1px solid #cfcdc6;background:transparent;padding:0 2px 1px;outline:none;field-sizing:content;min-width:6ch;max-width:30ch}
+  .signame-in:focus{border-bottom-color:var(--orange)}
   .sigmeta{font-size:11px;color:var(--muted);margin-top:2px}
+  .sigdate{font-size:11px;color:var(--muted);margin-top:2px}
   .givenbox{flex:1;min-width:200px}
   .minibtn{font-size:12px;border:1px solid var(--line);background:#fff;color:var(--muted);padding:5px 10px;border-radius:6px;cursor:pointer}
   .minibtn:hover{border-color:#bbb;color:var(--dark)}
@@ -96,6 +100,7 @@
     canvas#sig{display:none}
     .sigimg{display:block}
     .minibtn{display:none}
+    .signame-in{border-bottom:none!important;min-width:0}
     .sec,.titlerow,.header,.signoff{break-inside:avoid}
   }
 </style>
@@ -103,6 +108,7 @@
 <body>
 
 <div class="toolbar">
+  <a class="btn" href="../index.html">&larr; Tools</a>
   <div class="brand">Amp Me Up <span>Electrical</span> · Certificate Builder</div>
   <button class="btn" id="btnNew">New</button>
   <button class="btn" id="btnLoad">Load</button>
@@ -237,8 +243,9 @@
         </div>
         <canvas id="sig"></canvas>
         <img class="sigimg" id="sigImg" alt="signature">
-        <div class="signame">Logan James Allen &mdash; Amp Me Up Electrical</div>
+        <div class="signame"><input class="signame-in" id="sigName" type="text" placeholder="Name"> &mdash; Amp Me Up Electrical</div>
         <div class="sigmeta">Contractor Licence 92927</div>
+        <div class="sigdate">Date: <span id="sigDate">&mdash;</span></div>
       </div>
     </div>
   </div>
@@ -265,10 +272,10 @@
   var canvas=document.getElementById('sig'),ctx=canvas.getContext('2d'),dpr=window.devicePixelRatio||1,signed=false,drawing=false;
   function sizeCanvas(){var r=canvas.getBoundingClientRect();canvas.width=r.width*dpr;canvas.height=r.height*dpr;ctx.scale(dpr,dpr);ctx.lineWidth=2;ctx.lineCap='round';ctx.lineJoin='round';ctx.strokeStyle=getComputedStyle(canvas).color;}
   function pos(e){var r=canvas.getBoundingClientRect();return {x:e.clientX-r.left,y:e.clientY-r.top};}
-  canvas.addEventListener('pointerdown',function(e){e.preventDefault();drawing=true;var p=pos(e);ctx.beginPath();ctx.moveTo(p.x,p.y);if(!signed){signed=true;if(!val('cGivenDate'))setVal('cGivenDate',fmtDate(new Date()));}});
+  canvas.addEventListener('pointerdown',function(e){e.preventDefault();drawing=true;var p=pos(e);ctx.beginPath();ctx.moveTo(p.x,p.y);if(!signed){signed=true;document.getElementById('sigDate').textContent=fmtDate(new Date());if(!val('cGivenDate'))setVal('cGivenDate',fmtDate(new Date()));}});
   canvas.addEventListener('pointermove',function(e){if(!drawing)return;e.preventDefault();var p=pos(e);ctx.lineTo(p.x,p.y);ctx.stroke();});
   window.addEventListener('pointerup',function(){drawing=false;if(signed){document.getElementById('sigImg').src=canvas.toDataURL('image/png');}});
-  document.getElementById('sigClear').addEventListener('click',function(){ctx.clearRect(0,0,canvas.width,canvas.height);signed=false;document.getElementById('sigImg').src='';});
+  document.getElementById('sigClear').addEventListener('click',function(){ctx.clearRect(0,0,canvas.width,canvas.height);signed=false;document.getElementById('sigImg').src='';document.getElementById('sigDate').textContent='—';});
 
   window.addEventListener('beforeprint',function(){
     document.querySelectorAll('textarea.f').forEach(auto);
@@ -311,6 +318,7 @@
       install:val('cInstall'),work:val('cWork'),
       testDate:val('cTestDate'),licence:val('cLicence'),contractor:val('cContractor'),phone:val('cPhone'),
       givenDate:val('cGivenDate'),
+      sigName:val('sigName'),sigDate:document.getElementById('sigDate').textContent,
       signature:signed?canvas.toDataURL('image/png'):''};
   }
   function loadState(d){
@@ -320,6 +328,8 @@
     setVal('cInstall',d.install);setVal('cWork',d.work);
     setVal('cTestDate',d.testDate);setVal('cLicence',d.licence||'92927');setVal('cContractor',d.contractor||'Logan James Allen');setVal('cPhone',d.phone||'0432 533 873');
     setVal('cGivenDate',d.givenDate);
+    setVal('sigName',d.sigName);
+    document.getElementById('sigDate').textContent=d.sigDate||(d.signature?fmtDate(new Date()):'—');
     signed=false;ctx.clearRect(0,0,canvas.width,canvas.height);
     if(d.signature){var im=new Image();im.onload=function(){var r=canvas.getBoundingClientRect();ctx.drawImage(im,0,0,r.width,r.height);signed=true;};im.src=d.signature;}
     document.querySelectorAll('textarea.f').forEach(auto);
