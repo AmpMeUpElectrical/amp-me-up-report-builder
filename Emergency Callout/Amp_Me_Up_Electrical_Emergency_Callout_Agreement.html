@@ -88,6 +88,7 @@
   .sigfield .sigline{border-bottom:1.4px solid #111;height:30px}
   .sigfield .siglbl{font-size:9.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-top:4px}
   .sigfield .sigval{font-size:12.5px;font-weight:700;padding-bottom:4px}
+  .sigfield .sigmirror{border-bottom:1.4px solid #111;min-height:30px;display:flex;align-items:flex-end;padding-bottom:4px;font-size:12.5px;font-weight:700;color:var(--dark);word-break:break-word}
   .sigfield input.siginput{font-family:inherit;font-size:12.5px;font-weight:700;color:var(--dark);border:none;border-bottom:1.4px solid #111;background:transparent;width:100%;padding:0 2px 4px;height:30px}
   .sigfield input.siginput:focus{outline:none;border-bottom-color:var(--orange)}
   .sigparty{font-size:11px;font-weight:800;color:var(--dark);margin-bottom:2px;text-transform:uppercase;letter-spacing:.04em}
@@ -378,8 +379,8 @@
           <div class="sigcol">
             <div class="sigparty">Client</div>
             <div class="sigfield"><div class="sigline"></div><div class="siglbl">Client signature</div></div>
-            <div class="sigfield"><div class="sigline"></div><div class="siglbl">Full name</div></div>
-            <div class="sigfield"><div class="sigline"></div><div class="siglbl">Date</div></div>
+            <div class="sigfield"><div class="sigmirror" id="acFullName"></div><div class="siglbl">Full name</div></div>
+            <div class="sigfield"><div class="sigmirror" id="acDate"></div><div class="siglbl">Date</div></div>
           </div>
           <div class="sigcol">
             <div class="sigparty">Amp Me Up Electrical</div>
@@ -408,8 +409,8 @@
               <div class="sigcol">
                 <div class="sigparty">Client</div>
                 <div class="sigfield"><div class="sigline"></div><div class="siglbl">Client signature</div></div>
-                <div class="sigfield"><div class="sigline"></div><div class="siglbl">Full name</div></div>
-                <div class="sigfield"><div class="sigline"></div><div class="siglbl">Date</div></div>
+                <div class="sigfield"><div class="sigmirror" id="acFullNameSplit"></div><div class="siglbl">Full name</div></div>
+                <div class="sigfield"><div class="sigmirror" id="acDateSplit"></div><div class="siglbl">Date</div></div>
               </div>
               <div class="sigcol">
                 <div class="sigparty">Amp Me Up Electrical</div>
@@ -481,14 +482,24 @@
     $('splitSection').style.display = $('splitToggle').checked ? 'block' : 'none';
   }
 
+  // Mirror the client's full name + date from the top fields into the signature block(s)
+  function syncClient(){
+    var n=$('clientName')?$('clientName').value:'';
+    var d=$('clientDate')?$('clientDate').value:'';
+    ['acFullName','acFullNameSplit'].forEach(function(id){var e=$(id);if(e)e.textContent=n;});
+    ['acDate','acDateSplit'].forEach(function(id){var e=$(id);if(e)e.textContent=d;});
+  }
+
   document.addEventListener('DOMContentLoaded',function(){
     loadRates();
     setTodayIfBlank();
     syncSplit();
+    syncClient();
 
     RATE_IDS.forEach(function(id){
       $(id).addEventListener('input',function(){saveRates();fitRate($(id));});
     });
+    ['clientName','clientDate'].forEach(function(id){var e=$(id);if(e)e.addEventListener('input',syncClient);});
     $('resetBtn').addEventListener('click',resetRates);
     $('splitToggle').addEventListener('change',syncSplit);
     $('printBtn').addEventListener('click',function(){window.print();});
