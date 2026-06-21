@@ -88,9 +88,9 @@
   .sigfield .sigline{border-bottom:1.4px solid #111;height:30px}
   .sigfield .siglbl{font-size:9.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-top:4px}
   .sigfield .sigval{font-size:12.5px;font-weight:700;padding-bottom:4px}
-  .sigfield .sigmirror{border-bottom:1.4px solid #111;min-height:30px;display:flex;align-items:flex-end;padding-bottom:4px;font-size:12.5px;font-weight:700;color:var(--dark);word-break:break-word}
-  .sigfield input.siginput{font-family:inherit;font-size:12.5px;font-weight:700;color:var(--dark);border:none;border-bottom:1.4px solid #111;background:transparent;width:100%;padding:0 2px 4px;height:30px}
-  .sigfield input.siginput:focus{outline:none;border-bottom-color:var(--orange)}
+  .sigfield input.siginput{font-family:inherit;font-size:12.5px;font-weight:700;color:var(--dark);width:100%;height:36px;border:1px solid #cfcdc6;border-radius:5px;background:#fafaf7;padding:4px 9px;outline:none;transition:.12s}
+  .sigfield input.siginput:hover{background:#f3f2ee}
+  .sigfield input.siginput:focus{border-color:var(--orange);background:#fff;box-shadow:0 0 0 2px rgba(247,132,25,.15)}
   .sigparty{font-size:11px;font-weight:800;color:var(--dark);margin-bottom:2px;text-transform:uppercase;letter-spacing:.04em}
 
   .secdiv{margin-top:26px;border-top:2px solid var(--dark);padding-top:6px}
@@ -115,7 +115,8 @@
     .doc{padding:0}
     .header{padding:16px 20px}
     .accent{margin:0}
-    .fld input,.sigfield input.siginput{color:#000}
+    .fld input{color:#000}
+    .sigfield input.siginput{color:#000;border:none;border-bottom:1.4px solid #111;border-radius:0;background:transparent;height:30px;padding:0 2px;box-shadow:none}
     input.rate{border:none;background:transparent;color:#000;padding:0}
     .clause,.cust,.sigwrap,.rates,.sigfield{break-inside:avoid}
     .doctitle{font-size:18px}
@@ -378,15 +379,15 @@
         <div class="sigwrap">
           <div class="sigcol">
             <div class="sigparty">Client</div>
-            <div class="sigfield"><div class="sigline"></div><div class="siglbl">Client signature</div></div>
-            <div class="sigfield"><div class="sigmirror" id="acFullName"></div><div class="siglbl">Full name</div></div>
-            <div class="sigfield"><div class="sigmirror" id="acDate"></div><div class="siglbl">Date</div></div>
+            <div class="sigfield"><input class="siginput" type="text" placeholder=""><div class="siglbl">Client signature</div></div>
+            <div class="sigfield"><input class="siginput" id="acFullName" type="text" placeholder=""><div class="siglbl">Full name</div></div>
+            <div class="sigfield"><input class="siginput" id="acDate" type="text" placeholder=""><div class="siglbl">Date</div></div>
           </div>
           <div class="sigcol">
             <div class="sigparty">Amp Me Up Electrical</div>
-            <div class="sigfield"><div class="sigline"></div><div class="siglbl">Electrician signature</div></div>
+            <div class="sigfield"><input class="siginput" type="text" placeholder=""><div class="siglbl">Electrician signature</div></div>
             <div class="sigfield"><input class="siginput" id="elecName" type="text" placeholder=""><div class="siglbl">Electrician full name</div></div>
-            <div class="sigfield"><div class="sigline"></div><div class="siglbl">Date</div></div>
+            <div class="sigfield"><input class="siginput" type="text" placeholder=""><div class="siglbl">Date</div></div>
           </div>
         </div>
       </div>
@@ -408,15 +409,15 @@
             <div class="sigwrap" style="margin-top:18px">
               <div class="sigcol">
                 <div class="sigparty">Client</div>
-                <div class="sigfield"><div class="sigline"></div><div class="siglbl">Client signature</div></div>
-                <div class="sigfield"><div class="sigmirror" id="acFullNameSplit"></div><div class="siglbl">Full name</div></div>
-                <div class="sigfield"><div class="sigmirror" id="acDateSplit"></div><div class="siglbl">Date</div></div>
+                <div class="sigfield"><input class="siginput" type="text" placeholder=""><div class="siglbl">Client signature</div></div>
+                <div class="sigfield"><input class="siginput" id="acFullNameSplit" type="text" placeholder=""><div class="siglbl">Full name</div></div>
+                <div class="sigfield"><input class="siginput" id="acDateSplit" type="text" placeholder=""><div class="siglbl">Date</div></div>
               </div>
               <div class="sigcol">
                 <div class="sigparty">Amp Me Up Electrical</div>
-                <div class="sigfield"><div class="sigline"></div><div class="siglbl">Electrician signature</div></div>
+                <div class="sigfield"><input class="siginput" type="text" placeholder=""><div class="siglbl">Electrician signature</div></div>
                 <div class="sigfield"><input class="siginput" id="elecNameSplit" type="text" placeholder=""><div class="siglbl">Electrician full name</div></div>
-                <div class="sigfield"><div class="sigline"></div><div class="siglbl">Date</div></div>
+                <div class="sigfield"><input class="siginput" type="text" placeholder=""><div class="siglbl">Date</div></div>
               </div>
             </div>
           </div>
@@ -486,8 +487,8 @@
   function syncClient(){
     var n=$('clientName')?$('clientName').value:'';
     var d=$('clientDate')?$('clientDate').value:'';
-    ['acFullName','acFullNameSplit'].forEach(function(id){var e=$(id);if(e)e.textContent=n;});
-    ['acDate','acDateSplit'].forEach(function(id){var e=$(id);if(e)e.textContent=d;});
+    ['acFullName','acFullNameSplit'].forEach(function(id){var e=$(id);if(e)e.value=n;});
+    ['acDate','acDateSplit'].forEach(function(id){var e=$(id);if(e)e.value=d;});
   }
 
   document.addEventListener('DOMContentLoaded',function(){
