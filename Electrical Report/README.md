@@ -38,7 +38,7 @@ open('Amp_Me_Up_Electrical_Report_Builder.html','w').write(html)
 | Item | Value |
 |---|---|
 | Business name | Amp Me Up Electrical (never "Services") |
-| ABN | 51 674 950 628 |
+| ABN | 45 699 117 934 |
 | Phone | 0432 533 873 |
 | Email | logan@ampmeupelectrical.com |
 | Licence | QLD Contractor Lic 92927 |

@@ -42,7 +42,7 @@ The logo file (`..\Company Logo\New-Logo-Google-PFP.png`) is the same brand logo
 | Item | Value |
 |---|---|
 | Business name | Amp Me Up Electrical (never "Services") |
-| ABN | 51 674 950 628 |
+| ABN | 45 699 117 934 |
 | Phone | 0432 533 873 |
 | Email | logan@ampmeupelectrical.com |
 | Licence | QLD Contractor Lic 92927 |
