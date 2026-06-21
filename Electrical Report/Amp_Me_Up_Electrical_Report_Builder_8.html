@@ -110,6 +110,8 @@
   canvas#sig{width:100%;height:92px;touch-action:none;color:var(--dark);background:#fff;border:1px solid #cfcdc6;border-radius:6px;display:block;cursor:crosshair}
   .sigimg{display:none;width:100%;height:92px;object-fit:contain;border-bottom:1px solid var(--dark)}
   .signame{font-size:11px;margin-top:6px}
+  .signame-in{font-family:var(--sans);font-size:11px;color:var(--dark);border:none;border-bottom:1px solid #cfcdc6;background:transparent;padding:0 2px 1px;outline:none;field-sizing:content;min-width:6ch;max-width:30ch}
+  .signame-in:focus{border-bottom-color:var(--orange)}
   .sigdate{font-size:11px;color:var(--muted);margin-top:2px}
 
   /* Snippet library drawer */
@@ -152,6 +154,7 @@
     .sevrow{display:none}
     .sevpill{display:inline-block;margin-left:8px}
     input.f,textarea.f{background:transparent!important;border:none!important;box-shadow:none!important;padding:0!important;margin-bottom:3px}
+    .signame-in{border-bottom:none!important;min-width:0}
     textarea.disc-t{border:none}
     .next{background:#faf9f5}
     canvas#sig{display:none}
@@ -260,7 +263,7 @@
         </div>
         <canvas id="sig"></canvas>
         <img class="sigimg" id="sigImg" alt="signature">
-        <div class="signame">Logan &mdash; Amp Me Up Electrical</div>
+        <div class="signame"><input class="signame-in" id="sigName" type="text" placeholder="Name"> &mdash; Amp Me Up Electrical</div>
         <div class="sigdate">Date: <span id="sigDate">&mdash;</span></div>
       </div>
     </div>

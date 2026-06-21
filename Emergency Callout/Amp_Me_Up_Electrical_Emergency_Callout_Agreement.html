@@ -71,13 +71,12 @@
   .rates td{border-top:1px solid var(--line);border-left:1px solid var(--line);padding:9px 12px;font-size:11.7px;vertical-align:middle}
   .rates td:first-child{border-left:none}
   .rates .rlabel{color:var(--muted);font-size:11px}
-  .rate-in{display:inline-flex;align-items:center;gap:1px;font-weight:800;font-size:13px}
+  .rate-in{display:inline-flex;align-items:center;gap:0;font-weight:800;font-size:13px}
   .rate-in .dollar{color:var(--dark)}
-  input.rate{font-family:inherit;font-weight:800;font-size:13px;width:62px;text-align:right;border:1px solid #e2d4c2;border-radius:5px;background:var(--tint);padding:4px 7px;color:var(--dark)}
+  input.rate{font-family:inherit;font-weight:800;font-size:13px;field-sizing:content;min-width:2.5ch;text-align:left;border:1px solid #e2d4c2;border-radius:5px;background:var(--tint);padding:2px 3px;color:var(--dark)}
   input.rate:focus{outline:none;border-color:var(--orange)}
   input.rate::-webkit-outer-spin-button,input.rate::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
   input.rate[type=number]{-moz-appearance:textfield}
-  input.rate-inline{width:64px}
   .ratenote{font-size:10.8px;color:var(--muted);margin-top:8px}
   .gstline{font-size:10.8px;color:var(--muted);margin-top:6px;font-style:italic}
 
@@ -88,6 +87,8 @@
   .sigfield .sigline{border-bottom:1.4px solid #111;height:30px}
   .sigfield .siglbl{font-size:9.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-top:4px}
   .sigfield .sigval{font-size:12.5px;font-weight:700;padding-bottom:4px}
+  .sigfield input.siginput{font-family:inherit;font-size:12.5px;font-weight:700;color:var(--dark);border:none;border-bottom:1.4px solid #111;background:transparent;width:100%;padding:0 2px 4px;height:30px}
+  .sigfield input.siginput:focus{outline:none;border-bottom-color:var(--orange)}
   .sigparty{font-size:11px;font-weight:800;color:var(--dark);margin-bottom:2px;text-transform:uppercase;letter-spacing:.04em}
 
   .secdiv{margin-top:26px;border-top:2px solid var(--dark);padding-top:6px}
@@ -99,6 +100,8 @@
 
   /* ---------- Print ---------- */
   @media print{
+    /* keep brand colours (dark header band, orange accent, dark table headers) in the PDF */
+    *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
     @page{size:A4;margin:14mm 15mm;
       @bottom-right{content:"Page " counter(page) " of " counter(pages);font-family:'Manrope',sans-serif;font-size:8pt;color:#9a9a94}
       @bottom-left{content:"Amp Me Up Electrical — Emergency Callout Agreement";font-family:'Manrope',sans-serif;font-size:8pt;color:#9a9a94}
@@ -108,17 +111,10 @@
     .wrap{max-width:none;margin:0;padding:0}
     .sheet{box-shadow:none;border-radius:0}
     .doc{padding:0}
-    .header{padding:0 0 14px;background:#fff}
-    .logo{background:#fff;border:1px solid var(--line)}
-    .bname{color:#000;font-size:17px}
-    .bsub{color:#444}
-    .contact{color:#444}
-    .accent{margin:0 0 4px}
-    /* Header on a dark band reads poorly in print — render light */
-    .header .bname,.header .bsub,.header .contact{color:#111}
-    .cust{background:#fff;border-color:#bbb}
-    .fld input,.sigfield .sigval{color:#000}
-    input.rate{border:none;background:transparent;width:auto;text-align:left;padding:0;color:#000}
+    .header{padding:16px 20px}
+    .accent{margin:0}
+    .fld input,.sigfield input.siginput{color:#000}
+    input.rate{border:none;background:transparent;color:#000;padding:0}
     .clause,.cust,.sigwrap,.rates,.sigfield{break-inside:avoid}
     .doctitle{font-size:18px}
   }
@@ -232,17 +228,11 @@
         <p>Any major or non-essential works will be discussed prior to proceeding where reasonably practicable.</p>
       </div>
 
-      <!-- 6. Variations (folded in from standard T&Cs) -->
-      <div class="clause">
-        <h3><span class="n">6.</span>Variations</h3>
-        <p>Variations will be communicated to the client for approval prior to proceeding. Verbal approval is acceptable for variations under $500; written approval (email or SMS is sufficient) is required for variations of $500 or more. Where verbal approval is given, Amp Me Up Electrical will confirm the variation in writing (SMS or email) at the earliest opportunity, and the client's continued instruction for works to proceed will constitute acceptance of the variation and its associated cost. Where work must continue immediately to maintain safety or prevent further damage, variations will be carried out and notified to the client at the earliest opportunity.</p>
-      </div>
-
       <!-- 7. Compliance, safety & duty of care (MERGED emergency §6 + standard "Compliance with Australian Standards") -->
       <div class="clause">
-        <h3><span class="n">7.</span>Compliance, Safety &amp; Duty of Care</h3>
+        <h3><span class="n">6.</span>Compliance, Safety &amp; Duty of Care</h3>
         <p>All works will be carried out in accordance with applicable Australian Standards and regulations, including AS/NZS 3000:2018, the Queensland Electrical Connection Manual (QECM) 2024, and any other relevant standards and statutory requirements.</p>
-        <p>AS/NZS 3000 requires non-compliant electrical installations to be rectified when the circuit they form part of is altered, added to, or replaced. This is particularly relevant in older residential properties where existing wiring, switchboards, earthing arrangements, or installations may not meet current standards. Where works commence on a circuit or installation subsequently found to contain non-compliance outside the original scope, additional rectification works may be legally required before the works can be safely completed; such works will be discussed and charged as variations, or, where mandated by immediate safety, carried out and notified at the earliest opportunity.</p>
+        <p>AS/NZS 3000 requires non-compliant electrical installations to be rectified when the circuit they form part of is altered, added to, or replaced. This is particularly relevant in older residential properties where existing wiring, switchboards, earthing arrangements, or installations may not meet current standards. Where works commence on a circuit or installation subsequently found to contain non-compliance outside the original scope, additional rectification works may be legally required before the works can be safely completed; such works will be discussed and charged at the applicable callout rates, or, where mandated by immediate safety, carried out and notified at the earliest opportunity.</p>
         <p class="lead">The client acknowledges and agrees that:</p>
         <ul>
           <li>Amp Me Up Electrical has a legal duty of care to ensure all electrical work complies with the above standards.</li>
@@ -254,13 +244,13 @@
 
       <!-- 8. No guarantee of immediate resolution -->
       <div class="clause">
-        <h3><span class="n">8.</span>No Guarantee of Immediate Resolution</h3>
+        <h3><span class="n">7.</span>No Guarantee of Immediate Resolution</h3>
         <p>All reasonable efforts will be made to identify and rectify the issue; however, resolution during the initial visit is not guaranteed.</p>
       </div>
 
       <!-- 9. Cease work by client -->
       <div class="clause">
-        <h3><span class="n">9.</span>Cease Work by Client</h3>
+        <h3><span class="n">8.</span>Cease Work by Client</h3>
         <p class="lead">The client may request that work be ceased at any time. If work is ceased at the client's request:</p>
         <ul>
           <li>The installation will be left in a safe condition.</li>
@@ -270,7 +260,7 @@
 
       <!-- 10. Change of mind / cancellation -->
       <div class="clause">
-        <h3><span class="n">10.</span>Change of Mind / Cancellation</h3>
+        <h3><span class="n">9.</span>Change of Mind / Cancellation</h3>
         <p class="lead">The client acknowledges and agrees that:</p>
         <ul>
           <li>If Amp Me Up Electrical has been engaged and has commenced travel to site, a minimum fee of <span class="rate-in"><span class="dollar">$</span><input class="rate rate-inline" id="travelMin" type="number" min="0" step="5"></span> excluding GST will be charged.</li>
@@ -280,25 +270,25 @@
 
       <!-- 11. Site access & safety (MERGED emergency §11 + standard "Site access") -->
       <div class="clause">
-        <h3><span class="n">11.</span>Site Access &amp; Safety</h3>
+        <h3><span class="n">10.</span>Site Access &amp; Safety</h3>
         <p>The client agrees to provide safe, clear, and unobstructed access to all required areas, including switchboards, ceiling spaces, and subfloors. Where furniture, appliances, stored items, vehicles, or other obstructions need to be moved by Amp Me Up Electrical to carry out the works safely and efficiently, additional charges may apply. The client is responsible for ensuring that pets are restrained or kept in a safe location for the duration of the works, and that children are kept clear of work areas. Where the client arranges for property access in their absence, the client accepts responsibility for any issues arising from that arrangement.</p>
       </div>
 
       <!-- 12. Roof & building damage (folded in) -->
       <div class="clause">
-        <h3><span class="n">12.</span>Roof and Building Damage</h3>
+        <h3><span class="n">11.</span>Roof and Building Damage</h3>
         <p>Electrical work involving tin and tiled roofs carries an inherent risk of incidental damage, including cracked roof tiles, dented roof sheets, and cosmetic surface markings. While all reasonable care will be taken, Amp Me Up Electrical is not responsible for the replacement of these building materials. Where roof penetrations are required, they will be sealed using appropriate weatherproof methods; however, we cannot guarantee against future leaks caused by pre-existing roof condition, building movement, or factors outside our control.</p>
       </div>
 
       <!-- 13. Customer-supplied equipment (folded in) -->
       <div class="clause">
-        <h3><span class="n">13.</span>Client-Supplied Equipment</h3>
+        <h3><span class="n">12.</span>Client-Supplied Equipment</h3>
         <p>Where client-supplied fittings or equipment are installed, Amp Me Up Electrical accepts no responsibility for manufacturer defects, incompatibility issues, premature product failure, or warranty claims relating to those items. Additional labour charges may apply where client-supplied products are found unsuitable or require modification for installation. Where a fault or failure occurs with a client-supplied item installed by Amp Me Up Electrical and it is not immediately clear whether the fault is due to the installation or the product itself, Amp Me Up Electrical will attend and investigate; if the fault is found to be a manufacturer or product defect rather than an installation issue, all associated costs — including call-out, travel time, and time on site — will be charged at the standard rate, and the client's recourse is against the product manufacturer or supplier. Amp Me Up Electrical reserves the right to refuse installation of any client-supplied item that, in our professional judgement, is unsafe, non-compliant, in poor condition, or unsuitable for the intended application; suitable replacements can be supplied at additional cost.</p>
       </div>
 
       <!-- 14. Workmanship warranty (folded in) -->
       <div class="clause">
-        <h3><span class="n">14.</span>Workmanship Warranty</h3>
+        <h3><span class="n">13.</span>Workmanship Warranty</h3>
         <p class="lead">Amp Me Up Electrical warrants its workmanship for the lifetime of the installation. This warranty covers defects in workmanship carried out by Amp Me Up Electrical and does not extend to:</p>
         <ul>
           <li>Faults arising from client-supplied equipment;</li>
@@ -312,8 +302,8 @@
 
       <!-- 15. Inconvenience & incidental losses (MERGED standard + emergency power-isolation context) -->
       <div class="clause">
-        <h3><span class="n">15.</span>Inconvenience, Power Isolation &amp; Incidental Losses</h3>
-        <p class="lead">The client acknowledges that electrical works — and, in particular, emergency fault finding — may require temporary or extended isolation of power, restricted access to certain rooms or areas, and minor disruption to normal household activities. As set out in clause 7, where a fault cannot be safely rectified, power may remain isolated until compliant repairs are completed. Amp Me Up Electrical is not responsible for any inconvenience or incidental loss arising from such disruptions, including but not limited to:</p>
+        <h3><span class="n">14.</span>Inconvenience, Power Isolation &amp; Incidental Losses</h3>
+        <p class="lead">The client acknowledges that electrical works — and, in particular, emergency fault finding — may require temporary or extended isolation of power, restricted access to certain rooms or areas, and minor disruption to normal household activities. As set out in clause 6, where a fault cannot be safely rectified, power may remain isolated until compliant repairs are completed. Amp Me Up Electrical is not responsible for any inconvenience or incidental loss arising from such disruptions, including but not limited to:</p>
         <ul>
           <li>Spoilage of food or other perishables during power isolation;</li>
           <li>Inability to access affected rooms or appliances during works;</li>
@@ -326,13 +316,13 @@
 
       <!-- 16. Limitation of liability (folded in) -->
       <div class="clause">
-        <h3><span class="n">16.</span>Limitation of Liability</h3>
+        <h3><span class="n">15.</span>Limitation of Liability</h3>
         <p>To the maximum extent permitted by law, Amp Me Up Electrical's liability for any claim arising out of or in connection with the works performed under this agreement is limited to the value of the works performed. Amp Me Up Electrical is not liable for any indirect, consequential, or economic loss, including but not limited to loss of income, loss of opportunity, or any other consequential damages. Nothing in these terms excludes any liability that cannot be lawfully excluded under the Australian Consumer Law.</p>
       </div>
 
       <!-- 17. Payment terms (MERGED emergency §9 + §10 + standard "Payment terms") -->
       <div class="clause">
-        <h3><span class="n">17.</span>Payment Terms, Default &amp; Late Payment</h3>
+        <h3><span class="n">16.</span>Payment Terms, Default &amp; Late Payment</h3>
         <p class="lead">Payment is due within seven (7) days of invoice issue unless otherwise agreed in writing. Any additional time, materials, or return visits will be invoiced accordingly. Amp Me Up Electrical reserves the right to cease work if payment terms are not accepted. If payment is not made by the due date:</p>
         <ul>
           <li>The full outstanding balance becomes immediately due and payable, including any agreed split-payment amounts.</li>
@@ -345,13 +335,13 @@
 
       <!-- 18. Retention of title (folded in) -->
       <div class="clause">
-        <h3><span class="n">18.</span>Retention of Title</h3>
+        <h3><span class="n">17.</span>Retention of Title</h3>
         <p>Ownership of all supplied materials and equipment remains with Amp Me Up Electrical until full payment has been received. Where payment remains outstanding, Amp Me Up Electrical reserves the right to recover supplied materials.</p>
       </div>
 
       <!-- 19. Exclusions (trimmed from standard) -->
       <div class="clause">
-        <h3><span class="n">19.</span>Exclusions</h3>
+        <h3><span class="n">18.</span>Exclusions</h3>
         <p class="lead">Unless specifically agreed in writing, this agreement does not include:</p>
         <ul>
           <li>Asbestos-related works or asbestos testing/removal;</li>
@@ -362,25 +352,25 @@
 
       <!-- 20. Disposal of removed materials (folded in) -->
       <div class="clause">
-        <h3><span class="n">20.</span>Disposal of Removed Materials</h3>
+        <h3><span class="n">19.</span>Disposal of Removed Materials</h3>
         <p>General waste and offcuts generated during the works will be placed in bins provided by the client, including council kerbside waste bins. Where Amp Me Up Electrical is required to remove larger or bulky items — such as cardboard packaging, foam, or other oversized materials — a disposal fee of $30 (excluding GST) will be added to the final invoice. This reflects the flat fee charged to our registered commercial vehicles at our local waste management facility, regardless of the volume disposed of.</p>
       </div>
 
       <!-- 21. Privacy (folded in) -->
       <div class="clause">
-        <h3><span class="n">21.</span>Privacy</h3>
+        <h3><span class="n">20.</span>Privacy</h3>
         <p>Amp Me Up Electrical collects personal information (name, address, contact details) for the sole purpose of providing the services and managing the client relationship. Client information will not be shared with third parties except as required for the performance of the works or as required by law.</p>
       </div>
 
       <!-- 22. Photography & marketing (folded in) -->
       <div class="clause">
-        <h3><span class="n">22.</span>Photography and Marketing</h3>
+        <h3><span class="n">21.</span>Photography and Marketing</h3>
         <p>Amp Me Up Electrical may take photographs of completed works for portfolio, marketing, and social media purposes. No identifying client or address details will be shared without prior written consent.</p>
       </div>
 
       <!-- 23. Acceptance + signatures -->
       <div class="clause">
-        <h3><span class="n">23.</span>Acceptance</h3>
+        <h3><span class="n">22.</span>Acceptance</h3>
         <p>By signing below, the client confirms they have read, understood, and agree to the above terms and emergency callout rates.</p>
         <div class="sigwrap">
           <div class="sigcol">
@@ -392,7 +382,7 @@
           <div class="sigcol">
             <div class="sigparty">Amp Me Up Electrical</div>
             <div class="sigfield"><div class="sigline"></div><div class="siglbl">Electrician signature</div></div>
-            <div class="sigfield"><div class="sigval">Logan James Allen</div><div class="siglbl">Electrician full name</div></div>
+            <div class="sigfield"><input class="siginput" id="elecName" type="text" placeholder=""><div class="siglbl">Electrician full name</div></div>
             <div class="sigfield"><div class="sigline"></div><div class="siglbl">Date</div></div>
           </div>
         </div>
@@ -402,7 +392,7 @@
       <div id="splitSection">
         <div class="secdiv">
           <div class="clause" style="margin-top:10px">
-            <h3><span class="n">24.</span>Split Payment Agreement (If Applicable)</h3>
+            <h3><span class="n">23.</span>Split Payment Agreement (If Applicable)</h3>
             <p class="optnote">Complete only where a split payment arrangement has been agreed by both parties.</p>
             <div class="cust" style="margin-top:10px">
               <div class="cust-grid">
@@ -422,7 +412,7 @@
               <div class="sigcol">
                 <div class="sigparty">Amp Me Up Electrical</div>
                 <div class="sigfield"><div class="sigline"></div><div class="siglbl">Electrician signature</div></div>
-                <div class="sigfield"><div class="sigval">Logan James Allen</div><div class="siglbl">Electrician full name</div></div>
+                <div class="sigfield"><input class="siginput" id="elecNameSplit" type="text" placeholder=""><div class="siglbl">Electrician full name</div></div>
                 <div class="sigfield"><div class="sigline"></div><div class="siglbl">Date</div></div>
               </div>
             </div>
@@ -431,7 +421,7 @@
       </div>
 
       <div class="docfoot">
-        Amp Me Up Electrical &middot; QLD Contractor Licence 92927 (Logan James Allen) &middot; ABN 45 699 117 934 &middot; 0432 533 873 &middot; logan@ampmeupelectrical.com
+        Amp Me Up Electrical &middot; QLD Contractor Licence 92927 &middot; ABN 45 699 117 934 &middot; 0432 533 873 &middot; logan@ampmeupelectrical.com
       </div>
 
     </div><!-- /doc -->
@@ -461,11 +451,17 @@
       var v=(o && o[id]!=null && o[id]!=='') ? o[id] : DEFAULTS[id];
       $(id).value=v;
     });
+    fitAllRates();
   }
+
+  var FS=!!(window.CSS&&CSS.supports&&CSS.supports('field-sizing','content'));
+  function fitRate(el){ if(FS){el.style.width='';return;} el.style.width=(Math.max((el.value||'').length,1)+1.5)+'ch'; }
+  function fitAllRates(){ RATE_IDS.forEach(function(id){fitRate($(id));}); }
 
   function resetRates(){
     RATE_IDS.forEach(function(id){$(id).value=DEFAULTS[id];});
     saveRates();
+    fitAllRates();
   }
 
   // Default the date to today (editable) if blank
@@ -489,7 +485,7 @@
     syncSplit();
 
     RATE_IDS.forEach(function(id){
-      $(id).addEventListener('input',saveRates);
+      $(id).addEventListener('input',function(){saveRates();fitRate($(id));});
     });
     $('resetBtn').addEventListener('click',resetRates);
     $('splitToggle').addEventListener('change',syncSplit);
