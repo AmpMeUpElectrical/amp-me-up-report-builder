@@ -375,7 +375,7 @@
   setVal('cGivenDate',fmtDate(new Date()));
   buildMirrors();
 })();
-(function(){var _t=document.title;function _fn(){var d=new Date(),p=function(n){return(n<10?'0':'')+n;};return 'Amp Me Up Electrical - Compliance Certificate - '+p(d.getDate())+'-'+p(d.getMonth()+1)+'-'+d.getFullYear();}window.addEventListener('beforeprint',function(){document.title=_fn();});window.addEventListener('afterprint',function(){document.title=_t;});})();
+(function(){var _t=document.title;function _addr(){var s=document.getElementById('cStreet'),u=document.getElementById('cSuburb');return ((s&&s.value?s.value:'')+' '+(u&&u.value?u.value:'')).trim();}function _fn(){var d=new Date(),p=function(n){return(n<10?'0':'')+n;};var dt=p(d.getDate())+'-'+p(d.getMonth()+1)+'-'+d.getFullYear();var a=(_addr()||'').split('/').join(' ').replace(/\s+/g,' ').trim();var parts=[];if(a)parts.push(a);parts.push('Compliance Certificate');parts.push(dt);parts.push('Amp Me Up Electrical');return parts.join(' - ');}window.addEventListener('beforeprint',function(){document.title=_fn();});window.addEventListener('afterprint',function(){document.title=_t;});})();
 </script>
 </body>
 </html>
