@@ -86,9 +86,11 @@
   .minibtn:hover{border-color:#bbb;color:var(--dark)}
 
   .footnote{font-size:10px;color:var(--hint);padding:14px 26px}
+  .print-mirror{display:none}
 
   @media print{
-    @page{size:A4;margin:0}
+    @page{size:A4;margin:12mm 0 0 0}
+    @page :first{margin-top:0}
     *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
     body{background:#fff}
     .toolbar{display:none!important}
@@ -102,6 +104,9 @@
     .minibtn{display:none}
     .signame-in{border-bottom:none!important;min-width:0}
     .sec,.titlerow,.header,.signoff{break-inside:avoid}
+    .sec.sec-flow{break-inside:auto}
+    textarea.f{display:none!important}
+    .print-mirror{display:block!important;white-space:pre-wrap;overflow-wrap:break-word;font-family:var(--sans);font-size:13px;color:var(--dark);line-height:1.5;border-bottom:1px solid var(--line);padding:2px 0}
   }
 </style>
 </head>
@@ -182,7 +187,7 @@
   </div>
 
   <!-- Installation tested -->
-  <div class="sec">
+  <div class="sec sec-flow">
     <div class="sech">Electrical installation tested</div>
     <div class="field">
       <div class="lbl">Site address (if different from above)</div>
@@ -277,8 +282,16 @@
   window.addEventListener('pointerup',function(){drawing=false;if(signed){document.getElementById('sigImg').src=canvas.toDataURL('image/png');}});
   document.getElementById('sigClear').addEventListener('click',function(){ctx.clearRect(0,0,canvas.width,canvas.height);signed=false;document.getElementById('sigImg').src='';document.getElementById('sigDate').textContent='—';});
 
+  function buildMirrors(){
+    document.querySelectorAll('textarea.f').forEach(function(t){
+      var m=t.parentNode.querySelector('.print-mirror[data-for="'+t.id+'"]');
+      if(!m){m=document.createElement('div');m.className='print-mirror';m.setAttribute('data-for',t.id);t.parentNode.insertBefore(m,t.nextSibling);}
+      m.textContent=t.value;
+    });
+  }
   window.addEventListener('beforeprint',function(){
     document.querySelectorAll('textarea.f').forEach(auto);
+    buildMirrors();
     var img=document.getElementById('sigImg');
     if(signed){img.src=canvas.toDataURL('image/png');}else{img.removeAttribute('src');}
   });
@@ -360,7 +373,9 @@
   setVal('cRef','COC-'+Math.floor(1000+Math.random()*9000));
   setVal('cTestDate',fmtDate(new Date()));
   setVal('cGivenDate',fmtDate(new Date()));
+  buildMirrors();
 })();
+(function(){var _t=document.title;function _fn(){var d=new Date(),p=function(n){return(n<10?'0':'')+n;};return 'Amp Me Up Electrical - Compliance Certificate - '+p(d.getDate())+'-'+p(d.getMonth()+1)+'-'+d.getFullYear();}window.addEventListener('beforeprint',function(){document.title=_fn();});window.addEventListener('afterprint',function(){document.title=_t;});})();
 </script>
 </body>
 </html>
