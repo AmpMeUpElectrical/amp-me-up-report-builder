@@ -9,7 +9,7 @@ Shipping file: `Amp_Me_Up_Electrical_Emergency_Callout_Agreement.html`
 ## 1. How to use it (the DocuSign workflow)
 
 1. Open the tool from the [tools landing page](../index.html) (or directly on the GitHub Pages site).
-2. **Set the rates** for this job — the four callout rates and the travel/abort minimum are editable inputs. Your last-used rates are remembered on that browser (see §4); use **Reset rates to default** to return to the standard set.
+2. **Set the rates** for this job — the call-out fee and hourly rate (business hours + after-hours) and the travel/abort minimum are editable inputs. Your last-used rates are remembered on that browser (see §4); use **Reset rates to default** to return to the standard set.
 3. **Enter the client's details** — full name, date (defaults to today), service address, email.
 4. *(Optional)* Tick **Include split-payment section** if a payment plan has been agreed; fill in the totals/frequency.
 5. Click **Print / Save as PDF** and save the PDF.
@@ -23,10 +23,10 @@ The client's typed details print as filled text; the **signature lines are inten
 
 | Field | Default (ex GST) |
 |---|---|
-| Business hours — first hour | $400 |
-| Business hours — each additional hour | $250 |
-| After hours / weekends — first hour | $550 |
-| After hours / weekends — each additional hour | $300 |
+| Business hours — call-out fee | $250 |
+| Business hours — per hour | $150 |
+| After hours / weekends — call-out fee | $350 |
+| After hours / weekends — per hour | $200 |
 | Change-of-mind / travel minimum | $150 |
 
 All rates and fees are exclusive of GST (stated on the document). Fixed policy figures that are **not** per-job inputs: 7-day payment terms, late-payment fees ($10/day for invoices under $10,000, otherwise 20% p.a. calculated daily), $30 bulky-waste disposal fee.

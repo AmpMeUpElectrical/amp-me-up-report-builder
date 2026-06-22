@@ -186,17 +186,13 @@
           </thead>
           <tbody>
             <tr>
-              <td><span class="rlabel">First hour</span><br><span class="rate-in"><span class="dollar">$</span><input class="rate" id="bhFirst" type="number" min="0" step="5"></span></td>
-              <td><span class="rlabel">First hour</span><br><span class="rate-in"><span class="dollar">$</span><input class="rate" id="ahFirst" type="number" min="0" step="5"></span></td>
-            </tr>
-            <tr>
-              <td><span class="rlabel">Each additional hour</span><br><span class="rate-in"><span class="dollar">$</span><input class="rate" id="bhAdd" type="number" min="0" step="5"></span></td>
-              <td><span class="rlabel">Each additional hour</span><br><span class="rate-in"><span class="dollar">$</span><input class="rate" id="ahAdd" type="number" min="0" step="5"></span></td>
+              <td><span class="rate-in"><span class="dollar">$</span><input class="rate" id="bhCallout" type="number" min="0" step="5"></span> call-out fee + <span class="rate-in"><span class="dollar">$</span><input class="rate" id="bhRate" type="number" min="0" step="5"></span> per hour</td>
+              <td><span class="rate-in"><span class="dollar">$</span><input class="rate" id="ahCallout" type="number" min="0" step="5"></span> call-out fee + <span class="rate-in"><span class="dollar">$</span><input class="rate" id="ahRate" type="number" min="0" step="5"></span> per hour</td>
             </tr>
           </tbody>
         </table>
         <p class="ratenote"><strong>Attendance outside business hours:</strong> if the callout was arranged within business hours but Amp Me Up Electrical is unable to attend within business hours, after-hours rates will apply.</p>
-        <p class="ratenote"><strong>For all callouts:</strong> time is charged from arrival on site, and is billed in minimum increments of 15 minutes, rounded up.</p>
+        <p class="ratenote"><strong>For all callouts:</strong> a call-out fee applies once per attendance, and labour is charged from arrival on site in minimum increments of 15 minutes, rounded up.</p>
         <p class="gstline">All rates and fees in this agreement are exclusive of GST. GST will be applied to the final tax invoice.</p>
       </div>
 
@@ -268,7 +264,7 @@
         <p class="lead">The client acknowledges and agrees that:</p>
         <ul>
           <li>If Amp Me Up Electrical has been engaged and has commenced travel to site, a minimum fee of <span class="rate-in"><span class="dollar">$</span><input class="rate rate-inline" id="travelMin" type="number" min="0" step="5"></span> excluding GST will be charged.</li>
-          <li>If Amp Me Up Electrical arrives on site and the client cancels or declines to proceed, the full first-hour rate applicable to the time of attendance will be charged.</li>
+          <li>If Amp Me Up Electrical arrives on site and the client cancels or declines to proceed, the call-out fee applicable to the time of attendance will be charged.</li>
         </ul>
       </div>
 
@@ -434,8 +430,8 @@
 
 <script>
 (function(){
-  var RATE_IDS=['bhFirst','bhAdd','ahFirst','ahAdd','travelMin'];
-  var DEFAULTS={bhFirst:400,bhAdd:250,ahFirst:550,ahAdd:300,travelMin:150};
+  var RATE_IDS=['bhCallout','bhRate','ahCallout','ahRate','travelMin'];
+  var DEFAULTS={bhCallout:250,bhRate:150,ahCallout:350,ahRate:200,travelMin:150};
   var STORE='amue_ec_rates';
 
   function $(id){return document.getElementById(id);}
