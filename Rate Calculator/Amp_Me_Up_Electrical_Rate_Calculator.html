@@ -116,6 +116,24 @@
   .dot{width:8px;height:8px;border-radius:50%;background:var(--orange);flex:0 0 8px;animation:pulse 1.4s ease-in-out infinite}
   @keyframes pulse{0%,100%{opacity:1}50%{opacity:.2}}
   @media(prefers-reduced-motion:reduce){.dot{animation:none}}
+  /* stop dialog */
+  .stopcat{font-size:17px;font-weight:800;letter-spacing:-.3px}
+  .stopnote{font-size:12.5px;color:var(--muted);margin-top:3px}
+  .stopbox{border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin:14px 0}
+  .stopbox .k{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--hint)}
+  .stopbox .v{font-size:26px;font-weight:800;letter-spacing:-.7px;margin-top:3px;font-variant-numeric:tabular-nums}
+  .stopbox .s{font-size:11.5px;color:var(--muted);margin-top:4px}
+  .stopchk{display:flex;gap:10px;align-items:flex-start;font-size:12.5px;line-height:1.45;cursor:pointer;
+           padding:11px 13px;border:1px solid var(--line);border-radius:8px;background:var(--soft)}
+  .stopchk:hover{border-color:var(--orange)}
+  .stopchk input{margin-top:1px;flex:0 0 16px}
+  .stopgrid{display:grid;grid-template-columns:1.25fr 1fr 1fr 1fr;gap:10px;margin-top:13px}
+  @media(max-width:560px){.stopgrid{grid-template-columns:1fr 1fr}}
+  .readout{font:inherit;font-size:13px;font-weight:800;border:1px solid var(--line);border-radius:5px;
+           padding:6px 8px;background:var(--soft);text-align:right;font-variant-numeric:tabular-nums}
+  .btn[disabled]{opacity:.42;cursor:not-allowed}
+  .btn[disabled]:hover{border-color:var(--line)}
+
   .running{display:inline-flex;align-items:center;gap:8px;background:var(--dark);color:#fff;border-radius:6px;padding:4px 5px 4px 10px;font-size:12px;white-space:nowrap}
   .running b{font-weight:700;max-width:170px;overflow:hidden;text-overflow:ellipsis}
   .running #runTime{font-variant-numeric:tabular-nums;font-weight:800;color:var(--orange)}
@@ -536,6 +554,10 @@
           <b>Travel</b> → Travel, <b>Quoting</b> → Quoting, <b>Phone calls</b> and <b>Admin</b> both → Admin &amp; paperwork,
           <b>Yard &amp; materials</b> → Yard, and Training, Warranty and Other → Other.
           <b>On the tools</b> is the billable one; it feeds nothing, it's there so you can check your real utilisation against the assumption.<br><br>
+          Every timer you stop asks <b>“Log this time?”</b> before anything reaches the log. If it was stopped properly, hit <b>Continue</b>.
+          If you forgot to start or stop it, tick the box and type the real start and finish times — the duration updates as you type and
+          <b>Add</b> saves that instead. Leave one running overnight and the box is already ticked with the finish time blank, so you can't
+          add a bogus 25-hour entry by accident. Nothing is lost if you walk away mid-question: it's waiting when you come back.<br><br>
           <b>Apply averages</b> only writes the categories you've actually logged, so half a week of tracking can't quietly zero the
           estimates you haven't started timing yet. Weekly averages divide by <em>weeks with entries</em>, not calendar weeks — a fortnight
           off the tools won't halve your average.
@@ -561,6 +583,44 @@
     <div class="foot noprint">
       Amp Me Up Electrical &middot; QLD Contractor Licence 92927 (Logan James Allen) &middot; ABN 45 699 117 934<br>
       This tool runs entirely in your browser — your figures are saved to this device only and are never uploaded.
+    </div>
+  </div>
+</div>
+
+<!-- ============ STOP-TIMER MODAL ============ -->
+<div class="overlay" id="ovlStop">
+  <div class="modal" style="max-width:560px">
+    <div class="mh"><span>Log this time?</span></div>
+    <div class="mb">
+      <div class="stopcat" id="stopCat">&nbsp;</div>
+      <div class="stopnote" id="stopNote"></div>
+
+      <div class="stopbox">
+        <div class="k">Timed</div>
+        <div class="v" id="stopDur">—</div>
+        <div class="s" id="stopSpan">&nbsp;</div>
+      </div>
+
+      <div class="banner" id="stopWarn" style="display:none"></div>
+
+      <label class="stopchk">
+        <input type="checkbox" class="chk" id="stopFix">
+        <span><b>Forgot to stop/start it?</b> Manually input the start and end time here.</span>
+      </label>
+
+      <div id="stopFields" style="display:none">
+        <div class="stopgrid">
+          <div><label class="fl">Date</label><input type="date" class="f" id="stopDate"></div>
+          <div><label class="fl">Started</label><input type="time" class="f" id="stopFrom"></div>
+          <div><label class="fl">Stopped</label><input type="time" class="f" id="stopTo"></div>
+          <div><label class="fl">That's</label><div class="readout" id="stopCalc">—</div></div>
+        </div>
+        <p class="hint" id="stopHint" style="margin:10px 0 0"></p>
+      </div>
+    </div>
+    <div class="mf">
+      <button class="btn" id="stopAdd" disabled>Add</button>
+      <button class="btn primary" id="stopGo">Continue</button>
     </div>
   </div>
 </div>
@@ -698,6 +758,7 @@ function freshState(){
     ],
     timelog:[],
     running:null,
+    pending:null,
     snapshots:[],
     seeded:true
   };
@@ -776,6 +837,8 @@ function migrate(o){
   delete o.travel; delete o.travelOpt;
 
   o.running = (o.running && o.running.startedAt) ? o.running : null;
+  /* a stop dialog that was still open when the browser went away */
+  o.pending = (o.pending && o.pending.r && o.pending.r.startedAt) ? o.pending : null;
   return o;
 }
 
@@ -954,10 +1017,10 @@ function isoFromMs(ms){
 }
 
 function startTimer(cat){
-  if(S.running){
-    if(S.running.category===cat){ stopTimer(); return; }   // tapping the live one stops it
-    stopTimer();                                            // otherwise switch
-  }
+  var prev = S.running;
+  if(prev && prev.category===cat){ stopTimer(); return; }   // tapping the live one stops it
+
+  if(prev){ S.running = null; $('#timerNote').value = ''; } // the note belonged to the old task
   S.running = {
     category: cat,
     person: $('#timerPerson').value || (S.labour[0]?S.labour[0].name:''),
@@ -965,25 +1028,121 @@ function startTimer(cat){
     startedAt: Date.now()
   };
   renderTimers(); persist();
+  /* The new timer is already counting, so sorting out the old one costs no time. */
+  if(prev) finishRunning(prev);
 }
 
 function stopTimer(){
   var r = S.running;
   if(!r) return;
-  var mins = (Date.now()-r.startedAt)/60000;
-  if(mins > 12*60 && !confirm('That timer has been running for '+hrs(mins/60)+' hours.\n\nLog it anyway? Cancel throws it away.')){
-    S.running = null; renderTimers(); persist(); return;
-  }
   S.running = null;
-  if(mins >= MIN_LOG_MINUTES){
-    S.timelog.unshift({
-      id:uid(), date:isoFromMs(r.startedAt), category:r.category, person:r.person,
-      note:r.note||'', minutes:Math.round(mins*10)/10, billable:catDef(r.category).billable
-    });
-    renderTimeLog();
-  }
   $('#timerNote').value = '';
-  renderTimers(); paint(); persist();
+  renderTimers(); persist();
+  finishRunning(r);
+}
+
+/* Every finished timer goes through the stop dialog, so a run that was left
+   going overnight can be corrected before it ever reaches the log. */
+function finishRunning(r){
+  var endedAt = Date.now();
+  if((endedAt - r.startedAt)/60000 < MIN_LOG_MINUTES) return;   // mis-tap, not a task
+  if(S.pending) resolveStop(false);        // can't normally happen; never drop an entry
+  S.pending = { r:r, endedAt:endedAt };
+  persist();
+  openStopDialog();
+}
+
+function durText(mins){
+  var m = Math.round(mins);
+  if(m < 60) return m + ' min';
+  var h = Math.floor(m/60), rest = m%60;
+  return h + 'h' + (rest ? ' ' + rest + 'm' : '');
+}
+function hhmm(ms){ var d = new Date(ms); return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'); }
+function timeText(ms){ return new Date(ms).toLocaleTimeString('en-AU',{hour:'numeric',minute:'2-digit'}); }
+function toMin(v){ var m = /^(\d{1,2}):(\d{2})/.exec(v||''); return m ? (+m[1])*60 + (+m[2]) : null; }
+
+function openStopDialog(){
+  var p = S.pending; if(!p) return;
+  var r = p.r;
+  var mins = (p.endedAt - r.startedAt)/60000;
+  var overnight = isoFromMs(r.startedAt) !== isoFromMs(p.endedAt);
+  var tooLong = mins > 12*60;
+
+  $('#stopCat').textContent  = r.category;
+  $('#stopNote').textContent = r.note || '';
+  $('#stopNote').style.display = r.note ? 'block' : 'none';
+  $('#stopDur').textContent  = durText(mins);
+  $('#stopSpan').textContent = 'Started ' + timeText(r.startedAt) + ' · stopped ' + timeText(p.endedAt)
+                             + (overnight ? ' the next day' : '');
+
+  $('#stopWarn').style.display = tooLong ? 'flex' : 'none';
+  $('#stopWarn').innerHTML = tooLong
+    ? '<div>That ran for <b>'+durText(mins)+'</b> — looks like it was left going. Put the real start and finish times in below before you add it.</div>'
+    : '';
+
+  $('#stopFix').checked = tooLong;          // an overnighter opens straight into correction mode
+  $('#stopDate').value  = isoFromMs(r.startedAt);
+  $('#stopFrom').value  = hhmm(r.startedAt);
+  /* left running: blank the finish so a real one has to be typed — Add stays
+     disabled until it is, rather than offering a meaningless round 24h */
+  $('#stopTo').value    = tooLong ? '' : hhmm(p.endedAt);
+  syncStopFields();
+
+  $('#ovlStop').classList.add('on');
+  setTimeout(function(){ (tooLong ? $('#stopTo') : $('#stopGo')).focus(); }, 40);
+}
+
+/* Minutes between the two manual times. A finish at or before the start is
+   read as running past midnight rather than as an error. */
+function manualMinutes(){
+  var a = toMin($('#stopFrom').value), b = toMin($('#stopTo').value);
+  if(a===null || b===null || !$('#stopDate').value) return null;
+  var mins = b - a;
+  if(mins <= 0) mins += 1440;
+  return mins;
+}
+
+function syncStopFields(){
+  var on = $('#stopFix').checked;
+  $('#stopFields').style.display = on ? 'block' : 'none';
+  var mins = manualMinutes();
+  $('#stopCalc').textContent = (mins===null) ? '—' : durText(mins);
+  $('#stopAdd').disabled = !on || mins===null;
+  $('#stopAdd').classList.toggle('primary', on);
+  $('#stopGo').classList.toggle('primary', !on);
+
+  var hint = '', bad = false;
+  if(on && mins!==null){
+    var a = toMin($('#stopFrom').value), b = toMin($('#stopTo').value);
+    if(b <= a) hint = 'Finish is at or before the start, so this is counted as running past midnight.';
+    if(mins > 16*60){ hint = 'That’s over 16 hours — check the times.'; bad = true; }
+  }
+  $('#stopHint').textContent = hint;
+  $('#stopHint').style.color = bad ? 'var(--bad)' : 'var(--muted)';
+}
+
+function resolveStop(useManual){
+  var p = S.pending; if(!p) return;
+  var r = p.r, mins, date;
+
+  if(useManual){
+    mins = manualMinutes();
+    if(mins===null) return;
+    date = $('#stopDate').value;
+  } else {
+    mins = (p.endedAt - r.startedAt)/60000;
+    date = isoFromMs(r.startedAt);
+  }
+
+  S.timelog.unshift({
+    id:uid(), date:date, category:r.category, person:r.person, note:r.note||'',
+    minutes:Math.round(mins*10)/10, billable:catDef(r.category).billable
+  });
+  S.pending = null;
+  $('#ovlStop').classList.remove('on');
+  renderTimeLog(); paint(); persist();
+  $('#saveNote').textContent = 'Logged ' + durText(mins);
 }
 
 function renderTimers(){
@@ -1847,6 +2006,26 @@ document.addEventListener('click', function(ev){
   if(b){ startTimer(b.dataset.cat); }
 });
 $('#runStop').addEventListener('click', stopTimer);
+
+/* ---- stop dialog ---- */
+$('#stopFix').addEventListener('change', function(){
+  syncStopFields();
+  if(this.checked) setTimeout(function(){ $('#stopTo').focus(); }, 30);
+});
+['#stopDate','#stopFrom','#stopTo'].forEach(function(sel){
+  $(sel).addEventListener('input', syncStopFields);
+  $(sel).addEventListener('change', syncStopFields);
+});
+$('#stopAdd').addEventListener('click', function(){ if(!this.disabled) resolveStop(true); });
+$('#stopGo').addEventListener('click', function(){ resolveStop(false); });
+document.addEventListener('keydown', function(ev){
+  if(!$('#ovlStop').classList.contains('on')) return;
+  if(ev.key==='Escape'){ ev.preventDefault(); resolveStop(false); }          /* keep what was timed */
+  if(ev.key==='Enter'){
+    ev.preventDefault();
+    resolveStop($('#stopFix').checked && !$('#stopAdd').disabled);
+  }
+});
 $('#timerNote').addEventListener('input', function(){
   if(S.running){ S.running.note = this.value.trim(); renderTimers(); persist(); }
 });
@@ -2068,6 +2247,7 @@ function renderAll(){
   renderSnaps();
   $('#firstRun').style.display = S.seeded ? 'flex' : 'none';
   paint();
+  if(S.pending) openStopDialog();      /* unfinished business from last time */
 }
 
 restore();

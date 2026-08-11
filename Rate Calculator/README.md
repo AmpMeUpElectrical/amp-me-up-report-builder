@@ -84,8 +84,29 @@ do one thing at a time. The running timer shows in the toolbar from every tab.
 - **It survives everything.** Only the start time is stored, so closing the tab, locking the
   phone or reloading the page all leave it counting. It resumes on the next open.
 - **Under 15 seconds is discarded**, so a mis-tap doesn't clutter the log.
-- **Over 12 hours asks first** — usually it means you left one running overnight.
 - The note box belongs to the running timer; edit it mid-task and it follows the entry.
+- Switching straight to another category starts the new timer **immediately** — you don't lose
+  the seconds spent sorting out the old one.
+
+### The "Log this time?" check
+
+Nothing reaches the log until you say so. Stopping any timer opens a dialog showing what was
+timed, with:
+
+- **Continue** — the timer was accurate, save it as-is.
+- A tick-box: *"Forgot to stop/start it? Manually input the start and end time here."* Ticking
+  it reveals **Date / Started / Stopped**, pre-filled from the timer, with the duration
+  recalculating live as you type. **Add** saves that instead of what was timed.
+
+Guards on the manual times:
+
+- A finish at or before the start counts as **running past midnight**, not an error.
+- Over 16 hours flags in red so a typo doesn't sail through.
+- **Left running overnight?** Anything over 12 hours opens with the box already ticked, a
+  warning, and the finish time **blank** — so Add stays disabled until you type a real one and
+  a bogus 25-hour entry can't be saved by accident. The entry keeps the date it *started*.
+- Walk away mid-question and nothing is lost — the dialog is waiting when you come back, even
+  after a browser restart.
 
 Categories, and the Labour box each one feeds:
 
