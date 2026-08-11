@@ -1,0 +1,1703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Amp Me Up Electrical — True Hourly Rate Calculator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- Loaded non-blocking: a stalled stylesheet would otherwise stop the whole calculator
+     from starting. Falls back to Segoe UI / system sans with no signal. -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap"
+      media="print" onload="this.media='all';this.onload=null">
+<style>
+  :root{
+    --orange:#F78419; --dark:#131313; --line:#e6e4dd; --muted:#6a6a66; --hint:#9a9a94; --tint:#fef8f1;
+    --ok:#1c7c4c; --bad:#c0392b; --soft:#fafaf8;
+    --sans:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--sans);color:var(--dark);background:#d7d5cf;line-height:1.5;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1140px;margin:0 auto;padding:24px 14px 56px}
+  .sheet{background:#fff;border-radius:8px;box-shadow:0 4px 24px rgba(0,0,0,.12);overflow:hidden}
+
+  /* ---------- header ---------- */
+  .header{background:var(--dark);padding:20px 24px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+  .hleft{display:flex;align-items:center;gap:15px}
+  .logo{width:76px;height:76px;border-radius:8px;background:#fff;padding:5px;flex:0 0 76px;display:flex;align-items:center;justify-content:center}
+  .logo img{max-width:100%;max-height:100%;object-fit:contain}
+  .bname{color:#fff;font-size:19px;font-weight:800;letter-spacing:.2px}
+  .bsub{color:#b6bcc4;font-size:11px;margin-top:5px;line-height:1.5}
+  .contact{text-align:right;color:#b6bcc4;font-size:10.5px;line-height:1.7;white-space:nowrap}
+  .accent{height:4px;background:var(--orange)}
+  @media(max-width:620px){.contact{text-align:left}}
+
+  /* ---------- toolbar + tabs ---------- */
+  .toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:11px 20px;background:var(--soft);border-bottom:1px solid var(--line)}
+  .btn{font:inherit;font-size:12.5px;font-weight:700;border:1px solid var(--line);background:#fff;color:var(--dark);border-radius:6px;padding:7px 12px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:.13s}
+  .btn:hover{border-color:var(--orange);color:var(--dark)}
+  .btn.primary{background:var(--orange);border-color:var(--orange);color:#fff}
+  .btn.primary:hover{filter:brightness(1.06)}
+  .btn.sm{font-size:11.5px;padding:5px 9px}
+  .btn.danger:hover{border-color:var(--bad);color:var(--bad)}
+  .spacer{flex:1}
+  .savenote{font-size:11px;color:var(--hint)}
+
+  .tabs{display:flex;gap:2px;padding:0 12px;background:var(--soft);border-bottom:1px solid var(--line);overflow-x:auto}
+  .tab{font:inherit;font-size:13px;font-weight:700;color:var(--muted);background:none;border:0;border-bottom:3px solid transparent;padding:11px 13px;cursor:pointer;white-space:nowrap}
+  .tab:hover{color:var(--dark)}
+  .tab.on{color:var(--dark);border-bottom-color:var(--orange)}
+
+  .pane{display:none;padding:22px 20px 34px}
+  .pane.on{display:block}
+
+  /* ---------- generic bits ---------- */
+  h2.sect{font-size:15px;font-weight:800;letter-spacing:-.2px;margin:0 0 3px}
+  p.hint{font-size:12px;color:var(--muted);margin-bottom:14px;max-width:74ch}
+  .block{border:1px solid var(--line);border-radius:8px;padding:16px;margin-bottom:16px}
+  .block>h3{font-size:12.5px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:12px}
+  .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .banner{background:var(--tint);border:1px solid #f3d9bd;border-radius:8px;padding:12px 14px;font-size:12.5px;color:#7a4a12;margin-bottom:16px;display:flex;gap:12px;align-items:flex-start}
+  .banner b{font-weight:800}
+  .scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+
+  label.fl{display:block;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--hint);margin-bottom:4px}
+  input.f,select.f{font:inherit;font-size:12.5px;color:inherit;background:#fff;border:1px solid var(--line);border-radius:5px;padding:6px 8px;width:100%}
+  input.f:focus,select.f:focus{outline:2px solid rgba(247,132,25,.3);outline-offset:0;border-color:var(--orange)}
+  input.num{text-align:right}
+  .fgrid{display:grid;gap:10px}
+  .g2{grid-template-columns:repeat(2,1fr)} .g3{grid-template-columns:repeat(3,1fr)}
+  .g4{grid-template-columns:repeat(4,1fr)} .g5{grid-template-columns:repeat(5,1fr)}
+  @media(max-width:820px){.g4,.g5{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:520px){.g2,.g3,.g4,.g5{grid-template-columns:1fr}}
+
+  table.grid{width:100%;border-collapse:collapse;font-size:12.5px}
+  table.grid th{text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--hint);padding:7px 6px;border-bottom:1px solid var(--line);white-space:nowrap}
+  table.grid td{padding:4px 6px;border-bottom:1px solid #f4f3ef;vertical-align:middle}
+  table.grid tr:last-child td{border-bottom:0}
+  table.grid td.calc{text-align:right;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+  table.grid tfoot td{border-top:2px solid var(--line);font-weight:800;padding-top:9px}
+  .x{font:inherit;font-size:14px;line-height:1;color:var(--hint);background:none;border:0;cursor:pointer;padding:4px 6px;border-radius:4px}
+  .x:hover{color:var(--bad);background:#fdecea}
+  .chk{width:16px;height:16px;accent-color:var(--orange);cursor:pointer}
+
+  /* ---------- dashboard cards ---------- */
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:16px}
+  .card{border:1px solid var(--line);border-radius:8px;padding:14px 15px;background:#fff}
+  .card .k{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--hint)}
+  .card .v{font-size:27px;font-weight:800;letter-spacing:-.7px;margin-top:5px;font-variant-numeric:tabular-nums}
+  .card .s{font-size:11.5px;color:var(--muted);margin-top:4px;line-height:1.45}
+  .card.hero{background:var(--dark);border-color:var(--dark)}
+  .card.hero .k{color:#8d8d88} .card.hero .v{color:#fff} .card.hero .s{color:#b6bcc4}
+  .card.hero.orange{background:var(--orange);border-color:var(--orange)}
+  .card.hero.orange .k{color:#ffe6cb} .card.hero.orange .s{color:#fff2e3}
+  .pos{color:var(--ok)} .neg{color:var(--bad)}
+
+  .bar{display:flex;height:26px;border-radius:5px;overflow:hidden;border:1px solid var(--line);margin:6px 0 8px}
+  .bar span{display:flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden}
+  .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:11.5px;color:var(--muted)}
+  .legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+
+  .pill{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:2px 7px;border-radius:999px;background:var(--tint);color:var(--orange);border:1px solid #f3d9bd}
+  .pill.grey{background:#f2f1ec;color:var(--muted);border-color:var(--line)}
+
+  /* ---------- person cards ---------- */
+  .person{border:1px solid var(--line);border-radius:8px;margin-bottom:14px;overflow:hidden}
+  .person .ph{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:11px 14px;background:var(--soft);border-bottom:1px solid var(--line)}
+  .person .ph .nm{font-weight:800;font-size:14px;flex:1;min-width:150px}
+  .person .pb{padding:14px}
+  .person .pfoot{padding:10px 14px;background:var(--soft);border-top:1px solid var(--line);font-size:11.5px;color:var(--muted);display:flex;gap:18px;flex-wrap:wrap}
+  .person .pfoot b{color:var(--dark);font-variant-numeric:tabular-nums}
+  .sublabel{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--hint);margin:14px 0 8px;padding-top:12px;border-top:1px dashed var(--line)}
+  .sublabel:first-child{margin-top:0;padding-top:0;border-top:0}
+
+  /* ---------- modal ---------- */
+  .overlay{position:fixed;inset:0;background:rgba(19,19,19,.55);display:none;align-items:flex-start;justify-content:center;padding:24px 12px;z-index:50;overflow-y:auto}
+  .overlay.on{display:flex}
+  .modal{background:#fff;border-radius:8px;max-width:840px;width:100%;box-shadow:0 12px 40px rgba(0,0,0,.3)}
+  .modal .mh{padding:15px 18px;border-bottom:1px solid var(--line);font-weight:800;font-size:15px;display:flex;justify-content:space-between;align-items:center}
+  .modal .mb{padding:18px}
+  .modal .mf{padding:14px 18px;border-top:1px solid var(--line);display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;background:var(--soft)}
+  .prev{max-height:210px;overflow:auto;border:1px solid var(--line);border-radius:6px}
+  .prev table{width:100%;border-collapse:collapse;font-size:11.5px}
+  .prev th{position:sticky;top:0;background:var(--soft)}
+  .prev td,.prev th{padding:5px 7px;border-bottom:1px solid #f4f3ef;text-align:left;white-space:nowrap}
+
+  .foot{padding:15px 22px 20px;border-top:1px solid var(--line);font-size:10.5px;color:var(--hint);line-height:1.7}
+
+  /* ---------- print ---------- */
+  #printOnly{display:none}
+  @media print{
+    @page{size:A4;margin:12mm}
+    body{background:#fff}
+    .wrap{max-width:none;padding:0}
+    .sheet{box-shadow:none;border-radius:0}
+    .noprint,.toolbar,.tabs,.pane,.foot,.overlay{display:none!important}
+    #printOnly{display:block;padding:0}
+    .header{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    .accent{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    .pcards{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+    .pcard{border:1px solid #ddd;border-radius:6px;padding:10px}
+    .pcard .k{font-size:8.5px;text-transform:uppercase;letter-spacing:.06em;color:#777;font-weight:700}
+    .pcard .v{font-size:19px;font-weight:800;margin-top:3px}
+    .pcard .s{font-size:9px;color:#666}
+    /* a heading never sits alone at the foot of a page, orphaned from its table */
+    #printOnly h3{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#666;margin:14px 0 6px;padding-bottom:4px;border-bottom:1px solid #ddd;break-after:avoid;page-break-after:avoid}
+    #printOnly table{width:100%;border-collapse:collapse;font-size:10px}
+    #printOnly td,#printOnly th{padding:3px 5px;border-bottom:1px solid #eee;text-align:left}
+    #printOnly td.n,#printOnly th.n{text-align:right;font-variant-numeric:tabular-nums}
+    #printOnly .pbody{padding:16px 18px}
+    #printOnly .pnote{font-size:9px;color:#777;margin-top:12px;line-height:1.6}
+    .avoid{break-inside:avoid;page-break-inside:avoid}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="sheet">
+
+    <div class="header">
+      <div class="hleft">
+        <div class="logo"><img src="../Company%20Logo/New-Logo-Google-PFP.png" alt="Amp Me Up Electrical"></div>
+        <div>
+          <div class="bname">Amp Me Up Electrical</div>
+          <div class="bsub">True Hourly Rate &amp; Overhead Calculator<br>Contractor Lic 92927 &middot; ABN 45 699 117 934</div>
+        </div>
+      </div>
+      <div class="contact">
+        <div>0432 533 873</div>
+        <div>logan@ampmeupelectrical.com</div>
+        <div id="hdrDate">&nbsp;</div>
+      </div>
+    </div>
+    <div class="accent"></div>
+
+    <!-- ============ TOOLBAR ============ -->
+    <div class="toolbar noprint">
+      <a class="btn" href="../index.html">&larr; Tools</a>
+      <button class="btn" id="btnSaveFile">Save file (.json)</button>
+      <button class="btn" id="btnLoadFile">Load file</button>
+      <button class="btn" id="btnSnap">Save snapshot</button>
+      <button class="btn primary" id="btnPrint">Export PDF summary</button>
+      <div class="spacer"></div>
+      <span class="savenote" id="saveNote">&nbsp;</span>
+      <button class="btn danger sm" id="btnReset">Start over</button>
+      <input type="file" id="fileJson" accept=".json,application/json" hidden>
+    </div>
+
+    <!-- ============ TABS ============ -->
+    <div class="tabs noprint">
+      <button class="tab on" data-tab="dash">Dashboard</button>
+      <button class="tab" data-tab="over">Overheads</button>
+      <button class="tab" data-tab="lab">Labour</button>
+      <button class="tab" data-tab="trav">Travel &amp; non-billable</button>
+      <button class="tab" data-tab="trend">Trend</button>
+      <button class="tab" data-tab="help">How it works</button>
+    </div>
+
+    <!-- ============ DASHBOARD ============ -->
+    <section class="pane on" id="pane-dash">
+      <div class="banner" id="firstRun" style="display:none">
+        <div>
+          <b>Starter figures loaded.</b> Everything below is example data for a solo QLD electrical business so you can see how it works.
+          Go through <b>Overheads</b> and <b>Labour</b> and replace them with your real numbers — or hit <em>Clear all amounts</em> on the Overheads tab and start from scratch.
+        </div>
+        <button class="btn sm" id="dismissFirst">Got it</button>
+      </div>
+
+      <h2 class="sect">Your true cost per billable hour</h2>
+      <p class="hint">All figures exclude GST. Change anything on the other tabs and these update instantly.</p>
+
+      <div class="cards">
+        <div class="card hero">
+          <div class="k">Breakeven — true cost</div>
+          <div class="v" id="dBreak">$0.00</div>
+          <div class="s">per billable hour. Charge this and you make <b>zero</b> profit.</div>
+        </div>
+        <div class="card hero orange">
+          <div class="k">Recommended charge-out</div>
+          <div class="v" id="dTarget">$0.00</div>
+          <div class="s" id="dTargetSub">&nbsp;</div>
+        </div>
+        <div class="card">
+          <div class="k">Your current rate</div>
+          <div class="v" id="dCurrent">$0.00</div>
+          <div class="s" id="dCurrentSub">&nbsp;</div>
+        </div>
+        <div class="card">
+          <div class="k">Billable hours a year</div>
+          <div class="v" id="dHours">0</div>
+          <div class="s" id="dHoursSub">&nbsp;</div>
+        </div>
+      </div>
+
+      <div class="block">
+        <h3>Where every billable hour goes</h3>
+        <div class="bar" id="dBar"></div>
+        <div class="legend">
+          <span><i style="background:#131313"></i>Labour <b id="lgLab">$0</b></span>
+          <span><i style="background:#F78419"></i>Overheads <b id="lgOh">$0</b></span>
+          <span><i style="background:#1c7c4c"></i>Profit at your target <b id="lgPr">$0</b></span>
+        </div>
+        <div class="fgrid g4" style="margin-top:16px">
+          <div><label class="fl">Labour cost / hr</label><div class="card" style="padding:9px 11px"><div class="v" style="font-size:19px" id="dLab">$0.00</div></div></div>
+          <div><label class="fl">Overhead / hr</label><div class="card" style="padding:9px 11px"><div class="v" style="font-size:19px" id="dOh">$0.00</div></div></div>
+          <div><label class="fl">Overheads / year</label><div class="card" style="padding:9px 11px"><div class="v" style="font-size:19px" id="dOhY">$0</div></div></div>
+          <div><label class="fl">Labour cost / year</label><div class="card" style="padding:9px 11px"><div class="v" style="font-size:19px" id="dLabY">$0</div></div></div>
+        </div>
+      </div>
+
+      <div class="block">
+        <h3>Set your target</h3>
+        <div class="fgrid g4">
+          <div>
+            <label class="fl">Pricing method</label>
+            <select class="f" data-obj="targets" data-k="method">
+              <option value="margin">Net margin on the sell price</option>
+              <option value="markup">Mark-up on cost</option>
+            </select>
+          </div>
+          <div><label class="fl" id="lblPct">Target margin %</label><input class="f num" inputmode="decimal" data-obj="targets" data-k="pct"></div>
+          <div><label class="fl">Your current charge-out rate (ex GST)</label><input class="f num" inputmode="decimal" data-obj="targets" data-k="currentRate"></div>
+          <div><label class="fl">Round rate up to nearest $</label>
+            <select class="f" data-obj="targets" data-k="round">
+              <option value="0">No rounding</option><option value="1">$1</option><option value="5">$5</option><option value="10">$10</option>
+            </select>
+          </div>
+        </div>
+        <p class="hint" style="margin:12px 0 0" id="methodNote"></p>
+      </div>
+
+      <div class="fgrid g2">
+        <div class="block" style="margin:0">
+          <h3>Rate at different margins</h3>
+          <div class="scroll">
+            <table class="grid" id="tblMargins">
+              <thead><tr><th>Margin</th><th class="calc">Rate ex GST</th><th class="calc">Inc GST</th><th class="calc">Profit / yr</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="block" style="margin:0">
+          <h3>What non-billable time costs you</h3>
+          <table class="grid" id="tblSens">
+            <tbody></tbody>
+          </table>
+          <p class="hint" style="margin:12px 0 0">Every hour a tech spends travelling, quoting or doing paperwork still has to be paid for out of the hours you <em>can</em> bill.</p>
+        </div>
+      </div>
+
+      <div class="block">
+        <h3>Overheads by category</h3>
+        <div class="scroll">
+          <table class="grid" id="tblCats">
+            <thead><tr><th>Category</th><th class="calc">Per year</th><th class="calc">Per week</th><th class="calc">$ / billable hr</th><th class="calc">% of overheads</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ OVERHEADS ============ -->
+    <section class="pane" id="pane-over">
+      <h2 class="sect">Business overheads</h2>
+      <p class="hint">Every cost of being in business that isn't the wage of someone on the tools. Enter each one at whatever frequency suits — it gets annualised for you.
+        Tick <b>GST</b> if the amount you typed includes GST (if you're registered, the true cost is the ex-GST figure). Don't put wages, super or workers' comp here — they belong on the <b>Labour</b> tab.</p>
+
+      <div class="row noprint" style="margin-bottom:14px">
+        <button class="btn primary" id="btnAddOh">+ Add expense</button>
+        <button class="btn" id="btnImportOh">Import from CSV</button>
+        <button class="btn" id="btnSeedCats">Add standard categories</button>
+        <div class="spacer"></div>
+        <button class="btn sm" id="btnGstAll">Tick all GST</button>
+        <button class="btn sm" id="btnGstNone">Untick all GST</button>
+        <button class="btn sm danger" id="btnClearAmts">Clear all amounts</button>
+      </div>
+
+      <div class="scroll">
+        <table class="grid" id="tblOh">
+          <thead><tr>
+            <th style="min-width:180px">Expense</th><th style="min-width:150px">Category</th>
+            <th style="width:110px">Amount</th><th style="width:120px">How often</th>
+            <th style="width:46px;text-align:center">GST</th><th class="calc" style="width:110px">Per year</th><th style="width:34px"></th>
+          </tr></thead>
+          <tbody></tbody>
+          <tfoot><tr><td colspan="5">Total overheads</td><td class="calc" id="ohTotal">$0</td><td></td></tr></tfoot>
+        </table>
+      </div>
+      <p class="hint" style="margin-top:14px" id="ohNote"></p>
+      <datalist id="catList"></datalist>
+    </section>
+
+    <!-- ============ LABOUR ============ -->
+    <section class="pane" id="pane-lab">
+      <h2 class="sect">Labour &amp; on-costs</h2>
+      <p class="hint">One card per person — including yourself. The real cost of an employee is a long way above their hourly rate once super, workers' comp, leave and public holidays are counted.
+        Anyone marked <b>not billable</b> (office/admin) has their whole cost rolled into overheads instead.</p>
+
+      <div class="row noprint" style="margin-bottom:14px">
+        <button class="btn primary" id="btnAddPerson">+ Add person</button>
+        <button class="btn" id="btnAddApp">+ Add apprentice</button>
+      </div>
+
+      <div id="people"></div>
+
+      <div class="block">
+        <h3>Team totals</h3>
+        <div class="scroll">
+          <table class="grid" id="tblLabSum">
+            <thead><tr><th>Person</th><th class="calc">Wages + on-costs / yr</th><th class="calc">Paid hrs</th><th class="calc">Non-billable hrs</th><th class="calc">Billable hrs</th><th class="calc">Utilisation</th><th class="calc">Cost / billable hr</th></tr></thead>
+            <tbody></tbody>
+            <tfoot><tr><td>Total</td><td class="calc" id="lsCost">$0</td><td class="calc" id="lsPaid">0</td><td class="calc" id="lsNb">0</td><td class="calc" id="lsBill">0</td><td class="calc" id="lsUtil">0%</td><td class="calc" id="lsRate">$0.00</td></tr></tfoot>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ TRAVEL ============ -->
+    <section class="pane" id="pane-trav">
+      <h2 class="sect">Travel time &amp; non-billable hours</h2>
+      <p class="hint">Log travel as you go (or import it), and this works out your true weekly average. Push that average straight into the Labour tab and watch what it does to your rate.</p>
+
+      <div class="fgrid g3" style="margin-bottom:16px">
+        <div class="card"><div class="k">Avg non-billable travel</div><div class="v" id="tvAvg">0.0 h</div><div class="s">per person per week, from the log</div></div>
+        <div class="card"><div class="k">Weeks logged</div><div class="v" id="tvWeeks">0</div><div class="s" id="tvRange">no entries yet</div></div>
+        <div class="card"><div class="k">Wages paid for travel</div><div class="v" id="tvCost">$0</div><div class="s" id="tvCostSub">&nbsp;</div></div>
+      </div>
+
+      <div class="block">
+        <h3>Quick estimator — if you haven't logged anything yet</h3>
+        <div class="fgrid g5">
+          <div><label class="fl">Days on the road / week</label><input class="f num" inputmode="decimal" data-obj="est" data-k="days"></div>
+          <div><label class="fl">Jobs per day</label><input class="f num" inputmode="decimal" data-obj="est" data-k="jobs"></div>
+          <div><label class="fl">Unbilled travel between jobs (min per leg)</label><input class="f num" inputmode="decimal" data-obj="est" data-k="between"></div>
+          <div><label class="fl">Unbilled travel each day — first + last leg (min)</label><input class="f num" inputmode="decimal" data-obj="est" data-k="commute"></div>
+          <div><label class="fl">Supplier / wholesaler runs (min/day)</label><input class="f num" inputmode="decimal" data-obj="est" data-k="supplier"></div>
+        </div>
+        <div class="row" style="margin-top:14px">
+          <div style="font-size:13px">Estimated non-billable travel: <b id="estOut" style="font-size:16px">0.0 hours / week</b></div>
+          <div class="spacer"></div>
+          <button class="btn" id="btnApplyEst">Apply estimate to everyone on the tools</button>
+        </div>
+      </div>
+
+      <div class="row noprint" style="margin-bottom:12px">
+        <button class="btn primary" id="btnAddTrav">+ Add trip</button>
+        <button class="btn" id="btnImportTrav">Import from CSV</button>
+        <div class="spacer"></div>
+        <label class="fl" style="margin:0 4px 0 0;align-self:center">Average over</label>
+        <select class="f" style="width:auto" data-obj="travelOpt" data-k="window">
+          <option value="0">All entries</option><option value="4">Last 4 weeks</option><option value="8">Last 8 weeks</option><option value="13">Last 13 weeks</option>
+        </select>
+        <button class="btn" id="btnApplyTrav">Apply average to Labour tab</button>
+      </div>
+
+      <div class="scroll">
+        <table class="grid" id="tblTrav">
+          <thead><tr>
+            <th style="width:130px">Date</th><th style="min-width:130px">Person</th><th style="min-width:180px">Job / notes</th>
+            <th style="width:90px">Minutes</th><th style="width:80px;text-align:center">Billed?</th><th class="calc" style="width:70px">Hours</th><th style="width:34px"></th>
+          </tr></thead>
+          <tbody></tbody>
+          <tfoot><tr><td colspan="3">Unbilled travel logged</td><td class="calc" id="travMin">0</td><td></td><td class="calc" id="travHrs">0.0</td><td></td></tr></tfoot>
+        </table>
+      </div>
+
+      <div class="block" style="margin-top:16px">
+        <h3>Weekly breakdown</h3>
+        <div class="scroll">
+          <table class="grid" id="tblWeeks">
+            <thead><tr><th>Week beginning</th><th class="calc">Unbilled travel (h)</th><th class="calc">Billed travel (h)</th><th class="calc">Trips</th><th class="calc">Wages paid for it</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ TREND ============ -->
+    <section class="pane" id="pane-trend">
+      <h2 class="sect">Trend</h2>
+      <p class="hint">Hit <b>Save snapshot</b> in the toolbar whenever your numbers change — weekly is plenty — and you'll build a picture of which way your true cost is heading as the business grows.</p>
+
+      <div class="block">
+        <h3>Breakeven vs target rate over time</h3>
+        <div id="chart" style="overflow-x:auto"></div>
+      </div>
+
+      <div class="row noprint" style="margin-bottom:12px">
+        <button class="btn primary" id="btnSnap2">Save snapshot now</button>
+        <button class="btn" id="btnSnapCsv">Export snapshots (.csv)</button>
+      </div>
+
+      <div class="scroll">
+        <table class="grid" id="tblSnaps">
+          <thead><tr><th>Date</th><th class="calc">Breakeven</th><th class="calc">Target rate</th><th class="calc">Overheads / yr</th><th class="calc">Labour / yr</th><th class="calc">Billable hrs</th><th class="calc">Utilisation</th><th class="calc">Travel h/wk</th><th style="width:34px"></th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <div class="block" style="margin-top:18px">
+        <h3>Getting this off your laptop</h3>
+        <p class="hint" style="margin:0">
+          Right now everything lives in this browser only (plus whatever <b>.json</b> files you save). Nothing is uploaded anywhere.
+          Save the file into OneDrive, Google Drive or Dropbox and you can open it on another machine — that's the zero-setup version of "in the cloud".
+          Proper sync, so any device you log into sees the same live numbers, needs a small back end behind it. Say the word and we'll add it.
+        </p>
+      </div>
+    </section>
+
+    <!-- ============ HELP ============ -->
+    <section class="pane" id="pane-help">
+      <h2 class="sect">How the numbers work</h2>
+      <p class="hint">No magic in here — this is the sum every accountant does, just kept live.</p>
+
+      <div class="block">
+        <h3>1. What a person really costs</h3>
+        <p style="font-size:13px;color:var(--muted)">
+          Base wage (or your own drawings) <b>+</b> annual leave loading <b>+</b> allowances <b>+</b> superannuation <b>+</b> workers' compensation <b>+</b> payroll tax if you're over the threshold <b>+</b> anything else you carry for them (phone, PPE, training, tool allowance).
+          Queensland's payroll tax threshold is $1.3&nbsp;M of wages, so most small shops leave that at 0.
+        </p>
+      </div>
+      <div class="block">
+        <h3>2. How many hours you can actually sell</h3>
+        <p style="font-size:13px;color:var(--muted)">
+          Paid hours a year <b>−</b> annual leave <b>−</b> public holidays <b>−</b> sick leave <b>−</b> training <b>=</b> hours actually worked.
+          Then take off travel, quoting, admin, yard and materials runs — what's left is what you can put on an invoice. That's usually 55–70% of the hours you pay for, and it's the number most people get wrong.
+        </p>
+      </div>
+      <div class="block">
+        <h3>3. The rate</h3>
+        <p style="font-size:13px;color:var(--muted)">
+          Overheads ÷ billable hours <b>+</b> labour cost ÷ billable hours <b>=</b> your breakeven. Below it you're paying for the privilege of working.<br><br>
+          <b>Margin</b> and <b>mark-up</b> are not the same thing. A 30% mark-up on $100 gives $130 — and $30 of a $130 sale is only a 23% margin. This tool defaults to <em>margin</em>, because margin is what's left in the business.
+        </p>
+      </div>
+      <div class="block">
+        <h3>4. GST</h3>
+        <p style="font-size:13px;color:var(--muted)">
+          Every rate here is <b>ex GST</b>. GST isn't yours — you collect it and hand it on. If you're registered, your real cost of an expense is the ex-GST figure, which is why the GST tick-box on the Overheads tab matters. Where an inc-GST figure is useful (what the customer actually sees) it's shown alongside.
+        </p>
+      </div>
+      <div class="block">
+        <h3>What this isn't</h3>
+        <p style="font-size:13px;color:var(--muted)">
+          It's a costing model, not tax advice, and it doesn't cover materials mark-up, income tax or the cash your business needs to hold. Run any big pricing change past your accountant first.
+        </p>
+      </div>
+    </section>
+
+    <!-- ============ PRINT SUMMARY ============ -->
+    <div id="printOnly"><div class="pbody" id="printBody"></div></div>
+
+    <div class="foot noprint">
+      Amp Me Up Electrical &middot; QLD Contractor Licence 92927 (Logan James Allen) &middot; ABN 45 699 117 934<br>
+      This tool runs entirely in your browser — your figures are saved to this device only and are never uploaded.
+    </div>
+  </div>
+</div>
+
+<!-- ============ IMPORT MODAL ============ -->
+<div class="overlay" id="ovl">
+  <div class="modal">
+    <div class="mh"><span id="mTitle">Import CSV</span><button class="x" id="mClose">&#10005;</button></div>
+    <div class="mb" id="mBody"></div>
+    <div class="mf">
+      <button class="btn" id="mCancel">Cancel</button>
+      <button class="btn" id="mAdd">Add to existing</button>
+      <button class="btn primary" id="mReplace">Replace existing</button>
+    </div>
+  </div>
+</div>
+<input type="file" id="fileCsv" accept=".csv,text/csv,text/plain" hidden>
+
+<script>
+(function(){
+'use strict';
+
+/* =========================================================
+   Constants
+   ========================================================= */
+var LS_KEY = 'amue_rate_calc_v1';
+var FREQ = { week:52, fortnight:26, month:12, quarter:4, year:1 };
+var FREQ_LABEL = { week:'Per week', fortnight:'Per fortnight', month:'Per month', quarter:'Per quarter', year:'Per year' };
+
+var CATEGORIES = [
+  'Vehicle — finance / lease','Vehicle — fuel','Vehicle — rego & insurance','Vehicle — servicing & tyres',
+  'Insurance — public liability','Insurance — tools & plant','Insurance — income protection',
+  'Licences & memberships','Software & subscriptions','Phone & internet',
+  'Accounting & bookkeeping','Legal & professional','Bank & merchant fees',
+  'Marketing & advertising','Tools & equipment','Consumables & workshop stock',
+  'Test equipment & calibration','Rent / shed / storage','Waste & disposal',
+  'Training & CPD','Uniforms & PPE','Other'
+];
+
+/* Starter figures — a solo QLD residential sparky. Replaced by the user. */
+function seedOverheads(){
+  var seed = [
+    ['Ute finance','Vehicle — finance / lease',780,'month',0],
+    ['Fuel','Vehicle — fuel',180,'week',1],
+    ['Rego & CTP','Vehicle — rego & insurance',920,'year',0],
+    ['Vehicle insurance','Vehicle — rego & insurance',1650,'year',0],
+    ['Servicing & tyres','Vehicle — servicing & tyres',2200,'year',1],
+    ['Public liability ($20m)','Insurance — public liability',1250,'year',0],
+    ['Tools & plant cover','Insurance — tools & plant',680,'year',0],
+    ['Income protection','Insurance — income protection',2400,'year',0],
+    ['Electrical contractor licence','Licences & memberships',420,'year',0],
+    ['Master Electricians membership','Licences & memberships',1100,'year',1],
+    ['ServiceM8','Software & subscriptions',119,'month',1],
+    ['Xero','Software & subscriptions',70,'month',1],
+    ['Google Workspace','Software & subscriptions',22,'month',1],
+    ['Mobile & internet','Phone & internet',150,'month',1],
+    ['Accountant & BAS','Accounting & bookkeeping',3200,'year',1],
+    ['Bank & card fees','Bank & merchant fees',95,'month',0],
+    ['Website & Google Ads','Marketing & advertising',450,'month',1],
+    ['Tool replacement & new gear','Tools & equipment',3600,'year',1],
+    ['Consumables not charged out','Consumables & workshop stock',60,'week',1],
+    ['Test gear calibration','Test equipment & calibration',550,'year',1],
+    ['Shed / storage','Rent / shed / storage',280,'month',1],
+    ['Tip fees & recycling','Waste & disposal',480,'year',1],
+    ['CPD & refresher courses','Training & CPD',1400,'year',1],
+    ['Uniforms & PPE','Uniforms & PPE',900,'year',1]
+  ];
+  return seed.map(function(r){
+    return { id:uid(), label:r[0], category:r[1], amount:r[2], freq:r[3], gst:!!r[4] };
+  });
+}
+
+function blankPerson(o){
+  o = o || {};
+  return {
+    id:uid(),
+    name:o.name||'New person', role:o.role||'Electrician',
+    type:o.type||'employee', billable:o.billable!==false,
+    payBasis:o.payBasis||'hourly', payRate:o.payRate!==undefined?o.payRate:42,
+    hoursPerWeek:o.hoursPerWeek||38,
+    superPct:o.superPct!==undefined?o.superPct:12,
+    workcoverPct:o.workcoverPct!==undefined?o.workcoverPct:2.5,
+    payrollTaxPct:o.payrollTaxPct!==undefined?o.payrollTaxPct:0,
+    leaveLoadingPct:o.leaveLoadingPct!==undefined?o.leaveLoadingPct:17.5,
+    allowanceWeekly:o.allowanceWeekly!==undefined?o.allowanceWeekly:0,
+    otherAnnual:o.otherAnnual!==undefined?o.otherAnnual:0,
+    annualLeaveWeeks:o.annualLeaveWeeks!==undefined?o.annualLeaveWeeks:4,
+    publicHolidayDays:o.publicHolidayDays!==undefined?o.publicHolidayDays:10,
+    sickDays:o.sickDays!==undefined?o.sickDays:10,
+    trainingDays:o.trainingDays!==undefined?o.trainingDays:3,
+    travelHrs:o.travelHrs!==undefined?o.travelHrs:5,
+    quotingHrs:o.quotingHrs!==undefined?o.quotingHrs:3,
+    adminHrs:o.adminHrs!==undefined?o.adminHrs:4,
+    yardHrs:o.yardHrs!==undefined?o.yardHrs:2,
+    otherNbHrs:o.otherNbHrs!==undefined?o.otherNbHrs:0
+  };
+}
+
+function freshState(){
+  return {
+    version:1,
+    updated:'',
+    business:{ weeksPerYear:52 },
+    targets:{ method:'margin', pct:30, currentRate:130, round:'5' },
+    est:{ days:5, jobs:3, between:20, commute:35, supplier:15 },
+    travelOpt:{ window:'0' },
+    overheads: seedOverheads(),
+    labour: [
+      blankPerson({ name:'Logan', role:'Owner / Electrician', type:'owner', payBasis:'annual', payRate:105000,
+                    workcoverPct:0, leaveLoadingPct:0, sickDays:5, travelHrs:5, quotingHrs:4, adminHrs:5, yardHrs:2 })
+    ],
+    travel:[],
+    snapshots:[],
+    seeded:true
+  };
+}
+
+/* =========================================================
+   Small helpers
+   ========================================================= */
+function uid(){ return 'x' + Math.random().toString(36).slice(2,9); }
+function $(s,r){ return (r||document).querySelector(s); }
+function $$(s,r){ return Array.prototype.slice.call((r||document).querySelectorAll(s)); }
+function num(v){ var n = parseFloat(String(v===undefined||v===null?'':v).replace(/[^0-9.\-]/g,'')); return isFinite(n)?n:0; }
+function esc(s){ return String(s===undefined||s===null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function money(n,d){ d = (d===undefined)?2:d; if(!isFinite(n)) n=0;
+  return (n<0?'-$':'$') + Math.abs(n).toLocaleString('en-AU',{minimumFractionDigits:d,maximumFractionDigits:d}); }
+function m0(n){ return money(n,0); }
+function hrs(n){ return (isFinite(n)?n:0).toLocaleString('en-AU',{minimumFractionDigits:1,maximumFractionDigits:1}); }
+function pct(n){ return (isFinite(n)?n*100:0).toFixed(1) + '%'; }
+function fmtDate(d){ if(!d) return ''; var p = d.split('-'); return p.length===3 ? p[2]+'/'+p[1]+'/'+p[0] : d; }
+function todayISO(){ var d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function mondayOf(iso){
+  var p = iso.split('-'); if(p.length!==3) return '';
+  var d = new Date(+p[0], +p[1]-1, +p[2]);
+  if(isNaN(d)) return '';
+  var day = (d.getDay()+6)%7;           // 0 = Monday
+  d.setDate(d.getDate()-day);
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+
+/* =========================================================
+   State
+   ========================================================= */
+var S = freshState();
+var saveTimer = null;
+
+function persist(){
+  S.updated = new Date().toISOString();
+  try{ localStorage.setItem(LS_KEY, JSON.stringify(S)); }catch(e){}
+  clearTimeout(saveTimer);
+  $('#saveNote').textContent = 'Saved';
+  saveTimer = setTimeout(function(){ $('#saveNote').innerHTML = '&nbsp;'; }, 1400);
+}
+
+function restore(){
+  var raw;
+  try{ raw = localStorage.getItem(LS_KEY); }catch(e){ return false; }
+  if(!raw) return false;
+  try{
+    var o = JSON.parse(raw);
+    if(!o || typeof o!=='object') return false;
+    S = migrate(o);
+    return true;
+  }catch(e){ return false; }
+}
+
+/* Fill in anything a saved file predates, so old saves keep opening. */
+function migrate(o){
+  var f = freshState();
+  o.version = 1;
+  o.business  = Object.assign({}, f.business,  o.business||{});
+  o.targets   = Object.assign({}, f.targets,   o.targets||{});
+  o.est       = Object.assign({}, f.est,       o.est||{});
+  o.travelOpt = Object.assign({}, f.travelOpt, o.travelOpt||{});
+  o.overheads = (o.overheads||[]).map(function(r){ r.id = r.id||uid(); return r; });
+  o.labour    = (o.labour||[]).map(function(p){ return blankPerson(Object.assign({}, p)); });
+  o.travel    = (o.travel||[]).map(function(t){ t.id = t.id||uid(); return t; });
+  o.snapshots = o.snapshots||[];
+  return o;
+}
+
+/* =========================================================
+   THE MATHS
+   ========================================================= */
+function calc(){
+  var weeks = num(S.business.weeksPerYear) || 52;
+
+  /* --- overheads --- */
+  var ohTotal = 0, byCat = {};
+  S.overheads.forEach(function(o){
+    var a = num(o.amount) * (FREQ[o.freq]||1);
+    if(o.gst) a = a/1.1;                       // strip GST to get true cost
+    o._annual = a;
+    ohTotal += a;
+    var c = (o.category||'Other').trim() || 'Other';
+    byCat[c] = (byCat[c]||0) + a;
+  });
+
+  /* --- people --- */
+  var people = S.labour.map(function(p){
+    var hpw = num(p.hoursPerWeek) || 0;
+    var hpd = hpw/5;
+    var base = p.payBasis==='annual' ? num(p.payRate) : num(p.payRate)*hpw*weeks;
+    var weekly = weeks ? base/weeks : 0;
+
+    var leaveLoad = weekly * num(p.annualLeaveWeeks) * (num(p.leaveLoadingPct)/100);
+    var allow     = num(p.allowanceWeekly) * weeks;
+    var gross     = base + leaveLoad + allow;
+    var sup       = gross * num(p.superPct)/100;
+    var wc        = gross * num(p.workcoverPct)/100;
+    var ptax      = gross * num(p.payrollTaxPct)/100;
+    var other     = num(p.otherAnnual);
+    var cost      = gross + sup + wc + ptax + other;
+
+    var paidHours  = hpw * weeks;
+    var leaveHours = num(p.annualLeaveWeeks)*hpw
+                   + (num(p.publicHolidayDays) + num(p.sickDays) + num(p.trainingDays)) * hpd;
+    var worked      = Math.max(0, paidHours - leaveHours);
+    var workedWeeks = hpw>0 ? worked/hpw : 0;
+
+    var nbWeekly = num(p.travelHrs)+num(p.quotingHrs)+num(p.adminHrs)+num(p.yardHrs)+num(p.otherNbHrs);
+    var nbHours  = Math.min(worked, nbWeekly*workedWeeks);
+    var billable = p.billable ? Math.max(0, worked - nbHours) : 0;
+
+    return {
+      ref:p, id:p.id, name:p.name, billable:!!p.billable,
+      base:base, leaveLoad:leaveLoad, allow:allow, gross:gross, sup:sup, wc:wc, ptax:ptax, other:other,
+      cost:cost, paidHours:paidHours, leaveHours:leaveHours, worked:worked, workedWeeks:workedWeeks,
+      nbWeekly:nbWeekly, nbHours:p.billable?nbHours:worked, billableHours:billable,
+      travelHours:num(p.travelHrs)*workedWeeks,
+      util: paidHours>0 ? billable/paidHours : 0,
+      costPerHr: billable>0 ? cost/billable : 0
+    };
+  });
+
+  var billers   = people.filter(function(p){ return p.billable; });
+  var B         = billers.reduce(function(a,p){ return a+p.billableHours; }, 0);
+  var labourAnn = billers.reduce(function(a,p){ return a+p.cost; }, 0);
+  var adminAnn  = people.filter(function(p){ return !p.billable; })
+                        .reduce(function(a,p){ return a+p.cost; }, 0);
+
+  var overheadPool = ohTotal + adminAnn;          // non-billable staff are an overhead
+  var ohPerHr  = B>0 ? overheadPool/B : 0;
+  var labPerHr = B>0 ? labourAnn/B : 0;
+  var breakeven = ohPerHr + labPerHr;
+
+  var pctIn = num(S.targets.pct)/100;
+  var round = num(S.targets.round);
+  function rateAt(x){
+    var r = S.targets.method==='markup' ? breakeven*(1+x) : breakeven/Math.max(0.01, 1-Math.min(0.95,x));
+    return round>0 ? Math.ceil(r/round)*round : r;
+  }
+  var target = rateAt(pctIn);
+
+  /* shifting one hour a week, per person on the tools, either way */
+  var swing      = billers.reduce(function(a,p){ return a+p.workedWeeks; }, 0);
+  var perExtraHr = ((labourAnn+overheadPool)/Math.max(1, B-swing)) - breakeven;
+  var perHrBack  = breakeven - ((labourAnn+overheadPool)/Math.max(1, B+swing));
+
+  var travelHours   = billers.reduce(function(a,p){ return a+p.travelHours; }, 0);
+  var fieldPaidHrs  = billers.reduce(function(a,p){ return a+p.paidHours; }, 0);
+
+  /* Two honest ways to price travel time: the wages you hand over for it,
+     and what it would have invoiced for if you could charge it. */
+  var labPerPaidHr   = fieldPaidHrs>0 ? labourAnn/fieldPaidHrs : 0;
+  var travelWages    = travelHours * labPerPaidHr;
+  var travelForegone = travelHours * target;
+
+  return {
+    weeks:weeks, ohTotal:ohTotal, byCat:byCat, people:people, billers:billers,
+    B:B, labourAnn:labourAnn, adminAnn:adminAnn, overheadPool:overheadPool,
+    ohPerHr:ohPerHr, labPerHr:labPerHr, breakeven:breakeven,
+    target:target, rateAt:rateAt, perExtraHr:perExtraHr, perHrBack:perHrBack,
+    travelHours:travelHours, travelWages:travelWages, travelForegone:travelForegone,
+    labPerPaidHr:labPerPaidHr, fieldPaidHrs:fieldPaidHrs,
+    /* utilisation is measured against the people you actually expect to bill */
+    util: fieldPaidHrs>0 ? B/fieldPaidHrs : 0
+  };
+}
+
+/* =========================================================
+   Travel aggregation
+   ========================================================= */
+/* n jobs in a day = n-1 legs between them; the run from home and the run back
+   are the "commute" figure, so they aren't counted twice. */
+function estimateWeekly(){
+  var e = S.est;
+  var legs = Math.max(0, num(e.jobs)-1) * num(e.between);
+  return (legs + num(e.commute) + num(e.supplier)) * num(e.days) / 60;
+}
+
+function travelStats(){
+  var win = num(S.travelOpt.window);
+  var rows = S.travel.filter(function(t){ return t.date; }).slice().sort(function(a,b){ return a.date<b.date?1:-1; });
+  var weeks = {};
+  rows.forEach(function(t){
+    var wk = mondayOf(t.date); if(!wk) return;
+    if(!weeks[wk]) weeks[wk] = { wk:wk, unbilled:0, billed:0, trips:0 };
+    var h = num(t.minutes)/60;
+    weeks[wk].trips++;
+    if(t.billable) weeks[wk].billed += h; else weeks[wk].unbilled += h;
+  });
+  var list = Object.keys(weeks).map(function(k){ return weeks[k]; }).sort(function(a,b){ return a.wk<b.wk?1:-1; });
+  var used = win>0 ? list.slice(0,win) : list;
+  var totalUnbilled = used.reduce(function(a,w){ return a+w.unbilled; },0);
+
+  /* per person, so a two-man team doesn't double the average */
+  var names = {};
+  S.travel.forEach(function(t){ if(t.person) names[t.person]=1; });
+  var heads = Math.max(1, Object.keys(names).length);
+
+  return {
+    all:list, used:used, weeks:used.length,
+    avgPerPersonWeek: used.length ? totalUnbilled/used.length/heads : 0,
+    heads:heads,
+    first: list.length ? list[list.length-1].wk : '',
+    last:  list.length ? list[0].wk : ''
+  };
+}
+
+/* =========================================================
+   Render — overheads
+   ========================================================= */
+/* every category we know about — the standard list plus anything typed or imported */
+function allCategories(){
+  var seen = {}, out = [];
+  CATEGORIES.concat(S.overheads.map(function(o){ return o.category; }))
+    .forEach(function(c){ c=(c||'').trim(); if(c && !seen[c]){ seen[c]=1; out.push(c); } });
+  return out;
+}
+
+function renderOverheads(){
+  var tb = $('#tblOh tbody');
+  tb.innerHTML = S.overheads.map(function(o){
+    return '<tr data-row="'+o.id+'">'
+      + '<td><input class="f" data-obj="overheads" data-id="'+o.id+'" data-k="label" value="'+esc(o.label)+'"></td>'
+      + '<td><input class="f" list="catList" data-obj="overheads" data-id="'+o.id+'" data-k="category" value="'+esc(o.category)+'"></td>'
+      + '<td><input class="f num" inputmode="decimal" data-obj="overheads" data-id="'+o.id+'" data-k="amount" value="'+esc(o.amount)+'"></td>'
+      + '<td><select class="f" data-obj="overheads" data-id="'+o.id+'" data-k="freq">'
+        + Object.keys(FREQ).map(function(f){ return '<option value="'+f+'"'+(o.freq===f?' selected':'')+'>'+FREQ_LABEL[f]+'</option>'; }).join('')
+        + '</select></td>'
+      + '<td style="text-align:center"><input type="checkbox" class="chk" data-obj="overheads" data-id="'+o.id+'" data-k="gst"'+(o.gst?' checked':'')+'></td>'
+      + '<td class="calc" data-ann="'+o.id+'">$0</td>'
+      + '<td><button class="x" data-del="overheads" data-id="'+o.id+'" title="Remove">&#10005;</button></td>'
+      + '</tr>';
+  }).join('') || '<tr><td colspan="7" style="color:var(--hint);padding:16px 6px">No expenses yet — add one, or import a CSV.</td></tr>';
+}
+
+/* =========================================================
+   Render — labour
+   ========================================================= */
+function fld(p,k,label,attr){
+  return '<div><label class="fl">'+label+'</label><input class="f num" inputmode="decimal" '
+    + (attr||'') + ' data-obj="labour" data-id="'+p.id+'" data-k="'+k+'" value="'+esc(p[k])+'"></div>';
+}
+
+function renderPeople(){
+  $('#people').innerHTML = S.labour.map(function(p){
+    return '<div class="person" data-person="'+p.id+'">'
+      + '<div class="ph">'
+        + '<input class="f nm" style="max-width:220px" data-obj="labour" data-id="'+p.id+'" data-k="name" value="'+esc(p.name)+'">'
+        + '<input class="f" style="max-width:200px" data-obj="labour" data-id="'+p.id+'" data-k="role" value="'+esc(p.role)+'" placeholder="Role">'
+        + '<select class="f" style="max-width:150px" data-obj="labour" data-id="'+p.id+'" data-k="type">'
+          + '<option value="owner"'+(p.type==='owner'?' selected':'')+'>Owner / director</option>'
+          + '<option value="employee"'+(p.type==='employee'?' selected':'')+'>Employee</option>'
+          + '<option value="apprentice"'+(p.type==='apprentice'?' selected':'')+'>Apprentice</option>'
+          + '<option value="contractor"'+(p.type==='contractor'?' selected':'')+'>Subcontractor</option>'
+        + '</select>'
+        + '<label style="font-size:12px;display:flex;align-items:center;gap:6px;white-space:nowrap">'
+          + '<input type="checkbox" class="chk" data-obj="labour" data-id="'+p.id+'" data-k="billable"'+(p.billable?' checked':'')+'> On the tools (billable)</label>'
+        + '<div class="spacer"></div>'
+        + '<button class="x" data-del="labour" data-id="'+p.id+'" title="Remove">&#10005;</button>'
+      + '</div>'
+      + '<div class="pb">'
+        + '<div class="sublabel">Pay</div>'
+        + '<div class="fgrid g4">'
+          + '<div><label class="fl">Paid as</label><select class="f" data-obj="labour" data-id="'+p.id+'" data-k="payBasis">'
+            + '<option value="hourly"'+(p.payBasis==='hourly'?' selected':'')+'>Hourly rate</option>'
+            + '<option value="annual"'+(p.payBasis==='annual'?' selected':'')+'>Annual salary / drawings</option>'
+            + '</select></div>'
+          + fld(p,'payRate', p.payBasis==='annual'?'Salary / drawings per year $':'Hourly rate $')
+          + fld(p,'hoursPerWeek','Paid hours / week')
+          + fld(p,'allowanceWeekly','Allowances $ / week')
+        + '</div>'
+        + '<div class="sublabel">On-costs</div>'
+        + '<div class="fgrid g5">'
+          + fld(p,'superPct','Super %')
+          + fld(p,'workcoverPct','Workers’ comp %')
+          + fld(p,'payrollTaxPct','Payroll tax %')
+          + fld(p,'leaveLoadingPct','Leave loading %')
+          + fld(p,'otherAnnual','Other cost $ / yr')
+        + '</div>'
+        + '<div class="sublabel">Time off (paid, but not worked)</div>'
+        + '<div class="fgrid g4">'
+          + fld(p,'annualLeaveWeeks','Annual leave (weeks)')
+          + fld(p,'publicHolidayDays','Public holidays (days)')
+          + fld(p,'sickDays','Sick / carer’s (days)')
+          + fld(p,'trainingDays','Training (days)')
+        + '</div>'
+        + '<div class="sublabel">Worked, but you can’t invoice it — hours per week</div>'
+        + '<div class="fgrid g5">'
+          + fld(p,'travelHrs','Travel','data-travel="1"')
+          + fld(p,'quotingHrs','Quoting')
+          + fld(p,'adminHrs','Admin & paperwork')
+          + fld(p,'yardHrs','Yard & materials runs')
+          + fld(p,'otherNbHrs','Other')
+        + '</div>'
+      + '</div>'
+      + '<div class="pfoot" data-foot="'+p.id+'"></div>'
+      + '</div>';
+  }).join('') || '<div class="block" style="color:var(--hint)">Nobody added yet — add yourself first.</div>';
+}
+
+/* =========================================================
+   Render — travel
+   ========================================================= */
+function personOptions(sel){
+  var opts = S.labour.map(function(p){ return p.name; });
+  if(sel && opts.indexOf(sel)<0) opts.push(sel);
+  return opts.map(function(n){ return '<option value="'+esc(n)+'"'+(n===sel?' selected':'')+'>'+esc(n)+'</option>'; }).join('');
+}
+
+function renderTravel(){
+  var tb = $('#tblTrav tbody');
+  tb.innerHTML = S.travel.map(function(t){
+    return '<tr>'
+      + '<td><input type="date" class="f" data-obj="travel" data-id="'+t.id+'" data-k="date" value="'+esc(t.date)+'"></td>'
+      + '<td><select class="f" data-obj="travel" data-id="'+t.id+'" data-k="person">'+personOptions(t.person)+'</select></td>'
+      + '<td><input class="f" data-obj="travel" data-id="'+t.id+'" data-k="note" value="'+esc(t.note)+'"></td>'
+      + '<td><input class="f num" inputmode="decimal" data-obj="travel" data-id="'+t.id+'" data-k="minutes" value="'+esc(t.minutes)+'"></td>'
+      + '<td style="text-align:center"><input type="checkbox" class="chk" data-obj="travel" data-id="'+t.id+'" data-k="billable"'+(t.billable?' checked':'')+'></td>'
+      + '<td class="calc">'+hrs(num(t.minutes)/60)+'</td>'
+      + '<td><button class="x" data-del="travel" data-id="'+t.id+'" title="Remove">&#10005;</button></td>'
+      + '</tr>';
+  }).join('') || '<tr><td colspan="7" style="color:var(--hint);padding:16px 6px">No trips logged yet. Add one after each job, or import a CSV.</td></tr>';
+}
+
+/* =========================================================
+   Render — snapshots + chart
+   ========================================================= */
+function renderSnaps(){
+  var tb = $('#tblSnaps tbody');
+  var list = S.snapshots.slice().sort(function(a,b){ return a.date<b.date?1:-1; });
+  tb.innerHTML = list.map(function(s){
+    return '<tr>'
+      + '<td>'+fmtDate(s.date)+'</td>'
+      + '<td class="calc">'+money(s.breakeven)+'</td>'
+      + '<td class="calc">'+money(s.target)+'</td>'
+      + '<td class="calc">'+m0(s.overheads)+'</td>'
+      + '<td class="calc">'+m0(s.labour)+'</td>'
+      + '<td class="calc">'+Math.round(s.billableHours).toLocaleString('en-AU')+'</td>'
+      + '<td class="calc">'+pct(s.util)+'</td>'
+      + '<td class="calc">'+hrs(s.travelWk)+'</td>'
+      + '<td><button class="x" data-del="snapshots" data-id="'+s.id+'" title="Remove">&#10005;</button></td>'
+      + '</tr>';
+  }).join('') || '<tr><td colspan="9" style="color:var(--hint);padding:16px 6px">No snapshots yet.</td></tr>';
+  drawChart();
+}
+
+function drawChart(){
+  var el = $('#chart');
+  var d = S.snapshots.slice().sort(function(a,b){ return a.date<b.date?-1:1; });
+  if(d.length<2){
+    el.innerHTML = '<div style="color:var(--hint);font-size:12.5px;padding:14px 0">Save at least two snapshots and a chart appears here.</div>';
+    return;
+  }
+  var W=Math.max(520, Math.min(1040, d.length*90)), H=240, P={t:16,r:16,b:34,l:56};
+  var vals = d.map(function(s){ return s.breakeven; }).concat(d.map(function(s){ return s.target; }));
+  var lo = Math.min.apply(null, vals), hi = Math.max.apply(null, vals);
+  var pad = Math.max(5,(hi-lo)*0.18); lo=Math.max(0,lo-pad); hi=hi+pad;
+  var x = function(i){ return P.l + (W-P.l-P.r) * (d.length===1?0.5:i/(d.length-1)); };
+  var y = function(v){ return P.t + (H-P.t-P.b) * (1-(v-lo)/Math.max(1,hi-lo)); };
+  function path(key){ return d.map(function(s,i){ return (i?'L':'M')+x(i).toFixed(1)+' '+y(s[key]).toFixed(1); }).join(' '); }
+  var ticks = [0,0.25,0.5,0.75,1].map(function(f){
+    var v = lo+(hi-lo)*f;
+    return '<line x1="'+P.l+'" y1="'+y(v).toFixed(1)+'" x2="'+(W-P.r)+'" y2="'+y(v).toFixed(1)+'" stroke="#eeece6"/>'
+         + '<text x="'+(P.l-8)+'" y="'+(y(v)+4).toFixed(1)+'" text-anchor="end" font-size="10" fill="#9a9a94">'+m0(v)+'</text>';
+  }).join('');
+  var dots = d.map(function(s,i){
+    return '<circle cx="'+x(i).toFixed(1)+'" cy="'+y(s.target).toFixed(1)+'" r="3.5" fill="#F78419"/>'
+         + '<circle cx="'+x(i).toFixed(1)+'" cy="'+y(s.breakeven).toFixed(1)+'" r="3.5" fill="#131313"/>';
+  }).join('');
+  var labels = d.map(function(s,i){
+    if(d.length>9 && i%2) return '';
+    return '<text x="'+x(i).toFixed(1)+'" y="'+(H-12)+'" text-anchor="middle" font-size="9.5" fill="#9a9a94">'+fmtDate(s.date).slice(0,5)+'</text>';
+  }).join('');
+  el.innerHTML = '<svg width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'" font-family="Manrope,sans-serif">'
+    + ticks
+    + '<path d="'+path('target')+'" fill="none" stroke="#F78419" stroke-width="2.5" stroke-linejoin="round"/>'
+    + '<path d="'+path('breakeven')+'" fill="none" stroke="#131313" stroke-width="2.5" stroke-linejoin="round"/>'
+    + dots + labels
+    + '</svg>'
+    + '<div class="legend" style="margin-top:6px"><span><i style="background:#131313"></i>Breakeven</span><span><i style="background:#F78419"></i>Target rate</span></div>';
+}
+
+/* =========================================================
+   Paint — everything derived
+   ========================================================= */
+function paint(){
+  var c = calc();
+
+  /* --- overhead rows + totals --- */
+  S.overheads.forEach(function(o){
+    var cell = document.querySelector('[data-ann="'+o.id+'"]');
+    if(cell) cell.textContent = m0(o._annual);
+  });
+  $('#ohTotal').textContent = m0(c.ohTotal);
+  $('#ohNote').innerHTML = 'That’s <b>'+m0(c.ohTotal/52)+' a week</b> before you’ve paid a single wage'
+    + (c.adminAnn>0 ? ', plus '+m0(c.adminAnn)+'/yr of non-billable wages carried from the Labour tab' : '')
+    + '. Spread over '+Math.round(c.B).toLocaleString('en-AU')+' billable hours it adds <b>'+money(c.ohPerHr)+' to every hour</b>.';
+
+  /* --- labour footers + summary --- */
+  c.people.forEach(function(p){
+    var f = document.querySelector('[data-foot="'+p.id+'"]');
+    if(!f) return;
+    f.innerHTML = 'True cost <b>'+m0(p.cost)+'/yr</b>'
+      + ' &nbsp;·&nbsp; ' + (p.ref.payBasis==='hourly' ? 'that’s <b>'+money(p.paidHours?p.cost/p.paidHours:0)+'/paid hr</b> on a '+money(num(p.ref.payRate))+' rate'
+                                                       : 'super + on-costs add <b>'+m0(p.cost-p.base)+'</b>')
+      + ' &nbsp;·&nbsp; billable <b>'+Math.round(p.billableHours).toLocaleString('en-AU')+' hrs</b>'
+      + ' &nbsp;·&nbsp; utilisation <b>'+pct(p.util)+'</b>'
+      + (p.billable ? ' &nbsp;·&nbsp; costs you <b>'+money(p.costPerHr)+'</b> per billable hour'
+                    : ' &nbsp;·&nbsp; <span class="pill grey">counted as overhead</span>');
+  });
+
+  var lt = $('#tblLabSum tbody');
+  lt.innerHTML = c.people.map(function(p){
+    return '<tr><td>'+esc(p.name)+(p.billable?'':' <span class="pill grey">overhead</span>')+'</td>'
+      + '<td class="calc">'+m0(p.cost)+'</td>'
+      + '<td class="calc">'+Math.round(p.paidHours).toLocaleString('en-AU')+'</td>'
+      + '<td class="calc">'+Math.round(p.nbHours+p.leaveHours).toLocaleString('en-AU')+'</td>'
+      + '<td class="calc">'+Math.round(p.billableHours).toLocaleString('en-AU')+'</td>'
+      + '<td class="calc">'+pct(p.util)+'</td>'
+      + '<td class="calc">'+(p.billable?money(p.costPerHr):'—')+'</td></tr>';
+  }).join('') || '';
+  var totPaid = c.people.reduce(function(a,p){ return a+p.paidHours; },0);
+  var totNb   = c.people.reduce(function(a,p){ return a+p.nbHours+p.leaveHours; },0);
+  $('#lsCost').textContent = m0(c.labourAnn + c.adminAnn);
+  $('#lsPaid').textContent = Math.round(totPaid).toLocaleString('en-AU');
+  $('#lsNb').textContent   = Math.round(totNb).toLocaleString('en-AU');
+  $('#lsBill').textContent = Math.round(c.B).toLocaleString('en-AU');
+  $('#lsUtil').textContent = pct(c.util);
+  $('#lsRate').textContent = money(c.labPerHr);
+
+  /* --- dashboard --- */
+  $('#dBreak').textContent  = money(c.breakeven);
+  $('#dTarget').textContent = money(c.target);
+  $('#dTargetSub').innerHTML = num(S.targets.pct)+'% '+(S.targets.method==='markup'?'mark-up':'margin')
+    + ' &nbsp;·&nbsp; ' + money(c.target*1.1) + ' inc GST';
+  var cur = num(S.targets.currentRate);
+  var gap = cur - c.breakeven;
+  $('#dCurrent').textContent = money(cur);
+  $('#dCurrent').className = 'v ' + (gap>=0?'pos':'neg');
+  $('#dCurrentSub').innerHTML = (gap>=0
+      ? '<b>'+money(gap)+'/hr</b> above breakeven — about <b>'+m0(gap*c.B)+'</b> a year'
+      : '<b>'+money(-gap)+'/hr under</b> what it costs you — around <b>'+m0(-gap*c.B)+'</b> a year')
+    + '<br>Actual margin ' + (cur>0 ? pct(gap/cur) : '—');
+  $('#dHours').textContent = Math.round(c.B).toLocaleString('en-AU');
+  $('#dHoursSub').innerHTML = 'out of '+Math.round(c.fieldPaidHrs).toLocaleString('en-AU')+' paid hours on the tools &nbsp;·&nbsp; <b>'+pct(c.util)+'</b> utilisation';
+  $('#dLab').textContent  = money(c.labPerHr);
+  $('#dOh').textContent   = money(c.ohPerHr);
+  $('#dOhY').textContent  = m0(c.overheadPool);
+  $('#dLabY').textContent = m0(c.labourAnn);
+
+  /* stacked bar */
+  var profit = Math.max(0, c.target - c.breakeven);
+  var tot = Math.max(0.01, c.labPerHr + c.ohPerHr + profit);
+  function seg(v,col){
+    var w = v/tot*100;
+    return '<span style="width:'+w.toFixed(2)+'%;background:'+col+'">'+(w>11?money(v):'')+'</span>';
+  }
+  $('#dBar').innerHTML = seg(c.labPerHr,'#131313') + seg(c.ohPerHr,'#F78419') + seg(profit,'#1c7c4c');
+  $('#lgLab').textContent = money(c.labPerHr);
+  $('#lgOh').textContent  = money(c.ohPerHr);
+  $('#lgPr').textContent  = money(profit);
+
+  $('#lblPct').textContent = S.targets.method==='markup' ? 'Target mark-up %' : 'Target margin %';
+  $('#methodNote').innerHTML = S.targets.method==='markup'
+    ? 'Mark-up adds a percentage <em>on top of</em> your cost. '+num(S.targets.pct)+'% on '+money(c.breakeven)+' gives '+money(c.rateAt(num(S.targets.pct)/100))+' — which is a real margin of '+(c.target>0?pct((c.target-c.breakeven)/c.target):'—')+'.'
+    : 'Margin is the share of the invoice you keep. At '+num(S.targets.pct)+'%, every '+money(c.target)+' hour leaves '+money(c.target-c.breakeven)+' in the business before tax.';
+
+  /* margin table */
+  var mrows = [0,.10,.15,.20,.25,.30,.35,.40,.50].map(function(m){
+    var r = c.rateAt(m);
+    var on = Math.abs(m-num(S.targets.pct)/100) < 0.0001;
+    return '<tr'+(on?' style="background:var(--tint)"':'')+'>'
+      + '<td>'+(m*100).toFixed(0)+'%'+(on?' <span class="pill">yours</span>':'')+'</td>'
+      + '<td class="calc">'+money(r)+'</td>'
+      + '<td class="calc">'+money(r*1.1)+'</td>'
+      + '<td class="calc">'+m0((r-c.breakeven)*c.B)+'</td></tr>';
+  }).join('');
+  $('#tblMargins tbody').innerHTML = mrows;
+
+  /* sensitivity */
+  var ts = travelStats();
+  $('#tblSens tbody').innerHTML = ''
+    + '<tr><td>One extra non-billable hour per person, per week</td><td class="calc neg">+'+money(c.perExtraHr)+' / hr</td></tr>'
+    + '<tr><td>One hour <em>back</em> per person, per week</td><td class="calc pos">−'+money(c.perHrBack)+' / hr</td></tr>'
+    + '<tr><td>Travel currently booked as non-billable</td><td class="calc">'+hrs(c.travelHours)+' hrs / yr</td></tr>'
+    + '<tr><td>Wages you pay for that travel</td><td class="calc">'+m0(c.travelWages)+' / yr</td></tr>'
+    + '<tr><td>What it would invoice for at '+money(c.target)+'</td><td class="calc">'+m0(c.travelForegone)+' / yr</td></tr>';
+
+  /* categories */
+  var cats = Object.keys(c.byCat).map(function(k){ return [k, c.byCat[k]]; })
+                   .sort(function(a,b){ return b[1]-a[1]; });
+  $('#tblCats tbody').innerHTML = cats.map(function(r){
+    return '<tr><td>'+esc(r[0])+'</td>'
+      + '<td class="calc">'+m0(r[1])+'</td>'
+      + '<td class="calc">'+money(r[1]/52)+'</td>'
+      + '<td class="calc">'+money(c.B>0?r[1]/c.B:0)+'</td>'
+      + '<td class="calc">'+(c.ohTotal>0?(r[1]/c.ohTotal*100).toFixed(1):'0.0')+'%</td></tr>';
+  }).join('') || '<tr><td colspan="5" style="color:var(--hint);padding:14px 6px">No overheads entered.</td></tr>';
+
+  /* travel tab */
+  $('#tvAvg').textContent   = hrs(ts.avgPerPersonWeek)+' h';
+  $('#tvWeeks').textContent = ts.weeks;
+  $('#tvRange').textContent = ts.weeks ? fmtDate(ts.first)+' → '+fmtDate(ts.last)+(ts.heads>1?' · '+ts.heads+' people':'') : 'no entries yet';
+  $('#tvCost').textContent  = m0(c.travelWages);
+  $('#tvCostSub').innerHTML = hrs(c.travelHours)+' hrs a year across the team &nbsp;·&nbsp; worth <b>'+m0(c.travelForegone)+'</b> if you could bill it';
+  var totMin = S.travel.reduce(function(a,t){ return a + (t.billable?0:num(t.minutes)); },0);
+  $('#travMin').textContent = Math.round(totMin).toLocaleString('en-AU');
+  $('#travHrs').textContent = hrs(totMin/60);
+  $('#tblWeeks tbody').innerHTML = ts.all.slice(0,26).map(function(w){
+    return '<tr><td>'+fmtDate(w.wk)+'</td>'
+      + '<td class="calc">'+hrs(w.unbilled)+'</td>'
+      + '<td class="calc">'+hrs(w.billed)+'</td>'
+      + '<td class="calc">'+w.trips+'</td>'
+      + '<td class="calc">'+m0(w.unbilled*c.labPerPaidHr)+'</td></tr>';
+  }).join('') || '<tr><td colspan="5" style="color:var(--hint);padding:14px 6px">Nothing logged yet.</td></tr>';
+
+  $('#estOut').textContent = hrs(estimateWeekly())+' hours / week';
+
+  buildPrint(c, ts);
+  return c;
+}
+
+/* =========================================================
+   Print summary
+   ========================================================= */
+function buildPrint(c, ts){
+  var d = new Date();
+  var dd = String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0')+'/'+d.getFullYear();
+  var cats = Object.keys(c.byCat).map(function(k){ return [k,c.byCat[k]]; }).sort(function(a,b){ return b[1]-a[1]; });
+  var cur = num(S.targets.currentRate), gap = cur - c.breakeven;
+
+  $('#printBody').innerHTML =
+      '<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px">'
+    +   '<div style="font-size:17px;font-weight:800">Charge-Out Rate Summary</div>'
+    +   '<div style="font-size:10px;color:#666">Prepared '+dd+' · all figures exclude GST</div>'
+    + '</div>'
+    + '<div class="pcards avoid">'
+    +   '<div class="pcard"><div class="k">Breakeven cost</div><div class="v">'+money(c.breakeven)+'</div><div class="s">per billable hour</div></div>'
+    +   '<div class="pcard"><div class="k">Recommended rate</div><div class="v">'+money(c.target)+'</div><div class="s">'+num(S.targets.pct)+'% '+(S.targets.method==='markup'?'mark-up':'margin')+' · '+money(c.target*1.1)+' inc GST</div></div>'
+    +   '<div class="pcard"><div class="k">Current rate</div><div class="v">'+money(cur)+'</div><div class="s">'+(gap>=0?money(gap)+' above breakeven':money(-gap)+' below breakeven')+'</div></div>'
+    + '</div>'
+    + '<div class="pcards avoid">'
+    +   '<div class="pcard"><div class="k">Labour / hr</div><div class="v">'+money(c.labPerHr)+'</div><div class="s">'+m0(c.labourAnn)+' a year</div></div>'
+    +   '<div class="pcard"><div class="k">Overhead / hr</div><div class="v">'+money(c.ohPerHr)+'</div><div class="s">'+m0(c.overheadPool)+' a year</div></div>'
+    +   '<div class="pcard"><div class="k">Billable hours</div><div class="v">'+Math.round(c.B).toLocaleString('en-AU')+'</div><div class="s">'+pct(c.util)+' utilisation</div></div>'
+    + '</div>'
+
+    + '<h3>Overheads by category</h3>'
+    + '<table class="avoid"><thead><tr><th>Category</th><th class="n">Per year</th><th class="n">$ / billable hr</th><th class="n">Share</th></tr></thead><tbody>'
+    + cats.map(function(r){ return '<tr><td>'+esc(r[0])+'</td><td class="n">'+m0(r[1])+'</td><td class="n">'+money(c.B>0?r[1]/c.B:0)+'</td><td class="n">'+(c.ohTotal>0?(r[1]/c.ohTotal*100).toFixed(1):'0.0')+'%</td></tr>'; }).join('')
+    + '<tr><td><b>Total</b></td><td class="n"><b>'+m0(c.ohTotal)+'</b></td><td class="n"><b>'+money(c.B>0?c.ohTotal/c.B:0)+'</b></td><td class="n"></td></tr>'
+    + '</tbody></table>'
+
+    + '<h3>Labour</h3>'
+    + '<table class="avoid"><thead><tr><th>Person</th><th>Role</th><th class="n">Cost / yr</th><th class="n">Paid hrs</th><th class="n">Billable hrs</th><th class="n">Utilisation</th><th class="n">Cost / billable hr</th></tr></thead><tbody>'
+    + c.people.map(function(p){
+        return '<tr><td>'+esc(p.name)+'</td><td>'+esc(p.ref.role)+(p.billable?'':' (overhead)')+'</td><td class="n">'+m0(p.cost)+'</td>'
+          + '<td class="n">'+Math.round(p.paidHours).toLocaleString('en-AU')+'</td><td class="n">'+Math.round(p.billableHours).toLocaleString('en-AU')+'</td>'
+          + '<td class="n">'+pct(p.util)+'</td><td class="n">'+(p.billable?money(p.costPerHr):'—')+'</td></tr>';
+      }).join('')
+    + '</tbody></table>'
+
+    + '<h3>Rate at different margins</h3>'
+    + '<table class="avoid"><thead><tr><th>Margin</th><th class="n">Rate ex GST</th><th class="n">Inc GST</th><th class="n">Profit / yr</th></tr></thead><tbody>'
+    + [0,.10,.20,.25,.30,.35,.40,.50].map(function(m){ var r=c.rateAt(m);
+        return '<tr><td>'+(m*100).toFixed(0)+'%</td><td class="n">'+money(r)+'</td><td class="n">'+money(r*1.1)+'</td><td class="n">'+m0((r-c.breakeven)*c.B)+'</td></tr>'; }).join('')
+    + '</tbody></table>'
+
+    + '<h3>Non-billable time</h3>'
+    + '<table class="avoid"><tbody>'
+    + '<tr><td>Travel booked as non-billable</td><td class="n">'+hrs(c.travelHours)+' hrs / yr</td><td class="n">'+m0(c.travelWages)+' of wages</td></tr>'
+    + '<tr><td>Logged weekly average (per person)</td><td class="n">'+hrs(ts.avgPerPersonWeek)+' hrs</td><td class="n">'+(ts.weeks?ts.weeks+' weeks logged':'no log')+'</td></tr>'
+    + '<tr><td>Cost of one more non-billable hour per person, per week</td><td class="n">+'+money(c.perExtraHr)+' / hr</td><td class="n"></td></tr>'
+    + '</tbody></table>'
+
+    + '<div class="pnote">Prepared from figures entered in the Amp Me Up Electrical rate calculator on '+dd+'. '
+    + 'Breakeven = (total overheads + labour cost) ÷ billable hours. All rates exclude GST. '
+    + 'A costing model only — not tax or financial advice.</div>';
+}
+
+/* =========================================================
+   CSV
+   ========================================================= */
+function parseCSV(text){
+  text = String(text).replace(/^﻿/,'');
+  var rows=[], row=[], f='', i=0, q=false;
+  while(i<text.length){
+    var ch = text.charAt(i);
+    if(q){
+      if(ch==='"'){ if(text.charAt(i+1)==='"'){ f+='"'; i+=2; continue; } q=false; i++; continue; }
+      f+=ch; i++; continue;
+    }
+    if(ch==='"'){ q=true; i++; continue; }
+    if(ch===','){ row.push(f); f=''; i++; continue; }
+    if(ch==='\r'){ i++; continue; }
+    if(ch==='\n'){ row.push(f); f=''; rows.push(row); row=[]; i++; continue; }
+    f+=ch; i++;
+  }
+  if(f.length || row.length){ row.push(f); rows.push(row); }
+  return rows.filter(function(r){ return r.some(function(x){ return String(x).trim()!==''; }); });
+}
+
+function parseAmount(v){
+  var s = String(v===undefined?'':v).trim();
+  if(!s) return 0;
+  var neg = /^\(.*\)$/.test(s) || s.indexOf('-')===0;   // (123.45) and -123.45 are both debits
+  var n = parseFloat(s.replace(/[^0-9.]/g,''));
+  if(!isFinite(n)) return 0;
+  return neg ? -n : n;
+}
+
+function parseAnyDate(v){
+  var s = String(v||'').trim();
+  var m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+  if(m) return m[1]+'-'+String(+m[2]).padStart(2,'0')+'-'+String(+m[3]).padStart(2,'0');
+  m = s.match(/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{2,4})/);
+  if(m){
+    var y = +m[3]; if(y<100) y += 2000;
+    return y+'-'+String(+m[2]).padStart(2,'0')+'-'+String(+m[1]).padStart(2,'0');   // AU: day first
+  }
+  var d = new Date(s);
+  if(!isNaN(d)) return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  return '';
+}
+
+var IMP = null;   /* live import context */
+
+function openImport(mode){
+  $('#fileCsv').value = '';
+  $('#fileCsv').dataset.mode = mode;
+  $('#fileCsv').click();
+}
+
+function guessCol(head, words){
+  for(var i=0;i<head.length;i++){
+    var h = String(head[i]).toLowerCase();
+    for(var j=0;j<words.length;j++){ if(h.indexOf(words[j])>=0) return i; }
+  }
+  return -1;
+}
+
+function startImport(mode, text){
+  var rows = parseCSV(text);
+  if(rows.length<2){ alert('That file didn’t have any rows I could read.'); return; }
+  var head = rows[0];
+  var looksHeader = head.some(function(h){ return /[a-z]/i.test(h) && !/^\-?[\d$.,()]+$/.test(String(h).trim()); });
+
+  IMP = { mode:mode, rows:rows, header:looksHeader };
+  IMP.map = mode==='overheads'
+    ? { amount:guessCol(head,['amount','total','debit','value','cost','ex gst','net']),
+        cat:   guessCol(head,['category','account','type','class','group']),
+        desc:  guessCol(head,['description','payee','details','narrative','name','supplier','memo','reference']),
+        date:  guessCol(head,['date','when']) }
+    : { minutes:guessCol(head,['minute','min','duration','time','hour']),
+        person: guessCol(head,['person','staff','tech','employee','name','who']),
+        desc:   guessCol(head,['job','note','description','details','site','address']),
+        date:   guessCol(head,['date','when']),
+        billed: guessCol(head,['billed','billable','charged','invoiced']) };
+  IMP.period = 'auto'; IMP.gst = true; IMP.sign = 'abs'; IMP.group = true; IMP.unit = 'min'; IMP.cat = 'Other';
+
+  /* A file with both credits and debits is a bank/ledger export — money coming IN
+     isn't an overhead, so default to debits only. All one sign: take the lot. */
+  if(mode==='overheads' && IMP.map.amount>=0){
+    var body = looksHeader ? rows.slice(1) : rows, pos = 0, neg = 0;
+    body.forEach(function(r){ var v = parseAmount(r[IMP.map.amount]); if(v>0) pos++; else if(v<0) neg++; });
+    if(pos && neg) IMP.sign = 'neg';
+  }
+
+  drawImport();
+  $('#ovl').classList.add('on');
+}
+
+function colSel(key, val, allowNone){
+  var head = IMP.rows[0];
+  var o = allowNone ? '<option value="-1"'+(val<0?' selected':'')+'>— none —</option>' : '';
+  for(var i=0;i<head.length;i++){
+    var lbl = IMP.header ? head[i] : 'Column '+(i+1);
+    o += '<option value="'+i+'"'+(i===val?' selected':'')+'>'+esc(lbl||('Column '+(i+1)))+'</option>';
+  }
+  return '<select class="f" data-imp="'+key+'">'+o+'</select>';
+}
+
+function importedRows(){
+  var body = IMP.header ? IMP.rows.slice(1) : IMP.rows;
+  var m = IMP.map, out = [];
+  body.forEach(function(r){
+    if(IMP.mode==='overheads'){
+      var raw = m.amount>=0 ? parseAmount(r[m.amount]) : 0;
+      if(IMP.sign==='neg'){ if(raw>=0) return; raw = -raw; }
+      else if(IMP.sign==='pos'){ if(raw<=0) return; }
+      else raw = Math.abs(raw);
+      if(!raw) return;
+      out.push({
+        label: (m.desc>=0 ? String(r[m.desc]||'').trim() : '') || 'Imported expense',
+        category: (m.cat>=0 ? String(r[m.cat]||'').trim() : '') || IMP.cat,
+        amount: raw,
+        date: m.date>=0 ? parseAnyDate(r[m.date]) : ''
+      });
+    } else {
+      var mins = m.minutes>=0 ? Math.abs(parseAmount(r[m.minutes])) : 0;
+      if(IMP.unit==='hr') mins = mins*60;
+      if(!mins) return;
+      var bill = false;
+      if(m.billed>=0){ var b = String(r[m.billed]||'').trim().toLowerCase(); bill = (b==='y'||b==='yes'||b==='true'||b==='1'||b==='billed'||b==='billable'); }
+      out.push({
+        id:uid(),
+        date: m.date>=0 ? parseAnyDate(r[m.date]) : todayISO(),
+        person: (m.person>=0 ? String(r[m.person]||'').trim() : '') || (S.labour[0]?S.labour[0].name:''),
+        note: (m.desc>=0 ? String(r[m.desc]||'').trim() : ''),
+        minutes: Math.round(mins),
+        billable: bill
+      });
+    }
+  });
+  return out;
+}
+
+function monthsSpan(rows){
+  var ds = rows.map(function(r){ return r.date; }).filter(Boolean).sort();
+  if(ds.length<2) return 0;
+  var a = new Date(ds[0]), b = new Date(ds[ds.length-1]);
+  var mo = (b.getFullYear()-a.getFullYear())*12 + (b.getMonth()-a.getMonth()) + 1;
+  return Math.max(1, mo);
+}
+
+function buildOverheadRows(){
+  var raw = importedRows();
+  var mo = IMP.period==='auto' ? (monthsSpan(raw) || 12) : num(IMP.period);
+  var factor = mo>0 ? 12/mo : 1;
+  var out;
+  if(IMP.group){
+    var g = {};
+    raw.forEach(function(r){ g[r.category] = (g[r.category]||0) + r.amount; });
+    out = Object.keys(g).map(function(k){
+      return { id:uid(), label:k, category:k, amount:Math.round(g[k]*factor*100)/100, freq:'year', gst:IMP.gst };
+    });
+  } else {
+    out = raw.map(function(r){
+      return { id:uid(), label:r.label, category:r.category, amount:Math.round(r.amount*factor*100)/100, freq:'year', gst:IMP.gst };
+    });
+  }
+  out.sort(function(a,b){ return b.amount-a.amount; });
+  return { rows:out, months:mo, factor:factor, count:raw.length };
+}
+
+function drawImport(){
+  var isOh = IMP.mode==='overheads';
+  $('#mTitle').textContent = isOh ? 'Import expenses from CSV' : 'Import travel log from CSV';
+
+  var top = '<label style="font-size:12.5px;display:flex;align-items:center;gap:7px;margin-bottom:14px">'
+    + '<input type="checkbox" class="chk" data-imp="header"'+(IMP.header?' checked':'')+'> First row is a header</label>';
+
+  var mapping = isOh
+    ? '<div class="fgrid g4">'
+      + '<div><label class="fl">Amount column *</label>'+colSel('amount',IMP.map.amount,false)+'</div>'
+      + '<div><label class="fl">Category column</label>'+colSel('cat',IMP.map.cat,true)+'</div>'
+      + '<div><label class="fl">Description column</label>'+colSel('desc',IMP.map.desc,true)+'</div>'
+      + '<div><label class="fl">Date column</label>'+colSel('date',IMP.map.date,true)+'</div>'
+      + '</div>'
+      + '<div class="fgrid g4" style="margin-top:12px">'
+      + '<div><label class="fl">This file covers</label><select class="f" data-imp="period">'
+        + [['auto','Work it out from the dates'],['12','12 months'],['6','6 months'],['3','3 months'],['1','1 month']]
+            .map(function(o){ return '<option value="'+o[0]+'"'+(IMP.period===o[0]?' selected':'')+'>'+o[1]+'</option>'; }).join('')
+        + '</select></div>'
+      + '<div><label class="fl">Amounts</label><select class="f" data-imp="sign">'
+        + [['abs','Use every row'],['neg','Only negatives (bank debits)'],['pos','Only positives']]
+            .map(function(o){ return '<option value="'+o[0]+'"'+(IMP.sign===o[0]?' selected':'')+'>'+o[1]+'</option>'; }).join('')
+        + '</select></div>'
+      + '<div><label class="fl">Include GST?</label><select class="f" data-imp="gst">'
+        + '<option value="1"'+(IMP.gst?' selected':'')+'>Amounts include GST</option>'
+        + '<option value="0"'+(!IMP.gst?' selected':'')+'>Amounts are already ex GST</option></select></div>'
+      + '<div><label class="fl">Bring in as</label><select class="f" data-imp="group">'
+        + '<option value="1"'+(IMP.group?' selected':'')+'>One line per category</option>'
+        + '<option value="0"'+(!IMP.group?' selected':'')+'>Every transaction</option></select></div>'
+      + '</div>'
+      + (IMP.map.cat<0 ? '<div class="fgrid g4" style="margin-top:12px"><div><label class="fl">Put everything under</label>'
+          + '<select class="f" data-imp="cat">'+CATEGORIES.map(function(c){ return '<option value="'+esc(c)+'"'+(IMP.cat===c?' selected':'')+'>'+esc(c)+'</option>'; }).join('')+'</select></div></div>' : '')
+    : '<div class="fgrid g4">'
+      + '<div><label class="fl">Duration column *</label>'+colSel('minutes',IMP.map.minutes,false)+'</div>'
+      + '<div><label class="fl">Measured in</label><select class="f" data-imp="unit">'
+        + '<option value="min"'+(IMP.unit==='min'?' selected':'')+'>Minutes</option>'
+        + '<option value="hr"'+(IMP.unit==='hr'?' selected':'')+'>Hours</option></select></div>'
+      + '<div><label class="fl">Date column</label>'+colSel('date',IMP.map.date,true)+'</div>'
+      + '<div><label class="fl">Person column</label>'+colSel('person',IMP.map.person,true)+'</div>'
+      + '<div><label class="fl">Job / notes column</label>'+colSel('desc',IMP.map.desc,true)+'</div>'
+      + '<div><label class="fl">Billed? column</label>'+colSel('billed',IMP.map.billed,true)+'</div>'
+      + '</div>';
+
+  var prev, note;
+  if(isOh){
+    var built = buildOverheadRows();
+    var tot = built.rows.reduce(function(a,r){ return a+num(r.amount); },0);
+    note = '<div style="font-size:12.5px;margin:14px 0 8px">Read <b>'+built.count+'</b> transactions'
+      + (IMP.period==='auto' ? ' spanning <b>'+built.months+' month'+(built.months===1?'':'s')+'</b>' : '')
+      + ' → <b>'+built.rows.length+'</b> row'+(built.rows.length===1?'':'s')+' totalling <b>'+m0(tot)+' a year</b>'
+      + (IMP.gst ? ' (<b>'+m0(tot/1.1)+'</b> ex GST)' : '') + '.</div>';
+    prev = '<div class="prev"><table><thead><tr><th>Expense</th><th>Category</th><th style="text-align:right">Per year</th></tr></thead><tbody>'
+      + built.rows.slice(0,40).map(function(r){ return '<tr><td>'+esc(r.label)+'</td><td>'+esc(r.category)+'</td><td style="text-align:right">'+m0(num(r.amount))+'</td></tr>'; }).join('')
+      + '</tbody></table></div>';
+  } else {
+    var t = importedRows();
+    var mins = t.reduce(function(a,r){ return a + (r.billable?0:r.minutes); },0);
+    note = '<div style="font-size:12.5px;margin:14px 0 8px">Read <b>'+t.length+'</b> trips · <b>'+hrs(mins/60)+' hours</b> of unbilled travel.</div>';
+    prev = '<div class="prev"><table><thead><tr><th>Date</th><th>Person</th><th>Job</th><th style="text-align:right">Min</th><th>Billed</th></tr></thead><tbody>'
+      + t.slice(0,40).map(function(r){ return '<tr><td>'+fmtDate(r.date)+'</td><td>'+esc(r.person)+'</td><td>'+esc(r.note)+'</td><td style="text-align:right">'+r.minutes+'</td><td>'+(r.billable?'Yes':'No')+'</td></tr>'; }).join('')
+      + '</tbody></table></div>';
+  }
+  $('#mBody').innerHTML = top + mapping + note + prev;
+}
+
+/* =========================================================
+   Wiring
+   ========================================================= */
+function findRec(obj, id){
+  var arr = S[obj]; if(!Array.isArray(arr)) return null;
+  for(var i=0;i<arr.length;i++){ if(arr[i].id===id) return arr[i]; }
+  return null;
+}
+
+document.addEventListener('input', onEdit);
+document.addEventListener('change', onEdit);
+
+function onEdit(ev){
+  var el = ev.target;
+  if(!el || !el.dataset) return;
+
+  /* text fields fire on 'input'; selects and tick-boxes on 'change' — so nothing is handled twice */
+  var isToggle = (el.tagName==='SELECT') || (el.type==='checkbox');
+  if(ev.type==='change' && !isToggle){
+    /* a finished name edit refreshes the person dropdowns in the travel log */
+    if(el.dataset.obj==='labour' && el.dataset.k==='name') renderTravel();
+    return;
+  }
+  if(isToggle && ev.type!=='change') return;
+
+  /* import dialog controls */
+  if(el.dataset && el.dataset.imp){
+    var k = el.dataset.imp, v = el.type==='checkbox' ? el.checked : el.value;
+    if(k==='header'){ IMP.header = v; }
+    else if(k==='period'){ IMP.period = v; }
+    else if(k==='sign'){ IMP.sign = v; }
+    else if(k==='gst'){ IMP.gst = v==='1'; }
+    else if(k==='group'){ IMP.group = v==='1'; }
+    else if(k==='unit'){ IMP.unit = v; }
+    else if(k==='cat'){ IMP.cat = v; }
+    else { IMP.map[k] = parseInt(v,10); }
+    drawImport();
+    return;
+  }
+
+  if(!el.dataset || !el.dataset.obj) return;
+  var obj = el.dataset.obj, key = el.dataset.k;
+  var val = el.type==='checkbox' ? el.checked : el.value;
+
+  if(el.dataset.id){
+    var rec = findRec(obj, el.dataset.id);
+    if(!rec) return;
+    rec[key] = val;
+    /* the pay-rate label flips between $/hr and $/yr */
+    if(obj==='labour' && key==='payBasis'){ renderPeople(); }
+  } else {
+    if(!S[obj]) S[obj] = {};
+    S[obj][key] = val;
+  }
+  paint();
+  persist();
+}
+
+document.addEventListener('click', function(ev){
+  var el = ev.target.closest ? ev.target.closest('[data-del]') : null;
+  if(el){
+    var obj = el.dataset.del, id = el.dataset.id;
+    S[obj] = S[obj].filter(function(r){ return r.id!==id; });
+    if(obj==='overheads') renderOverheads();
+    if(obj==='labour'){ renderPeople(); renderTravel(); }
+    if(obj==='travel') renderTravel();
+    if(obj==='snapshots') renderSnaps();
+    paint(); persist();
+  }
+});
+
+/* tabs */
+$$('.tab').forEach(function(t){
+  t.addEventListener('click', function(){
+    $$('.tab').forEach(function(x){ x.classList.toggle('on', x===t); });
+    $$('.pane').forEach(function(p){ p.classList.toggle('on', p.id==='pane-'+t.dataset.tab); });
+    window.scrollTo({ top:0, behavior:'smooth' });
+  });
+});
+
+/* overhead buttons */
+$('#btnAddOh').addEventListener('click', function(){
+  S.overheads.push({ id:uid(), label:'', category:'Other', amount:'', freq:'month', gst:true });
+  renderOverheads(); paint(); persist();
+  var rows = $$('#tblOh tbody tr'); if(rows.length) rows[rows.length-1].querySelector('input').focus();
+});
+$('#btnSeedCats').addEventListener('click', function(){
+  var have = {}; S.overheads.forEach(function(o){ have[(o.category||'').trim()] = 1; });
+  var added = 0;
+  CATEGORIES.forEach(function(c){
+    if(!have[c]){ S.overheads.push({ id:uid(), label:c, category:c, amount:'', freq:'year', gst:true }); added++; }
+  });
+  renderOverheads(); paint(); persist();
+  if(!added) alert('You already have a line for every standard category.');
+});
+$('#btnGstAll').addEventListener('click', function(){ S.overheads.forEach(function(o){ o.gst=true; }); renderOverheads(); paint(); persist(); });
+$('#btnGstNone').addEventListener('click', function(){ S.overheads.forEach(function(o){ o.gst=false; }); renderOverheads(); paint(); persist(); });
+$('#btnClearAmts').addEventListener('click', function(){
+  if(!confirm('Clear every overhead amount? The categories stay.')) return;
+  S.overheads.forEach(function(o){ o.amount=''; });
+  S.seeded = false; renderOverheads(); paint(); persist();
+});
+
+/* labour buttons */
+$('#btnAddPerson').addEventListener('click', function(){
+  S.labour.push(blankPerson({ name:'New person' }));
+  renderPeople(); renderTravel(); paint(); persist();
+});
+$('#btnAddApp').addEventListener('click', function(){
+  S.labour.push(blankPerson({ name:'Apprentice', role:'Apprentice', type:'apprentice', payRate:22,
+                              travelHrs:5, quotingHrs:0, adminHrs:1, yardHrs:3, trainingDays:20 }));
+  renderPeople(); renderTravel(); paint(); persist();
+});
+
+/* travel buttons */
+$('#btnAddTrav').addEventListener('click', function(){
+  S.travel.unshift({ id:uid(), date:todayISO(), person:(S.labour[0]?S.labour[0].name:''), note:'', minutes:'', billable:false });
+  renderTravel(); paint(); persist();
+  var first = $('#tblTrav tbody tr'); if(first) first.querySelectorAll('input')[1].focus();
+});
+$('#btnApplyTrav').addEventListener('click', function(){
+  var ts = travelStats();
+  if(!ts.weeks){ alert('Log a few trips first — there’s nothing to average yet.'); return; }
+  var v = Math.round(ts.avgPerPersonWeek*10)/10;
+  if(!confirm('Set travel to '+hrs(v)+' hours a week for everyone on the tools?\n\nBased on '+ts.weeks+' week'+(ts.weeks===1?'':'s')+' of logged trips.')) return;
+  S.labour.forEach(function(p){ if(p.billable) p.travelHrs = v; });
+  renderPeople(); paint(); persist();
+});
+$('#btnApplyEst').addEventListener('click', function(){
+  var v = Math.round(estimateWeekly()*10)/10;
+  if(!confirm('Set travel to '+hrs(v)+' hours a week for everyone on the tools?')) return;
+  S.labour.forEach(function(p){ if(p.billable) p.travelHrs = v; });
+  renderPeople(); paint(); persist();
+});
+
+/* CSV import */
+$('#btnImportOh').addEventListener('click', function(){ openImport('overheads'); });
+$('#btnImportTrav').addEventListener('click', function(){ openImport('travel'); });
+$('#fileCsv').addEventListener('change', function(ev){
+  var f = ev.target.files && ev.target.files[0]; if(!f) return;
+  var mode = ev.target.dataset.mode;
+  var fr = new FileReader();
+  fr.onload = function(){ startImport(mode, fr.result); };
+  fr.onerror = function(){ alert('Couldn’t read that file.'); };
+  fr.readAsText(f);
+});
+function closeModal(){ $('#ovl').classList.remove('on'); IMP = null; }
+$('#mClose').addEventListener('click', closeModal);
+$('#mCancel').addEventListener('click', closeModal);
+$('#ovl').addEventListener('click', function(ev){ if(ev.target===$('#ovl')) closeModal(); });
+
+function doImport(replace){
+  if(!IMP) return;
+  if(IMP.mode==='overheads'){
+    var built = buildOverheadRows();
+    if(!built.rows.length){ alert('Nothing to import — check the amount column.'); return; }
+    S.overheads = replace ? built.rows : S.overheads.concat(built.rows);
+    S.seeded = false;
+    renderOverheads();
+  } else {
+    var t = importedRows();
+    if(!t.length){ alert('Nothing to import — check the duration column.'); return; }
+    S.travel = replace ? t : t.concat(S.travel);
+    renderTravel();
+  }
+  closeModal(); paint(); persist();
+}
+$('#mAdd').addEventListener('click', function(){ doImport(false); });
+$('#mReplace').addEventListener('click', function(){ doImport(true); });
+
+/* snapshots */
+function takeSnapshot(){
+  var c = calc(), ts = travelStats();
+  var today = todayISO();
+  var travelWk = c.billers.length
+    ? c.billers.reduce(function(a,p){ return a+num(p.ref.travelHrs); },0)/c.billers.length : 0;
+  var snap = {
+    id:uid(), date:today,
+    breakeven:c.breakeven, target:c.target,
+    overheads:c.overheadPool, labour:c.labourAnn,
+    billableHours:c.B, util:c.util, travelWk:travelWk,
+    currentRate:num(S.targets.currentRate), pct:num(S.targets.pct), method:S.targets.method
+  };
+  var i = -1;
+  S.snapshots.forEach(function(s,ix){ if(s.date===today) i = ix; });
+  if(i>=0){
+    if(!confirm('There’s already a snapshot for today. Replace it?')) return;
+    S.snapshots[i] = snap;
+  } else {
+    S.snapshots.push(snap);
+  }
+  renderSnaps(); persist();
+  $('#saveNote').textContent = 'Snapshot saved';
+}
+$('#btnSnap').addEventListener('click', takeSnapshot);
+$('#btnSnap2').addEventListener('click', takeSnapshot);
+
+$('#btnSnapCsv').addEventListener('click', function(){
+  if(!S.snapshots.length){ alert('No snapshots to export yet.'); return; }
+  var head = ['Date','Breakeven','Target rate','Current rate','Overheads per year','Labour per year','Billable hours','Utilisation','Travel hrs per week'];
+  var rows = S.snapshots.slice().sort(function(a,b){ return a.date<b.date?-1:1; }).map(function(s){
+    return [s.date, s.breakeven.toFixed(2), s.target.toFixed(2), (s.currentRate||0).toFixed(2),
+            Math.round(s.overheads), Math.round(s.labour), Math.round(s.billableHours),
+            (s.util*100).toFixed(1)+'%', (s.travelWk||0).toFixed(1)];
+  });
+  download('Amp Me Up Electrical - rate snapshots.csv',
+           [head].concat(rows).map(function(r){ return r.join(','); }).join('\r\n'),
+           'text/csv');
+});
+
+/* save / load / reset */
+function download(name, data, type){
+  var b = new Blob([data], { type:(type||'application/json')+';charset=utf-8' });
+  var u = URL.createObjectURL(b);
+  var a = document.createElement('a');
+  a.href = u; a.download = name; document.body.appendChild(a); a.click();
+  setTimeout(function(){ URL.revokeObjectURL(u); a.remove(); }, 400);
+}
+$('#btnSaveFile').addEventListener('click', function(){
+  S.updated = new Date().toISOString();
+  var d = new Date();
+  var stamp = String(d.getDate()).padStart(2,'0')+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+d.getFullYear();
+  download('Amp Me Up Electrical - rate model - '+stamp+'.json', JSON.stringify(S,null,2));
+});
+$('#btnLoadFile').addEventListener('click', function(){ $('#fileJson').value=''; $('#fileJson').click(); });
+$('#fileJson').addEventListener('change', function(ev){
+  var f = ev.target.files && ev.target.files[0]; if(!f) return;
+  var fr = new FileReader();
+  fr.onload = function(){
+    try{
+      var o = JSON.parse(fr.result);
+      if(!o || typeof o!=='object' || !o.overheads) throw new Error('bad');
+      S = migrate(o);
+      renderAll(); persist();
+      $('#saveNote').textContent = 'Loaded';
+    }catch(e){ alert('That doesn’t look like a rate model file.'); }
+  };
+  fr.readAsText(f);
+});
+$('#btnReset').addEventListener('click', function(){
+  if(!confirm('Wipe everything on this device and go back to the starter figures?\n\nSave a .json file first if you want to keep what you’ve got.')) return;
+  S = freshState(); renderAll(); persist();
+});
+
+/* print */
+$('#btnPrint').addEventListener('click', function(){ window.print(); });
+var origTitle = document.title;
+window.addEventListener('beforeprint', function(){
+  var d = new Date();
+  var stamp = String(d.getDate()).padStart(2,'0')+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+d.getFullYear();
+  document.title = 'Charge-Out Rate Summary - '+stamp+' - Amp Me Up Electrical';
+});
+window.addEventListener('afterprint', function(){ document.title = origTitle; });
+
+$('#dismissFirst').addEventListener('click', function(){
+  S.seeded = false; $('#firstRun').style.display='none'; persist();
+});
+
+/* =========================================================
+   Boot
+   ========================================================= */
+function renderAll(){
+  $('#catList').innerHTML = allCategories().map(function(c){ return '<option value="'+esc(c)+'">'; }).join('');
+  $$('[data-obj="targets"],[data-obj="business"],[data-obj="est"],[data-obj="travelOpt"]').forEach(function(el){
+    if(el.dataset.id) return;
+    var v = (S[el.dataset.obj]||{})[el.dataset.k];
+    if(el.type==='checkbox') el.checked = !!v; else el.value = (v===undefined?'':v);
+  });
+  renderOverheads();
+  renderPeople();
+  renderTravel();
+  renderSnaps();
+  $('#firstRun').style.display = S.seeded ? 'flex' : 'none';
+  paint();
+}
+
+restore();
+var now = new Date();
+$('#hdrDate').textContent = String(now.getDate()).padStart(2,'0')+'/'+String(now.getMonth()+1).padStart(2,'0')+'/'+now.getFullYear();
+renderAll();
+
+})();
+</script>
+</body>
+</html>
