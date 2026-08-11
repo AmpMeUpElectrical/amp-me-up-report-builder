@@ -97,6 +97,9 @@ timed, with:
 - A tick-box: *"Forgot to stop/start it? Manually input the start and end time here."* Ticking
   it reveals **Date / Started / Stopped**, pre-filled from the timer, with the duration
   recalculating live as you type. **Add** saves that instead of what was timed.
+- **Discard** — the work never happened, bin it. It's the only way to lose time in here, so it
+  asks *"Are you sure?"* on a second popup that shows exactly what's about to go, with the safe
+  option focused. Enter does nothing on that confirmation — discarding takes a deliberate tap.
 
 Guards on the manual times:
 

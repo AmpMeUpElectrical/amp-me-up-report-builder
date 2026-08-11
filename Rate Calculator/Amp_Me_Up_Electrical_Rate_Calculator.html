@@ -133,6 +133,9 @@
            padding:6px 8px;background:var(--soft);text-align:right;font-variant-numeric:tabular-nums}
   .btn[disabled]{opacity:.42;cursor:not-allowed}
   .btn[disabled]:hover{border-color:var(--line)}
+  .btn.bad{background:var(--bad);border-color:var(--bad);color:#fff}
+  .btn.bad:hover{filter:brightness(1.08);border-color:var(--bad)}
+  #ovlDiscard{z-index:60}          /* sits on top of the stop dialog */
 
   .running{display:inline-flex;align-items:center;gap:8px;background:var(--dark);color:#fff;border-radius:6px;padding:4px 5px 4px 10px;font-size:12px;white-space:nowrap}
   .running b{font-weight:700;max-width:170px;overflow:hidden;text-overflow:ellipsis}
@@ -557,7 +560,8 @@
           Every timer you stop asks <b>“Log this time?”</b> before anything reaches the log. If it was stopped properly, hit <b>Continue</b>.
           If you forgot to start or stop it, tick the box and type the real start and finish times — the duration updates as you type and
           <b>Add</b> saves that instead. Leave one running overnight and the box is already ticked with the finish time blank, so you can't
-          add a bogus 25-hour entry by accident. Nothing is lost if you walk away mid-question: it's waiting when you come back.<br><br>
+          add a bogus 25-hour entry by accident. If the work never happened at all, <b>Discard</b> bins it — it asks you to confirm first,
+          because that's the one thing in here you can't undo. Nothing is lost if you walk away mid-question: it's waiting when you come back.<br><br>
           <b>Apply averages</b> only writes the categories you've actually logged, so half a week of tracking can't quietly zero the
           estimates you haven't started timing yet. Weekly averages divide by <em>weeks with entries</em>, not calendar weeks — a fortnight
           off the tools won't halve your average.
@@ -619,8 +623,31 @@
       </div>
     </div>
     <div class="mf">
+      <button class="btn danger" id="stopDiscard">Discard</button>
+      <div class="spacer"></div>
       <button class="btn" id="stopAdd" disabled>Add</button>
       <button class="btn primary" id="stopGo">Continue</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ DISCARD CONFIRMATION ============ -->
+<div class="overlay" id="ovlDiscard">
+  <div class="modal" style="max-width:430px">
+    <div class="mh"><span>Are you sure?</span></div>
+    <div class="mb">
+      <p style="font-size:13px;color:var(--muted);margin-bottom:13px">
+        This throws the time away for good — it won't be logged, and it can't be got back.
+      </p>
+      <div class="stopbox" style="margin:0">
+        <div class="k">About to discard</div>
+        <div class="v" id="discardDur">—</div>
+        <div class="s" id="discardWhat">&nbsp;</div>
+      </div>
+    </div>
+    <div class="mf">
+      <button class="btn primary" id="discardNo">No, keep it</button>
+      <button class="btn bad" id="discardYes">Yes, discard</button>
     </div>
   </div>
 </div>
@@ -1120,6 +1147,29 @@ function syncStopFields(){
   }
   $('#stopHint').textContent = hint;
   $('#stopHint').style.color = bad ? 'var(--bad)' : 'var(--muted)';
+}
+
+/* Discard is the only way to lose time in here, so it asks twice and shows
+   exactly what's about to go. */
+function openDiscard(){
+  var p = S.pending; if(!p) return;
+  var mins = (p.endedAt - p.r.startedAt)/60000;
+  $('#discardDur').textContent  = durText(mins);
+  $('#discardWhat').textContent = p.r.category + (p.r.note ? ' — ' + p.r.note : '')
+                                + ' · started ' + timeText(p.r.startedAt);
+  $('#ovlDiscard').classList.add('on');
+  setTimeout(function(){ $('#discardNo').focus(); }, 40);   /* safe option gets the focus */
+}
+function closeDiscard(){
+  $('#ovlDiscard').classList.remove('on');
+  setTimeout(function(){ $('#stopGo').focus(); }, 30);
+}
+function confirmDiscard(){
+  S.pending = null;
+  $('#ovlDiscard').classList.remove('on');
+  $('#ovlStop').classList.remove('on');
+  renderTimers(); persist();
+  $('#saveNote').textContent = 'Discarded';
 }
 
 function resolveStop(useManual){
@@ -2018,7 +2068,16 @@ $('#stopFix').addEventListener('change', function(){
 });
 $('#stopAdd').addEventListener('click', function(){ if(!this.disabled) resolveStop(true); });
 $('#stopGo').addEventListener('click', function(){ resolveStop(false); });
+$('#stopDiscard').addEventListener('click', openDiscard);
+$('#discardNo').addEventListener('click', closeDiscard);
+$('#discardYes').addEventListener('click', confirmDiscard);
+
 document.addEventListener('keydown', function(ev){
+  /* the confirmation owns the keyboard while it's up */
+  if($('#ovlDiscard').classList.contains('on')){
+    if(ev.key==='Escape'){ ev.preventDefault(); closeDiscard(); }
+    return;              /* Enter deliberately does nothing — discarding takes a real tap */
+  }
   if(!$('#ovlStop').classList.contains('on')) return;
   if(ev.key==='Escape'){ ev.preventDefault(); resolveStop(false); }          /* keep what was timed */
   if(ev.key==='Enter'){
