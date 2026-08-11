@@ -19,7 +19,7 @@ no dependencies beyond the Manrope web font. Open it in a browser and it works.
 | **Dashboard** | Breakeven cost per billable hour, recommended charge-out rate, profit/loss at your current rate, where every hour goes, rate at 0–50% margin, overheads by category |
 | **Overheads** | Every business cost that isn't a wage. Any frequency (weekly → yearly), GST tick-box per line, CSV import |
 | **Labour** | One card per person. Wage, super, workers' comp, payroll tax, leave loading, allowances, leave/public holidays/sick/training, and hours per week that can't be invoiced |
-| **Travel & non-billable** | Trip log → weekly average → push straight into the Labour tab. Plus a quick estimator if there's nothing logged yet |
+| **Time tracking** | Start/stop timers per category, one time log, totals per category, weekly averages that push into the Labour tab. Plus a travel estimator if there's nothing logged yet |
 | **Trend** | Dated snapshots of your breakeven and target rate, with a chart and a CSV export |
 | **How it works** | The maths, in plain English |
 
@@ -76,7 +76,42 @@ margin. The tool defaults to margin.
 
 ---
 
-## 3. Where the data lives
+## 3. Timers
+
+One tap starts a timer; starting another stops the one that's running, because you can only
+do one thing at a time. The running timer shows in the toolbar from every tab.
+
+- **It survives everything.** Only the start time is stored, so closing the tab, locking the
+  phone or reloading the page all leave it counting. It resumes on the next open.
+- **Under 15 seconds is discarded**, so a mis-tap doesn't clutter the log.
+- **Over 12 hours asks first** — usually it means you left one running overnight.
+- The note box belongs to the running timer; edit it mid-task and it follows the entry.
+
+Categories, and the Labour box each one feeds:
+
+| Category | Feeds |
+|---|---|
+| Travel | Travel |
+| Quoting & estimating | Quoting |
+| Phone calls & enquiries | Admin & paperwork |
+| Admin & paperwork | Admin & paperwork |
+| Yard & materials | Yard & materials |
+| Training / Warranty & call-backs / Other | Other |
+| On the tools (billable) | nothing — it's the cross-check on your utilisation |
+
+**Apply averages to Labour tab** writes the weekly averages into the non-billable boxes for
+each person who has logged time. Two rules keep it honest:
+
+- Only categories you've **actually logged** are written. Half a week of tracking can't
+  silently zero the estimates for things you haven't started timing.
+- Weekly averages divide by **weeks that have entries**, not calendar weeks — a fortnight off
+  won't halve your average.
+
+The confirmation dialog spells out every old → new value before anything changes.
+
+---
+
+## 4. Where the data lives
 
 Everything is kept in this browser's `localStorage` under the key `amue_rate_calc_v1`, saved
 automatically as you type. Nothing is uploaded anywhere.
@@ -96,7 +131,7 @@ without changing the maths.
 
 ---
 
-## 4. CSV import
+## 5. CSV import
 
 **Overheads** — export a period of transactions from Xero/MYOB/QuickBooks or a bank statement,
 hit **Import from CSV**, and map the columns. The dialog lets you:
@@ -111,12 +146,13 @@ hit **Import from CSV**, and map the columns. The dialog lets you:
 Nothing is imported until you press **Add to existing** or **Replace existing**, and the preview
 shows exactly what you'll get.
 
-**Travel** — same idea: a date, who, how long (minutes or hours), and optionally a
-billed/not-billed column.
+**Time log** — same idea: a date, who, a category, how long (minutes or hours), and optionally
+a billed/not-billed column. No category column? Pick one and the whole file goes in under it.
+**Export log (.csv)** sends the whole log back out for a spreadsheet.
 
 ---
 
-## 5. Starter figures
+## 6. Starter figures
 
 First open, the tool is loaded with example figures for a solo QLD residential electrical
 business so nothing reads as `$0.00`. **They are made up.** Replace them with your real numbers —
@@ -124,16 +160,17 @@ or hit **Clear all amounts** on the Overheads tab and start from scratch.
 
 ---
 
-## 6. Export PDF summary
+## 7. Export PDF summary
 
-**Export PDF summary** prints a one-page-ish branded summary — breakeven, recommended rate,
-overheads by category, labour breakdown, the margin table and the cost of non-billable time.
+**Export PDF summary** prints a branded summary — breakeven, recommended rate, overheads by
+category, labour breakdown, the margin table, the cost of non-billable time, and where your
+tracked hours actually went.
 Chrome's Save-as-PDF name is set automatically to
 `Charge-Out Rate Summary - DD-MM-YYYY - Amp Me Up Electrical`.
 
 ---
 
-## 7. Editing it
+## 8. Editing it
 
 Open the file and edit it. There's no build step and no source/generated split — the same file
 you open in a browser is the one in the repo.

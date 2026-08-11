@@ -100,6 +100,25 @@
 
   .pill{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:2px 7px;border-radius:999px;background:var(--tint);color:var(--orange);border:1px solid #f3d9bd}
   .pill.grey{background:#f2f1ec;color:var(--muted);border-color:var(--line)}
+  .pill.green{background:#e8f5ee;color:var(--ok);border-color:#bfe3ce}
+
+  /* ---------- timers ---------- */
+  .timers{display:grid;grid-template-columns:repeat(auto-fill,minmax(196px,1fr));gap:10px}
+  .tmr{font:inherit;text-align:left;cursor:pointer;background:#fff;border:1px solid var(--line);border-radius:8px;padding:11px 12px;display:flex;flex-direction:column;gap:7px;transition:.13s}
+  .tmr:hover{border-color:var(--orange);box-shadow:0 4px 14px rgba(247,132,25,.14);transform:translateY(-1px)}
+  .tmr .cname{font-size:12.5px;font-weight:800;line-height:1.3;display:flex;align-items:center;gap:6px}
+  .tmr .ctime{font-size:21px;font-weight:800;letter-spacing:-.6px;font-variant-numeric:tabular-nums;line-height:1}
+  .tmr .cmeta{font-size:10.5px;color:var(--muted)}
+  .tmr.on{background:var(--dark);border-color:var(--dark)}
+  .tmr.on .cname,.tmr.on .ctime{color:#fff}
+  .tmr.on .cmeta{color:#b6bcc4}
+  .tmr.on:hover{border-color:var(--orange)}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--orange);flex:0 0 8px;animation:pulse 1.4s ease-in-out infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.2}}
+  @media(prefers-reduced-motion:reduce){.dot{animation:none}}
+  .running{display:inline-flex;align-items:center;gap:8px;background:var(--dark);color:#fff;border-radius:6px;padding:4px 5px 4px 10px;font-size:12px;white-space:nowrap}
+  .running b{font-weight:700;max-width:170px;overflow:hidden;text-overflow:ellipsis}
+  .running #runTime{font-variant-numeric:tabular-nums;font-weight:800;color:var(--orange)}
 
   /* ---------- person cards ---------- */
   .person{border:1px solid var(--line);border-radius:8px;margin-bottom:14px;overflow:hidden}
@@ -179,6 +198,10 @@
       <button class="btn" id="btnLoadFile">Load file</button>
       <button class="btn" id="btnSnap">Save snapshot</button>
       <button class="btn primary" id="btnPrint">Export PDF summary</button>
+      <span class="running" id="runBar" style="display:none">
+        <span class="dot"></span><b id="runCat"></b><span id="runTime">00:00</span>
+        <button class="btn sm" id="runStop">Stop</button>
+      </span>
       <div class="spacer"></div>
       <span class="savenote" id="saveNote">&nbsp;</span>
       <button class="btn danger sm" id="btnReset">Start over</button>
@@ -190,7 +213,7 @@
       <button class="tab on" data-tab="dash">Dashboard</button>
       <button class="tab" data-tab="over">Overheads</button>
       <button class="tab" data-tab="lab">Labour</button>
-      <button class="tab" data-tab="trav">Travel &amp; non-billable</button>
+      <button class="tab" data-tab="time">Time tracking</button>
       <button class="tab" data-tab="trend">Trend</button>
       <button class="tab" data-tab="help">How it works</button>
     </div>
@@ -355,18 +378,54 @@
     </section>
 
     <!-- ============ TRAVEL ============ -->
-    <section class="pane" id="pane-trav">
-      <h2 class="sect">Travel time &amp; non-billable hours</h2>
-      <p class="hint">Log travel as you go (or import it), and this works out your true weekly average. Push that average straight into the Labour tab and watch what it does to your rate.</p>
+    <section class="pane" id="pane-time">
+      <h2 class="sect">Time tracking</h2>
+      <p class="hint">Start a timer when you pick up the phone, get in the ute, or sit down to price a job. It all lands in one log, totals up by category, and the weekly averages push straight into the Labour tab — so the rate is built on what you actually did, not a guess.</p>
 
-      <div class="fgrid g3" style="margin-bottom:16px">
-        <div class="card"><div class="k">Avg non-billable travel</div><div class="v" id="tvAvg">0.0 h</div><div class="s">per person per week, from the log</div></div>
-        <div class="card"><div class="k">Weeks logged</div><div class="v" id="tvWeeks">0</div><div class="s" id="tvRange">no entries yet</div></div>
-        <div class="card"><div class="k">Wages paid for travel</div><div class="v" id="tvCost">$0</div><div class="s" id="tvCostSub">&nbsp;</div></div>
+      <div class="block">
+        <h3>Timers</h3>
+        <div class="fgrid g2" style="margin-bottom:13px">
+          <div><label class="fl">Who's working</label><select class="f" id="timerPerson"></select></div>
+          <div><label class="fl">What on? (optional)</label><input class="f" id="timerNote" placeholder="e.g. Cleveland switchboard quote"></div>
+        </div>
+        <div class="timers" id="timerGrid"></div>
+        <p class="hint" style="margin:13px 0 0">Starting one stops whichever is running — you can only do one thing at a time. Timers keep counting if you close the tab or lock your phone, and anything under 15 seconds is ignored so a mis-tap doesn't clutter the log.</p>
+      </div>
+
+      <div class="fgrid g4" style="margin-bottom:16px">
+        <div class="card"><div class="k">Tracked</div><div class="v" id="tvTracked">0.0 h</div><div class="s" id="tvTrackedSub">nothing logged yet</div></div>
+        <div class="card"><div class="k">Non-billable</div><div class="v" id="tvNb">0.0 h</div><div class="s" id="tvNbSub">&nbsp;</div></div>
+        <div class="card"><div class="k">Biggest drain</div><div class="v" id="tvTop" style="font-size:19px">—</div><div class="s" id="tvTopSub">&nbsp;</div></div>
+        <div class="card"><div class="k">Travel</div><div class="v" id="tvAvg">0.0 h</div><div class="s" id="tvCostSub">a week — this is what feeds your rate</div></div>
       </div>
 
       <div class="block">
-        <h3>Quick estimator — if you haven't logged anything yet</h3>
+        <h3>Where your time goes</h3>
+        <div class="row" style="margin-bottom:13px">
+          <label class="fl" style="margin:0;align-self:center">Over</label>
+          <select class="f" style="width:auto" data-obj="timeOpt" data-k="window">
+            <option value="4">Last 4 weeks</option><option value="8">Last 8 weeks</option>
+            <option value="13">Last 13 weeks</option><option value="0">Everything logged</option>
+          </select>
+          <label class="fl" style="margin:0 0 0 10px;align-self:center">Person</label>
+          <select class="f" style="width:auto" id="filtPerson"></select>
+          <div class="spacer"></div>
+          <button class="btn primary" id="btnApplyTime">Apply averages to Labour tab</button>
+        </div>
+        <div class="bar" id="timeBar"></div>
+        <div class="legend" id="timeLegend"></div>
+        <div class="scroll" style="margin-top:15px">
+          <table class="grid" id="tblCatTime">
+            <thead><tr><th>Category</th><th class="calc">Hours logged</th><th class="calc">Hours / week</th><th class="calc">Non-billable / wk</th><th class="calc">Share</th><th class="calc">Entries</th><th>Feeds into</th></tr></thead>
+            <tbody></tbody>
+            <tfoot><tr><td>Total</td><td class="calc" id="ctTotal">0.0</td><td class="calc" id="ctWeek">0.0</td><td class="calc" id="ctNbWeek">0.0</td><td class="calc">100%</td><td class="calc" id="ctEntries">0</td><td></td></tr></tfoot>
+          </table>
+        </div>
+        <p class="hint" style="margin:13px 0 0" id="applyNote"></p>
+      </div>
+
+      <div class="block">
+        <h3>Travel estimator — if you haven't logged enough yet</h3>
         <div class="fgrid g5">
           <div><label class="fl">Days on the road / week</label><input class="f num" inputmode="decimal" data-obj="est" data-k="days"></div>
           <div><label class="fl">Jobs per day</label><input class="f num" inputmode="decimal" data-obj="est" data-k="jobs"></div>
@@ -382,24 +441,22 @@
       </div>
 
       <div class="row noprint" style="margin-bottom:12px">
-        <button class="btn primary" id="btnAddTrav">+ Add trip</button>
-        <button class="btn" id="btnImportTrav">Import from CSV</button>
+        <button class="btn primary" id="btnAddTime">+ Add entry by hand</button>
+        <button class="btn" id="btnImportTime">Import from CSV</button>
+        <button class="btn" id="btnExportTime">Export log (.csv)</button>
         <div class="spacer"></div>
-        <label class="fl" style="margin:0 4px 0 0;align-self:center">Average over</label>
-        <select class="f" style="width:auto" data-obj="travelOpt" data-k="window">
-          <option value="0">All entries</option><option value="4">Last 4 weeks</option><option value="8">Last 8 weeks</option><option value="13">Last 13 weeks</option>
-        </select>
-        <button class="btn" id="btnApplyTrav">Apply average to Labour tab</button>
+        <span class="savenote" id="logCount">&nbsp;</span>
       </div>
 
       <div class="scroll">
-        <table class="grid" id="tblTrav">
+        <table class="grid" id="tblTime">
           <thead><tr>
-            <th style="width:130px">Date</th><th style="min-width:130px">Person</th><th style="min-width:180px">Job / notes</th>
-            <th style="width:90px">Minutes</th><th style="width:80px;text-align:center">Billed?</th><th class="calc" style="width:70px">Hours</th><th style="width:34px"></th>
+            <th style="width:132px">Date</th><th style="min-width:120px">Person</th><th style="min-width:150px">Category</th>
+            <th style="min-width:150px">Notes</th><th style="width:82px">Minutes</th>
+            <th style="width:74px;text-align:center">Billed?</th><th class="calc" style="width:62px">Hours</th><th style="width:34px"></th>
           </tr></thead>
           <tbody></tbody>
-          <tfoot><tr><td colspan="3">Unbilled travel logged</td><td class="calc" id="travMin">0</td><td></td><td class="calc" id="travHrs">0.0</td><td></td></tr></tfoot>
+          <tfoot><tr><td colspan="4">Non-billable time logged</td><td class="calc" id="timeMin">0</td><td></td><td class="calc" id="timeHrs">0.0</td><td></td></tr></tfoot>
         </table>
       </div>
 
@@ -407,7 +464,7 @@
         <h3>Weekly breakdown</h3>
         <div class="scroll">
           <table class="grid" id="tblWeeks">
-            <thead><tr><th>Week beginning</th><th class="calc">Unbilled travel (h)</th><th class="calc">Billed travel (h)</th><th class="calc">Trips</th><th class="calc">Wages paid for it</th></tr></thead>
+            <thead><tr><th>Week beginning</th><th class="calc">Tracked (h)</th><th class="calc">Billable (h)</th><th class="calc">Non-billable (h)</th><th class="calc">Travel (h)</th><th class="calc">Entries</th></tr></thead>
             <tbody></tbody>
           </table>
         </div>
@@ -473,7 +530,19 @@
         </p>
       </div>
       <div class="block">
-        <h3>4. GST</h3>
+        <h3>4. The timers</h3>
+        <p style="font-size:13px;color:var(--muted)">
+          Everything you time lands in one log with a category on it. Categories feed the non-billable boxes on the Labour tab —
+          <b>Travel</b> → Travel, <b>Quoting</b> → Quoting, <b>Phone calls</b> and <b>Admin</b> both → Admin &amp; paperwork,
+          <b>Yard &amp; materials</b> → Yard, and Training, Warranty and Other → Other.
+          <b>On the tools</b> is the billable one; it feeds nothing, it's there so you can check your real utilisation against the assumption.<br><br>
+          <b>Apply averages</b> only writes the categories you've actually logged, so half a week of tracking can't quietly zero the
+          estimates you haven't started timing yet. Weekly averages divide by <em>weeks with entries</em>, not calendar weeks — a fortnight
+          off the tools won't halve your average.
+        </p>
+      </div>
+      <div class="block">
+        <h3>5. GST</h3>
         <p style="font-size:13px;color:var(--muted)">
           Every rate here is <b>ex GST</b>. GST isn't yours — you collect it and hand it on. If you're registered, your real cost of an expense is the ex-GST figure, which is why the GST tick-box on the Overheads tab matters. Where an inc-GST figure is useful (what the customer actually sees) it's shown alongside.
         </p>
@@ -530,6 +599,30 @@ var CATEGORIES = [
   'Test equipment & calibration','Rent / shed / storage','Waste & disposal',
   'Training & CPD','Uniforms & PPE','Other'
 ];
+
+/* Timer categories. `field` says which non-billable box on the Labour tab a
+   category feeds — two categories can share one (phone calls and paperwork are
+   both admin). Billable time feeds nothing; it's there as a sanity check on
+   utilisation. */
+var TIME_CATS = [
+  { name:'Travel',                  billable:false, field:'travelHrs',  colour:'#F78419' },
+  { name:'Quoting & estimating',    billable:false, field:'quotingHrs', colour:'#c2610d' },
+  { name:'Phone calls & enquiries', billable:false, field:'adminHrs',   colour:'#8a5cd6' },
+  { name:'Admin & paperwork',       billable:false, field:'adminHrs',   colour:'#5b6bd6' },
+  { name:'Yard & materials',        billable:false, field:'yardHrs',    colour:'#0f8a8a' },
+  { name:'Training',                billable:false, field:'otherNbHrs', colour:'#7a7a74' },
+  { name:'Warranty & call-backs',   billable:false, field:'otherNbHrs', colour:'#c0392b' },
+  { name:'Other',                   billable:false, field:'otherNbHrs', colour:'#9a9a94' },
+  { name:'On the tools (billable)', billable:true,  field:'',           colour:'#1c7c4c' }
+];
+var NB_FIELDS = ['travelHrs','quotingHrs','adminHrs','yardHrs','otherNbHrs'];
+var FIELD_LABEL = { travelHrs:'Travel', quotingHrs:'Quoting', adminHrs:'Admin & paperwork',
+                    yardHrs:'Yard & materials', otherNbHrs:'Other' };
+
+function catDef(name){
+  for(var i=0;i<TIME_CATS.length;i++){ if(TIME_CATS[i].name===name) return TIME_CATS[i]; }
+  return { name:name||'Other', billable:false, field:'otherNbHrs', colour:'#9a9a94' };
+}
 
 /* Starter figures — a solo QLD residential sparky. Replaced by the user. */
 function seedOverheads(){
@@ -597,13 +690,14 @@ function freshState(){
     business:{ weeksPerYear:52 },
     targets:{ method:'margin', pct:30, currentRate:130, round:'5' },
     est:{ days:5, jobs:3, between:20, commute:35, supplier:15 },
-    travelOpt:{ window:'0' },
+    timeOpt:{ window:'4', person:'' },
     overheads: seedOverheads(),
     labour: [
       blankPerson({ name:'Logan', role:'Owner / Electrician', type:'owner', payBasis:'annual', payRate:105000,
                     workcoverPct:0, leaveLoadingPct:0, sickDays:5, travelHrs:5, quotingHrs:4, adminHrs:5, yardHrs:2 })
     ],
-    travel:[],
+    timelog:[],
+    running:null,
     snapshots:[],
     seeded:true
   };
@@ -665,12 +759,23 @@ function migrate(o){
   o.version = 1;
   o.business  = Object.assign({}, f.business,  o.business||{});
   o.targets   = Object.assign({}, f.targets,   o.targets||{});
-  o.est       = Object.assign({}, f.est,       o.est||{});
-  o.travelOpt = Object.assign({}, f.travelOpt, o.travelOpt||{});
+  o.est       = Object.assign({}, f.est,     o.est||{});
+  o.timeOpt   = Object.assign({}, f.timeOpt, o.timeOpt||{});
   o.overheads = (o.overheads||[]).map(function(r){ r.id = r.id||uid(); return r; });
   o.labour    = (o.labour||[]).map(function(p){ return blankPerson(Object.assign({}, p)); });
-  o.travel    = (o.travel||[]).map(function(t){ t.id = t.id||uid(); return t; });
+  o.timelog   = (o.timelog||[]).map(function(t){ t.id = t.id||uid(); t.category = t.category||'Other'; return t; });
   o.snapshots = o.snapshots||[];
+
+  /* Files saved before timers existed carry a travel-only log — fold it in. */
+  if(o.travel && o.travel.length && !o.timelog.length){
+    o.timelog = o.travel.map(function(t){
+      return { id:t.id||uid(), date:t.date, category:'Travel', person:t.person,
+               note:t.note, minutes:t.minutes, billable:!!t.billable };
+    });
+  }
+  delete o.travel; delete o.travelOpt;
+
+  o.running = (o.running && o.running.startedAt) ? o.running : null;
   return o;
 }
 
@@ -784,34 +889,139 @@ function estimateWeekly(){
   return (legs + num(e.commute) + num(e.supplier)) * num(e.days) / 60;
 }
 
-function travelStats(){
-  var win = num(S.travelOpt.window);
-  var rows = S.travel.filter(function(t){ return t.date; }).slice().sort(function(a,b){ return a.date<b.date?1:-1; });
-  var weeks = {};
-  rows.forEach(function(t){
-    var wk = mondayOf(t.date); if(!wk) return;
-    if(!weeks[wk]) weeks[wk] = { wk:wk, unbilled:0, billed:0, trips:0 };
-    var h = num(t.minutes)/60;
-    weeks[wk].trips++;
-    if(t.billable) weeks[wk].billed += h; else weeks[wk].unbilled += h;
+/* Roll the time log up by week and by category.
+   `window` counts WEEKS THAT HAVE ENTRIES, not calendar weeks — a fortnight off
+   shouldn't halve your average. `person` empty means everybody. */
+function timeStats(person, window){
+  var win  = (window===undefined) ? num(S.timeOpt.window) : num(window);
+  var who  = (person===undefined) ? (S.timeOpt.person||'') : person;
+  var rows = S.timelog.filter(function(t){
+    return t.date && mondayOf(t.date) && (!who || t.person===who);
   });
-  var list = Object.keys(weeks).map(function(k){ return weeks[k]; }).sort(function(a,b){ return a.wk<b.wk?1:-1; });
-  var used = win>0 ? list.slice(0,win) : list;
-  var totalUnbilled = used.reduce(function(a,w){ return a+w.unbilled; },0);
 
-  /* per person, so a two-man team doesn't double the average */
-  var names = {};
-  S.travel.forEach(function(t){ if(t.person) names[t.person]=1; });
-  var heads = Math.max(1, Object.keys(names).length);
+  /* newest week first, so a window takes the most recent N */
+  var wkeys = {};
+  rows.forEach(function(t){ wkeys[mondayOf(t.date)] = 1; });
+  var order = Object.keys(wkeys).sort().reverse();
+  var used  = win>0 ? order.slice(0,win) : order;
+  var keep  = {}; used.forEach(function(k){ keep[k]=1; });
+
+  var weeks = {}, byCat = {}, total = 0, billable = 0, entries = 0;
+  rows.forEach(function(t){
+    var wk = mondayOf(t.date);
+    if(!weeks[wk]) weeks[wk] = { wk:wk, total:0, billable:0, nb:0, travel:0, entries:0 };
+    var mins = num(t.minutes), isBill = !!t.billable, cat = t.category||'Other';
+    weeks[wk].total += mins; weeks[wk].entries++;
+    if(isBill) weeks[wk].billable += mins; else weeks[wk].nb += mins;
+    if(cat==='Travel' && !isBill) weeks[wk].travel += mins;
+
+    if(!keep[wk]) return;                       // outside the window: week row only
+    if(!byCat[cat]) byCat[cat] = { name:cat, mins:0, nbMins:0, entries:0 };
+    byCat[cat].mins += mins; byCat[cat].entries++;
+    if(!isBill) byCat[cat].nbMins += mins;
+    total += mins; entries++;
+    if(isBill) billable += mins;
+  });
+
+  var weekList = Object.keys(weeks).map(function(k){ return weeks[k]; })
+                       .sort(function(a,b){ return a.wk<b.wk?1:-1; });
+  var n = used.length;
 
   return {
-    all:list, used:used, weeks:used.length,
-    avgPerPersonWeek: used.length ? totalUnbilled/used.length/heads : 0,
-    heads:heads,
-    first: list.length ? list[list.length-1].wk : '',
-    last:  list.length ? list[0].wk : ''
+    weeks:n, weekList:weekList, byCat:byCat, entries:entries,
+    totalHrs: total/60, billableHrs: billable/60, nbHrs: (total-billable)/60,
+    perWeekHrs: n ? total/60/n : 0,
+    nbPerWeekHrs: n ? (total-billable)/60/n : 0,
+    travelPerWeekHrs: n ? (byCat['Travel'] ? byCat['Travel'].nbMins/60/n : 0) : 0,
+    first: used.length ? used[used.length-1] : '',
+    last:  used.length ? used[0] : ''
   };
 }
+
+/* =========================================================
+   Timers
+   ========================================================= */
+var MIN_LOG_MINUTES = 0.25;      // under 15 seconds is a mis-tap, not a task
+
+function clock(sec){
+  var h = Math.floor(sec/3600), m = Math.floor(sec%3600/60), s = Math.floor(sec%60);
+  return (h ? String(h).padStart(2,'0')+':' : '') + String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+}
+function runningSeconds(){ return S.running ? Math.max(0,(Date.now()-S.running.startedAt)/1000) : 0; }
+function isoFromMs(ms){
+  var d = new Date(ms);
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+
+function startTimer(cat){
+  if(S.running){
+    if(S.running.category===cat){ stopTimer(); return; }   // tapping the live one stops it
+    stopTimer();                                            // otherwise switch
+  }
+  S.running = {
+    category: cat,
+    person: $('#timerPerson').value || (S.labour[0]?S.labour[0].name:''),
+    note: $('#timerNote').value.trim(),
+    startedAt: Date.now()
+  };
+  renderTimers(); persist();
+}
+
+function stopTimer(){
+  var r = S.running;
+  if(!r) return;
+  var mins = (Date.now()-r.startedAt)/60000;
+  if(mins > 12*60 && !confirm('That timer has been running for '+hrs(mins/60)+' hours.\n\nLog it anyway? Cancel throws it away.')){
+    S.running = null; renderTimers(); persist(); return;
+  }
+  S.running = null;
+  if(mins >= MIN_LOG_MINUTES){
+    S.timelog.unshift({
+      id:uid(), date:isoFromMs(r.startedAt), category:r.category, person:r.person,
+      note:r.note||'', minutes:Math.round(mins*10)/10, billable:catDef(r.category).billable
+    });
+    renderTimeLog();
+  }
+  $('#timerNote').value = '';
+  renderTimers(); paint(); persist();
+}
+
+function renderTimers(){
+  var run = S.running;
+  var todayStr = todayISO();
+
+  $('#timerGrid').innerHTML = TIME_CATS.map(function(c){
+    var live = run && run.category===c.name;
+    /* today's total for this category, across everyone */
+    var mins = S.timelog.reduce(function(a,t){
+      return a + ((t.date===todayStr && (t.category||'Other')===c.name) ? num(t.minutes) : 0);
+    }, 0);
+    return '<button class="tmr'+(live?' on':'')+'" data-cat="'+esc(c.name)+'">'
+      + '<div class="cname">'+(live?'<span class="dot"></span>':'')+esc(c.name)
+        + (c.billable?' <span class="pill green">billed</span>':'')+'</div>'
+      + '<div class="ctime">'+(live ? clock(runningSeconds()) : (mins ? hrs(mins/60)+' h' : '—'))+'</div>'
+      + '<div class="cmeta">'+(live ? 'running — tap to stop' : (mins ? 'logged today' : 'tap to start'))+'</div>'
+      + '</button>';
+  }).join('');
+
+  var bar = $('#runBar');
+  if(run){
+    bar.style.display = 'inline-flex';
+    $('#runCat').textContent = run.category + (run.note ? ' — '+run.note : '');
+    $('#runTime').textContent = clock(runningSeconds());
+  } else {
+    bar.style.display = 'none';
+  }
+}
+
+function tickTimers(){
+  if(!S.running) return;
+  var t = clock(runningSeconds());
+  $('#runTime').textContent = t;
+  var live = document.querySelector('.tmr.on .ctime');
+  if(live) live.textContent = t;
+}
+setInterval(tickTimers, 1000);
 
 /* =========================================================
    Render — overheads
@@ -915,19 +1125,49 @@ function personOptions(sel){
   return opts.map(function(n){ return '<option value="'+esc(n)+'"'+(n===sel?' selected':'')+'>'+esc(n)+'</option>'; }).join('');
 }
 
-function renderTravel(){
-  var tb = $('#tblTrav tbody');
-  tb.innerHTML = S.travel.map(function(t){
+var LOG_ROWS = 250;   // the table renders the most recent slice; state keeps the lot
+
+function timeCatOptions(sel){
+  var opts = TIME_CATS.map(function(c){ return c.name; });
+  if(sel && opts.indexOf(sel)<0) opts.push(sel);
+  return opts.map(function(n){
+    return '<option value="'+esc(n)+'"'+(n===sel?' selected':'')+'>'+esc(n)+'</option>';
+  }).join('');
+}
+
+function renderTimeLog(){
+  var rows = S.timelog.slice().sort(function(a,b){
+    return (a.date||'') < (b.date||'') ? 1 : (a.date===b.date ? 0 : -1);
+  });
+  var shown = rows.slice(0, LOG_ROWS);
+
+  $('#tblTime tbody').innerHTML = shown.map(function(t){
     return '<tr>'
-      + '<td><input type="date" class="f" data-obj="travel" data-id="'+t.id+'" data-k="date" value="'+esc(t.date)+'"></td>'
-      + '<td><select class="f" data-obj="travel" data-id="'+t.id+'" data-k="person">'+personOptions(t.person)+'</select></td>'
-      + '<td><input class="f" data-obj="travel" data-id="'+t.id+'" data-k="note" value="'+esc(t.note)+'"></td>'
-      + '<td><input class="f num" inputmode="decimal" data-obj="travel" data-id="'+t.id+'" data-k="minutes" value="'+esc(t.minutes)+'"></td>'
-      + '<td style="text-align:center"><input type="checkbox" class="chk" data-obj="travel" data-id="'+t.id+'" data-k="billable"'+(t.billable?' checked':'')+'></td>'
+      + '<td><input type="date" class="f" data-obj="timelog" data-id="'+t.id+'" data-k="date" value="'+esc(t.date)+'"></td>'
+      + '<td><select class="f" data-obj="timelog" data-id="'+t.id+'" data-k="person">'+personOptions(t.person)+'</select></td>'
+      + '<td><select class="f" data-obj="timelog" data-id="'+t.id+'" data-k="category">'+timeCatOptions(t.category)+'</select></td>'
+      + '<td><input class="f" data-obj="timelog" data-id="'+t.id+'" data-k="note" value="'+esc(t.note)+'"></td>'
+      + '<td><input class="f num" inputmode="decimal" data-obj="timelog" data-id="'+t.id+'" data-k="minutes" value="'+esc(t.minutes)+'"></td>'
+      + '<td style="text-align:center"><input type="checkbox" class="chk" data-obj="timelog" data-id="'+t.id+'" data-k="billable"'+(t.billable?' checked':'')+'></td>'
       + '<td class="calc">'+hrs(num(t.minutes)/60)+'</td>'
-      + '<td><button class="x" data-del="travel" data-id="'+t.id+'" title="Remove">&#10005;</button></td>'
+      + '<td><button class="x" data-del="timelog" data-id="'+t.id+'" title="Remove">&#10005;</button></td>'
       + '</tr>';
-  }).join('') || '<tr><td colspan="7" style="color:var(--hint);padding:16px 6px">No trips logged yet. Add one after each job, or import a CSV.</td></tr>';
+  }).join('') || '<tr><td colspan="8" style="color:var(--hint);padding:16px 6px">Nothing logged yet — hit a timer above, add an entry by hand, or import a CSV.</td></tr>';
+
+  $('#logCount').textContent = rows.length
+    ? (rows.length > LOG_ROWS ? 'showing the most recent '+LOG_ROWS+' of '+rows.length+' entries' : rows.length+' entries')
+    : '';
+}
+
+/* Who can be picked in the timer bar and the filter */
+function refreshPeoplePickers(){
+  var tp = $('#timerPerson'), fp = $('#filtPerson');
+  var want = (S.running && S.running.person) || tp.value || (S.labour[0]?S.labour[0].name:'');
+  tp.innerHTML = personOptions(want);
+  fp.innerHTML = '<option value="">Everyone</option>'
+    + S.labour.map(function(p){
+        return '<option value="'+esc(p.name)+'"'+(S.timeOpt.person===p.name?' selected':'')+'>'+esc(p.name)+'</option>';
+      }).join('');
 }
 
 /* =========================================================
@@ -1086,7 +1326,6 @@ function paint(){
   $('#tblMargins tbody').innerHTML = mrows;
 
   /* sensitivity */
-  var ts = travelStats();
   $('#tblSens tbody').innerHTML = ''
     + '<tr><td>One extra non-billable hour per person, per week</td><td class="calc neg">+'+money(c.perExtraHr)+' / hr</td></tr>'
     + '<tr><td>One hour <em>back</em> per person, per week</td><td class="calc pos">−'+money(c.perHrBack)+' / hr</td></tr>'
@@ -1105,33 +1344,84 @@ function paint(){
       + '<td class="calc">'+(c.ohTotal>0?(r[1]/c.ohTotal*100).toFixed(1):'0.0')+'%</td></tr>';
   }).join('') || '<tr><td colspan="5" style="color:var(--hint);padding:14px 6px">No overheads entered.</td></tr>';
 
-  /* travel tab */
-  $('#tvAvg').textContent   = hrs(ts.avgPerPersonWeek)+' h';
-  $('#tvWeeks').textContent = ts.weeks;
-  $('#tvRange').textContent = ts.weeks ? fmtDate(ts.first)+' → '+fmtDate(ts.last)+(ts.heads>1?' · '+ts.heads+' people':'') : 'no entries yet';
-  $('#tvCost').textContent  = m0(c.travelWages);
-  $('#tvCostSub').innerHTML = hrs(c.travelHours)+' hrs a year across the team &nbsp;·&nbsp; worth <b>'+m0(c.travelForegone)+'</b> if you could bill it';
-  var totMin = S.travel.reduce(function(a,t){ return a + (t.billable?0:num(t.minutes)); },0);
-  $('#travMin').textContent = Math.round(totMin).toLocaleString('en-AU');
-  $('#travHrs').textContent = hrs(totMin/60);
-  $('#tblWeeks tbody').innerHTML = ts.all.slice(0,26).map(function(w){
+  /* ---- time-tracking tab ---- */
+  var st = timeStats();
+  var whoLabel = S.timeOpt.person ? S.timeOpt.person : 'everyone';
+
+  $('#tvTracked').textContent    = hrs(st.perWeekHrs)+' h';
+  $('#tvTrackedSub').textContent = st.weeks
+    ? 'a week for '+whoLabel+', over '+st.weeks+' week'+(st.weeks===1?'':'s')+' logged'
+    : 'nothing logged yet — start a timer';
+  $('#tvNb').textContent    = hrs(st.nbPerWeekHrs)+' h';
+  $('#tvNbSub').innerHTML   = st.totalHrs>0
+    ? '<b>'+(st.nbHrs/st.totalHrs*100).toFixed(0)+'%</b> of tracked time you can’t invoice'
+    : 'a week';
+  var ranked = Object.keys(st.byCat).map(function(k){ return st.byCat[k]; })
+                     .filter(function(x){ return x.nbMins>0; })
+                     .sort(function(a,b){ return b.nbMins-a.nbMins; });
+  $('#tvTop').textContent    = ranked.length ? ranked[0].name : '—';
+  $('#tvTopSub').textContent = ranked.length && st.weeks
+    ? hrs(ranked[0].nbMins/60/st.weeks)+' h a week of non-billable time' : 'no non-billable time logged';
+  $('#tvAvg').textContent    = hrs(st.travelPerWeekHrs)+' h';
+
+  /* category table + bar */
+  var cats = Object.keys(st.byCat).map(function(k){ return st.byCat[k]; })
+                   .sort(function(a,b){ return b.mins-a.mins; });
+  var totMins = cats.reduce(function(a,x){ return a+x.mins; },0);
+  $('#tblCatTime tbody').innerHTML = cats.map(function(x){
+    var d = catDef(x.name);
+    return '<tr><td><i style="display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:7px;background:'+d.colour+'"></i>'
+      + esc(x.name)+(d.billable?' <span class="pill green">billed</span>':'')+'</td>'
+      + '<td class="calc">'+hrs(x.mins/60)+'</td>'
+      + '<td class="calc">'+hrs(st.weeks?x.mins/60/st.weeks:0)+'</td>'
+      + '<td class="calc">'+(x.nbMins ? hrs(st.weeks?x.nbMins/60/st.weeks:0) : '—')+'</td>'
+      + '<td class="calc">'+(totMins?(x.mins/totMins*100).toFixed(1):'0.0')+'%</td>'
+      + '<td class="calc">'+x.entries+'</td>'
+      + '<td style="color:var(--muted)">'+(d.field?esc(FIELD_LABEL[d.field]):'—')+'</td></tr>';
+  }).join('') || '<tr><td colspan="7" style="color:var(--hint);padding:14px 6px">Nothing logged in this window.</td></tr>';
+  var nbWinMins = cats.reduce(function(a,x){ return a+x.nbMins; },0);
+  $('#ctTotal').textContent   = hrs(totMins/60);
+  $('#ctWeek').textContent    = hrs(st.weeks?totMins/60/st.weeks:0);
+  $('#ctNbWeek').textContent  = hrs(st.weeks?nbWinMins/60/st.weeks:0);
+  $('#ctEntries').textContent = st.entries;
+
+  $('#timeBar').innerHTML = cats.map(function(x){
+    var w = totMins ? x.mins/totMins*100 : 0;
+    return '<span style="width:'+w.toFixed(2)+'%;background:'+catDef(x.name).colour+'" title="'+esc(x.name)+'">'
+      + (w>13 ? Math.round(w)+'%' : '') + '</span>';
+  }).join('') || '<span style="width:100%;background:#eeece6"></span>';
+  $('#timeLegend').innerHTML = cats.map(function(x){
+    return '<span><i style="background:'+catDef(x.name).colour+'"></i>'+esc(x.name)+' <b>'+hrs(x.mins/60)+'h</b></span>';
+  }).join('');
+
+  $('#applyNote').innerHTML = st.weeks
+    ? 'Applying writes the weekly averages above into the non-billable boxes on the Labour tab — only the categories you\'ve actually logged, so anything you haven\'t tracked keeps its current estimate.'
+    : 'Log a week or two and the averages here can replace the guesses on the Labour tab.';
+
+  var nbMin = S.timelog.reduce(function(a,t){ return a + (t.billable?0:num(t.minutes)); },0);
+  $('#timeMin').textContent = Math.round(nbMin).toLocaleString('en-AU');
+  $('#timeHrs').textContent = hrs(nbMin/60);
+
+  $('#tblWeeks tbody').innerHTML = st.weekList.slice(0,26).map(function(w){
     return '<tr><td>'+fmtDate(w.wk)+'</td>'
-      + '<td class="calc">'+hrs(w.unbilled)+'</td>'
-      + '<td class="calc">'+hrs(w.billed)+'</td>'
-      + '<td class="calc">'+w.trips+'</td>'
-      + '<td class="calc">'+m0(w.unbilled*c.labPerPaidHr)+'</td></tr>';
-  }).join('') || '<tr><td colspan="5" style="color:var(--hint);padding:14px 6px">Nothing logged yet.</td></tr>';
+      + '<td class="calc">'+hrs(w.total/60)+'</td>'
+      + '<td class="calc">'+hrs(w.billable/60)+'</td>'
+      + '<td class="calc">'+hrs(w.nb/60)+'</td>'
+      + '<td class="calc">'+hrs(w.travel/60)+'</td>'
+      + '<td class="calc">'+w.entries+'</td></tr>';
+  }).join('') || '<tr><td colspan="6" style="color:var(--hint);padding:14px 6px">Nothing logged yet.</td></tr>';
 
   $('#estOut').textContent = hrs(estimateWeekly())+' hours / week';
+  renderTimers();                      /* keeps each card's "logged today" honest */
 
-  buildPrint(c, ts);
+  buildPrint(c, st);
   return c;
 }
 
 /* =========================================================
    Print summary
    ========================================================= */
-function buildPrint(c, ts){
+function buildPrint(c, st){
   var d = new Date();
   var dd = String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0')+'/'+d.getFullYear();
   var cats = Object.keys(c.byCat).map(function(k){ return [k,c.byCat[k]]; }).sort(function(a,b){ return b[1]-a[1]; });
@@ -1177,9 +1467,21 @@ function buildPrint(c, ts){
     + '<h3>Non-billable time</h3>'
     + '<table class="avoid"><tbody>'
     + '<tr><td>Travel booked as non-billable</td><td class="n">'+hrs(c.travelHours)+' hrs / yr</td><td class="n">'+m0(c.travelWages)+' of wages</td></tr>'
-    + '<tr><td>Logged weekly average (per person)</td><td class="n">'+hrs(ts.avgPerPersonWeek)+' hrs</td><td class="n">'+(ts.weeks?ts.weeks+' weeks logged':'no log')+'</td></tr>'
+    + '<tr><td>Travel actually logged</td><td class="n">'+hrs(st.travelPerWeekHrs)+' hrs / wk</td><td class="n">'+(st.weeks?st.weeks+' weeks tracked':'no log')+'</td></tr>'
     + '<tr><td>Cost of one more non-billable hour per person, per week</td><td class="n">+'+money(c.perExtraHr)+' / hr</td><td class="n"></td></tr>'
     + '</tbody></table>'
+
+    + (st.weeks ? '<h3>Where the time went — last '+st.weeks+' week'+(st.weeks===1?'':'s')+' tracked</h3>'
+        + '<table class="avoid"><thead><tr><th>Category</th><th class="n">Hours / week</th><th class="n">Share</th><th class="n">Hours logged</th></tr></thead><tbody>'
+        + Object.keys(st.byCat).map(function(k){ return st.byCat[k]; })
+            .sort(function(a,b){ return b.mins-a.mins; })
+            .map(function(x){
+              var share = st.totalHrs>0 ? (x.mins/60/st.totalHrs*100).toFixed(1) : '0.0';
+              return '<tr><td>'+esc(x.name)+'</td><td class="n">'+hrs(x.mins/60/st.weeks)+'</td>'
+                + '<td class="n">'+share+'%</td><td class="n">'+hrs(x.mins/60)+'</td></tr>';
+            }).join('')
+        + '<tr><td><b>Tracked</b></td><td class="n"><b>'+hrs(st.perWeekHrs)+'</b></td><td class="n"></td><td class="n"><b>'+hrs(st.totalHrs)+'</b></td></tr>'
+        + '</tbody></table>' : '')
 
     + '<div class="pnote">Prepared from figures entered in the Amp Me Up Electrical rate calculator on '+dd+'. '
     + 'Breakeven = (total overheads + labour cost) ÷ billable hours. All rates exclude GST. '
@@ -1261,10 +1563,12 @@ function startImport(mode, text){
         date:  guessCol(head,['date','when']) }
     : { minutes:guessCol(head,['minute','min','duration','time','hour']),
         person: guessCol(head,['person','staff','tech','employee','name','who']),
+        cat:    guessCol(head,['category','task','type','activity','kind']),
         desc:   guessCol(head,['job','note','description','details','site','address']),
         date:   guessCol(head,['date','when']),
         billed: guessCol(head,['billed','billable','charged','invoiced']) };
-  IMP.period = 'auto'; IMP.gst = true; IMP.sign = 'abs'; IMP.group = true; IMP.unit = 'min'; IMP.cat = 'Other';
+  IMP.period = 'auto'; IMP.gst = true; IMP.sign = 'abs'; IMP.group = true;
+  IMP.unit = 'min'; IMP.cat = 'Other'; IMP.timeCat = 'Travel';
 
   /* A file with both credits and debits is a bank/ledger export — money coming IN
      isn't an overhead, so default to debits only. All one sign: take the lot. */
@@ -1308,14 +1612,16 @@ function importedRows(){
       var mins = m.minutes>=0 ? Math.abs(parseAmount(r[m.minutes])) : 0;
       if(IMP.unit==='hr') mins = mins*60;
       if(!mins) return;
-      var bill = false;
+      var cat = (m.cat>=0 ? String(r[m.cat]||'').trim() : '') || IMP.timeCat;
+      var bill = catDef(cat).billable;
       if(m.billed>=0){ var b = String(r[m.billed]||'').trim().toLowerCase(); bill = (b==='y'||b==='yes'||b==='true'||b==='1'||b==='billed'||b==='billable'); }
       out.push({
         id:uid(),
         date: m.date>=0 ? parseAnyDate(r[m.date]) : todayISO(),
+        category: cat,
         person: (m.person>=0 ? String(r[m.person]||'').trim() : '') || (S.labour[0]?S.labour[0].name:''),
         note: (m.desc>=0 ? String(r[m.desc]||'').trim() : ''),
-        minutes: Math.round(mins),
+        minutes: Math.round(mins*10)/10,
         billable: bill
       });
     }
@@ -1353,7 +1659,7 @@ function buildOverheadRows(){
 
 function drawImport(){
   var isOh = IMP.mode==='overheads';
-  $('#mTitle').textContent = isOh ? 'Import expenses from CSV' : 'Import travel log from CSV';
+  $('#mTitle').textContent = isOh ? 'Import expenses from CSV' : 'Import time log from CSV';
 
   var top = '<label style="font-size:12.5px;display:flex;align-items:center;gap:7px;margin-bottom:14px">'
     + '<input type="checkbox" class="chk" data-imp="header"'+(IMP.header?' checked':'')+'> First row is a header</label>';
@@ -1390,8 +1696,12 @@ function drawImport(){
         + '<option value="hr"'+(IMP.unit==='hr'?' selected':'')+'>Hours</option></select></div>'
       + '<div><label class="fl">Date column</label>'+colSel('date',IMP.map.date,true)+'</div>'
       + '<div><label class="fl">Person column</label>'+colSel('person',IMP.map.person,true)+'</div>'
+      + '<div><label class="fl">Category column</label>'+colSel('cat',IMP.map.cat,true)+'</div>'
       + '<div><label class="fl">Job / notes column</label>'+colSel('desc',IMP.map.desc,true)+'</div>'
       + '<div><label class="fl">Billed? column</label>'+colSel('billed',IMP.map.billed,true)+'</div>'
+      + (IMP.map.cat<0 ? '<div><label class="fl">Log everything as</label><select class="f" data-imp="timeCat">'
+          + TIME_CATS.map(function(c){ return '<option value="'+esc(c.name)+'"'+(IMP.timeCat===c.name?' selected':'')+'>'+esc(c.name)+'</option>'; }).join('')
+          + '</select></div>' : '')
       + '</div>';
 
   var prev, note;
@@ -1408,9 +1718,9 @@ function drawImport(){
   } else {
     var t = importedRows();
     var mins = t.reduce(function(a,r){ return a + (r.billable?0:r.minutes); },0);
-    note = '<div style="font-size:12.5px;margin:14px 0 8px">Read <b>'+t.length+'</b> trips · <b>'+hrs(mins/60)+' hours</b> of unbilled travel.</div>';
-    prev = '<div class="prev"><table><thead><tr><th>Date</th><th>Person</th><th>Job</th><th style="text-align:right">Min</th><th>Billed</th></tr></thead><tbody>'
-      + t.slice(0,40).map(function(r){ return '<tr><td>'+fmtDate(r.date)+'</td><td>'+esc(r.person)+'</td><td>'+esc(r.note)+'</td><td style="text-align:right">'+r.minutes+'</td><td>'+(r.billable?'Yes':'No')+'</td></tr>'; }).join('')
+    note = '<div style="font-size:12.5px;margin:14px 0 8px">Read <b>'+t.length+'</b> entries · <b>'+hrs(mins/60)+' hours</b> of non-billable time.</div>';
+    prev = '<div class="prev"><table><thead><tr><th>Date</th><th>Person</th><th>Category</th><th>Notes</th><th style="text-align:right">Min</th><th>Billed</th></tr></thead><tbody>'
+      + t.slice(0,40).map(function(r){ return '<tr><td>'+fmtDate(r.date)+'</td><td>'+esc(r.person)+'</td><td>'+esc(r.category)+'</td><td>'+esc(r.note)+'</td><td style="text-align:right">'+r.minutes+'</td><td>'+(r.billable?'Yes':'No')+'</td></tr>'; }).join('')
       + '</tbody></table></div>';
   }
   $('#mBody').innerHTML = top + mapping + note + prev;
@@ -1435,8 +1745,8 @@ function onEdit(ev){
   /* text fields fire on 'input'; selects and tick-boxes on 'change' — so nothing is handled twice */
   var isToggle = (el.tagName==='SELECT') || (el.type==='checkbox');
   if(ev.type==='change' && !isToggle){
-    /* a finished name edit refreshes the person dropdowns in the travel log */
-    if(el.dataset.obj==='labour' && el.dataset.k==='name') renderTravel();
+    /* a finished name edit refreshes the person dropdowns in the log and timers */
+    if(el.dataset.obj==='labour' && el.dataset.k==='name'){ renderTimeLog(); refreshPeoplePickers(); }
     return;
   }
   if(isToggle && ev.type!=='change') return;
@@ -1451,6 +1761,7 @@ function onEdit(ev){
     else if(k==='group'){ IMP.group = v==='1'; }
     else if(k==='unit'){ IMP.unit = v; }
     else if(k==='cat'){ IMP.cat = v; }
+    else if(k==='timeCat'){ IMP.timeCat = v; }
     else { IMP.map[k] = parseInt(v,10); }
     drawImport();
     return;
@@ -1480,8 +1791,8 @@ document.addEventListener('click', function(ev){
     var obj = el.dataset.del, id = el.dataset.id;
     S[obj] = S[obj].filter(function(r){ return r.id!==id; });
     if(obj==='overheads') renderOverheads();
-    if(obj==='labour'){ renderPeople(); renderTravel(); }
-    if(obj==='travel') renderTravel();
+    if(obj==='labour'){ renderPeople(); renderTimeLog(); refreshPeoplePickers(); }
+    if(obj==='timelog'){ renderTimeLog(); renderTimers(); }
     if(obj==='snapshots') renderSnaps();
     paint(); persist();
   }
@@ -1522,27 +1833,92 @@ $('#btnClearAmts').addEventListener('click', function(){
 /* labour buttons */
 $('#btnAddPerson').addEventListener('click', function(){
   S.labour.push(blankPerson({ name:'New person' }));
-  renderPeople(); renderTravel(); paint(); persist();
+  renderPeople(); renderTimeLog(); refreshPeoplePickers(); paint(); persist();
 });
 $('#btnAddApp').addEventListener('click', function(){
   S.labour.push(blankPerson({ name:'Apprentice', role:'Apprentice', type:'apprentice', payRate:22,
                               travelHrs:5, quotingHrs:0, adminHrs:1, yardHrs:3, trainingDays:20 }));
-  renderPeople(); renderTravel(); paint(); persist();
+  renderPeople(); renderTimeLog(); refreshPeoplePickers(); paint(); persist();
 });
 
-/* travel buttons */
-$('#btnAddTrav').addEventListener('click', function(){
-  S.travel.unshift({ id:uid(), date:todayISO(), person:(S.labour[0]?S.labour[0].name:''), note:'', minutes:'', billable:false });
-  renderTravel(); paint(); persist();
-  var first = $('#tblTrav tbody tr'); if(first) first.querySelectorAll('input')[1].focus();
+/* ---- timers ---- */
+document.addEventListener('click', function(ev){
+  var b = ev.target.closest ? ev.target.closest('.tmr') : null;
+  if(b){ startTimer(b.dataset.cat); }
 });
-$('#btnApplyTrav').addEventListener('click', function(){
-  var ts = travelStats();
-  if(!ts.weeks){ alert('Log a few trips first — there’s nothing to average yet.'); return; }
-  var v = Math.round(ts.avgPerPersonWeek*10)/10;
-  if(!confirm('Set travel to '+hrs(v)+' hours a week for everyone on the tools?\n\nBased on '+ts.weeks+' week'+(ts.weeks===1?'':'s')+' of logged trips.')) return;
-  S.labour.forEach(function(p){ if(p.billable) p.travelHrs = v; });
+$('#runStop').addEventListener('click', stopTimer);
+$('#timerNote').addEventListener('input', function(){
+  if(S.running){ S.running.note = this.value.trim(); renderTimers(); persist(); }
+});
+$('#timerPerson').addEventListener('change', function(){
+  if(S.running){ S.running.person = this.value; persist(); }
+});
+$('#filtPerson').addEventListener('change', function(){
+  S.timeOpt.person = this.value; paint(); persist();
+});
+
+/* ---- time log ---- */
+$('#btnAddTime').addEventListener('click', function(){
+  S.timelog.unshift({ id:uid(), date:todayISO(), category:'Travel',
+                      person:(S.labour[0]?S.labour[0].name:''), note:'', minutes:'', billable:false });
+  renderTimeLog(); paint(); persist();
+  var first = $('#tblTime tbody tr'); if(first){ var i = first.querySelectorAll('input'); if(i[1]) i[1].focus(); }
+});
+
+$('#btnExportTime').addEventListener('click', function(){
+  if(!S.timelog.length){ alert('Nothing logged yet.'); return; }
+  var head = ['Date','Person','Category','Notes','Minutes','Hours','Billed'];
+  var rows = S.timelog.slice().sort(function(a,b){ return (a.date||'')<(b.date||'')?-1:1; }).map(function(t){
+    return [t.date, '"'+String(t.person||'').replace(/"/g,'""')+'"', '"'+String(t.category||'').replace(/"/g,'""')+'"',
+            '"'+String(t.note||'').replace(/"/g,'""')+'"', num(t.minutes), (num(t.minutes)/60).toFixed(2), t.billable?'Yes':'No'];
+  });
+  download('Amp Me Up Electrical - time log.csv',
+           [head].concat(rows).map(function(r){ return r.join(','); }).join('\r\n'), 'text/csv');
+});
+
+/* Push the logged weekly averages into the Labour tab.
+   Only categories with logged time are written, so a partly-tracked week doesn't
+   silently zero the estimates you haven't started timing yet. */
+$('#btnApplyTime').addEventListener('click', function(){
+  var win = num(S.timeOpt.window);
+  var plan = [], skipped = [];
+
+  S.labour.forEach(function(p){
+    if(!p.billable) return;
+    var st = timeStats(p.name, win);
+    if(!st.weeks){ skipped.push(p.name); return; }
+    var fields = {};
+    Object.keys(st.byCat).forEach(function(k){
+      var d = catDef(k);
+      if(!d.field || !st.byCat[k].nbMins) return;
+      fields[d.field] = (fields[d.field]||0) + st.byCat[k].nbMins/60/st.weeks;
+    });
+    if(!Object.keys(fields).length){ skipped.push(p.name); return; }
+    plan.push({ person:p, fields:fields, weeks:st.weeks });
+  });
+
+  if(!plan.length){
+    alert(skipped.length
+      ? 'Nothing to apply yet — no non-billable time is logged against '+skipped.join(', ')+' in this window.'
+      : 'Log some time first, then this will replace the estimates on the Labour tab.');
+    return;
+  }
+
+  var msg = plan.map(function(x){
+    return x.person.name+' ('+x.weeks+' week'+(x.weeks===1?'':'s')+')\n'
+      + NB_FIELDS.filter(function(f){ return x.fields[f]!==undefined; })
+          .map(function(f){ return '   '+FIELD_LABEL[f]+': '+hrs(x.person[f])+' → '+hrs(x.fields[f])+' h/wk'; }).join('\n');
+  }).join('\n\n');
+
+  if(!confirm('Update the Labour tab from your logged time?\n\n'+msg
+      + (skipped.length ? '\n\nNo logged time for: '+skipped.join(', ')+' (left alone).' : '')
+      + '\n\nCategories you haven\'t logged keep their current figures.')) return;
+
+  plan.forEach(function(x){
+    Object.keys(x.fields).forEach(function(f){ x.person[f] = Math.round(x.fields[f]*10)/10; });
+  });
   renderPeople(); paint(); persist();
+  $('#saveNote').textContent = 'Labour updated';
 });
 $('#btnApplyEst').addEventListener('click', function(){
   var v = Math.round(estimateWeekly()*10)/10;
@@ -1553,7 +1929,7 @@ $('#btnApplyEst').addEventListener('click', function(){
 
 /* CSV import */
 $('#btnImportOh').addEventListener('click', function(){ openImport('overheads'); });
-$('#btnImportTrav').addEventListener('click', function(){ openImport('travel'); });
+$('#btnImportTime').addEventListener('click', function(){ openImport('time'); });
 $('#fileCsv').addEventListener('change', function(ev){
   var f = ev.target.files && ev.target.files[0]; if(!f) return;
   var mode = ev.target.dataset.mode;
@@ -1578,8 +1954,8 @@ function doImport(replace){
   } else {
     var t = importedRows();
     if(!t.length){ alert('Nothing to import — check the duration column.'); return; }
-    S.travel = replace ? t : t.concat(S.travel);
-    renderTravel();
+    S.timelog = replace ? t : t.concat(S.timelog);
+    renderTimeLog(); renderTimers();
   }
   closeModal(); paint(); persist();
 }
@@ -1588,7 +1964,7 @@ $('#mReplace').addEventListener('click', function(){ doImport(true); });
 
 /* snapshots */
 function takeSnapshot(){
-  var c = calc(), ts = travelStats();
+  var c = calc();
   var today = todayISO();
   var travelWk = c.billers.length
     ? c.billers.reduce(function(a,p){ return a+num(p.ref.travelHrs); },0)/c.billers.length : 0;
@@ -1679,14 +2055,16 @@ $('#dismissFirst').addEventListener('click', function(){
    ========================================================= */
 function renderAll(){
   $('#catList').innerHTML = allCategories().map(function(c){ return '<option value="'+esc(c)+'">'; }).join('');
-  $$('[data-obj="targets"],[data-obj="business"],[data-obj="est"],[data-obj="travelOpt"]').forEach(function(el){
+  $$('[data-obj="targets"],[data-obj="business"],[data-obj="est"],[data-obj="timeOpt"]').forEach(function(el){
     if(el.dataset.id) return;
     var v = (S[el.dataset.obj]||{})[el.dataset.k];
     if(el.type==='checkbox') el.checked = !!v; else el.value = (v===undefined?'':v);
   });
   renderOverheads();
   renderPeople();
-  renderTravel();
+  refreshPeoplePickers();
+  renderTimeLog();
+  renderTimers();
   renderSnaps();
   $('#firstRun').style.display = S.seeded ? 'flex' : 'none';
   paint();
