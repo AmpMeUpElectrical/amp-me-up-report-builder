@@ -45,7 +45,7 @@ The logo file (`..\Company Logo\New-Logo-Google-PFP.png`) is the same brand logo
 | ABN | 45 699 117 934 |
 | Phone | 0432 533 873 |
 | Email | logan@ampmeupelectrical.com |
-| Licence | QLD Contractor Lic 92927 |
+| Licence | QLD Contractor Lic 1513636 |
 | Name on licence | Logan James Allen |
 | Service areas | Logan · Redlands · Ipswich · Gold Coast |
 | Orange (accent) | `#F78419` |
@@ -62,7 +62,7 @@ Three fields are **pre-filled and visually locked** (`.locked` — greyed backgr
 
 | Field | Default |
 |---|---|
-| Electrical contractor licence no. | `92927` |
+| Electrical contractor licence no. | `1513636` |
 | Name on contractor licence | `Logan James Allen` |
 | Phone number | `0432 533 873` |
 
@@ -90,7 +90,7 @@ Mandatory fields are marked with an orange asterisk (`.req`), matching the offic
   "install": "string",        // site address — only if it differs from the client address above (JSON key kept as "install" for backward-compat)
   "work": "string",           // description of electrical work performed
   "testDate": "DD Mon YYYY",
-  "licence": "92927",         // locked default
+  "licence": "1513636",         // locked default
   "contractor": "Logan James Allen",  // locked default
   "phone": "0432 533 873",    // locked default
   "givenDate": "DD Mon YYYY",

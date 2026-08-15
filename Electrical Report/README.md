@@ -41,7 +41,7 @@ open('Amp_Me_Up_Electrical_Report_Builder.html','w').write(html)
 | ABN | 45 699 117 934 |
 | Phone | 0432 533 873 |
 | Email | logan@ampmeupelectrical.com |
-| Licence | QLD Contractor Lic 92927 |
+| Licence | QLD Contractor Lic 1513636 |
 | Service areas | Logan · Redlands · Ipswich · Gold Coast |
 | Orange (accent) | `#F78419` |
 | Near-black (base) | `#131313` |

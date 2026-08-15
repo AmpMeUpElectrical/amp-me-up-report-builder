@@ -56,4 +56,4 @@ Tuned to **4 pages** with the split-payment section off (clause spacing slightly
 
 ## 5. Brand constants
 
-Amp Me Up Electrical · ABN **45 699 117 934** · QLD Contractor Lic 92927 · 0432 533 873 · logan@ampmeupelectrical.com · Logan · Redlands · Ipswich · Gold Coast · orange `#F78419` · near-black `#131313`.
+Amp Me Up Electrical · ABN **45 699 117 934** · QLD Contractor Lic 1513636 · 0432 533 873 · logan@ampmeupelectrical.com · Logan · Redlands · Ipswich · Gold Coast · orange `#F78419` · near-black `#131313`.

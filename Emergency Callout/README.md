@@ -59,7 +59,7 @@ The optional Split Payment Agreement has its own matching pair of signature bloc
 | ABN | 45 699 117 934 |
 | Phone | 0432 533 873 |
 | Email | logan@ampmeupelectrical.com |
-| Licence | QLD Contractor Lic 92927 (Logan James Allen) |
+| Licence | QLD Contractor Lic 1513636 (Logan James Allen) |
 | Service areas | Logan · Redlands · Ipswich · Gold Coast |
 | Orange (accent) | `#F78419` |
 | Near-black (base) | `#131313` |
