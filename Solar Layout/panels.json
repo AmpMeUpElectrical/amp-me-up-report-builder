@@ -1,0 +1,58 @@
+[
+  {
+    "id": "jinko-51QL6-DV",
+    "brand": "JinkoSolar",
+    "series": "Tiger Neo 51QL6-DV (mono-facial, dual glass)",
+    "model": "JKM510N-51QL6-DV-F2-OC",
+    "modelRange": "JKM495-520N-51QL6-DV-F2-OC",
+    "typeCode": "JKMxxxN-51QL6-DV",
+    "watts": [495, 520],
+    "length": 1906,
+    "width": 1134,
+    "frameHeight": 30,
+    "weightKg": 23.0,
+    "glass": "dual glass, 1.6 mm front / 1.6 mm back",
+    "cells": "204 (51x4)",
+    "clamp": {
+      "method": "Long side clamping (4pcs), rails (2pcs) parallel to short side",
+      "rule": "L = A/5 ~ A/4",
+      "minFromEnd": 382,
+      "maxFromEnd": 476,
+      "maxTestLoadPa": "+5400/-2400",
+      "clampMinLength": 50,
+      "clampMinThickness": 3,
+      "frameOverlap": [10, 11],
+      "torqueNm": [16, 20],
+      "source": "TUV-Installation-Manual-CEC.pdf, Table 5, p17 (row group: 48HL4M-DB/DV 1.6mm, 51QL6-DV, 51QL6-DB, 48QL6-DB/DV 1.6mm)"
+    },
+    "note": "A/5~A/4 is the ONLY permitted column for this type code; A/4+/-50, A/5+/-50, A/4 and 500+/-50 are all '/'. Bounds rounded inward from A/5=381.2 and A/4=476.5. Do NOT reuse the 60HL4-V figures (A/5+/-50) - different type code, same 1906x1134x30 size."
+  },
+  {
+    "id": "aiko-MCE54Mw",
+    "brand": "AIKO",
+    "series": "Neostar 3P54",
+    "model": "AIKO-A495-MCE54Mw",
+    "modelRange": "AIKO-A470..A500-MCE54Mw",
+    "typeCode": "AIKO-Axxx-MCE54Mw",
+    "watts": [495],
+    "length": 1762,
+    "width": 1134,
+    "frameHeight": 30,
+    "weightKg": 21.1,
+    "glass": "mono glass, 3.2 mm tempered",
+    "cells": "108 (6x18)",
+    "clamp": {
+      "method": "Method 6 - clamps on the long side, mounting rails cross the long frame",
+      "rule": "310-410 mm from short edge",
+      "minFromEnd": 310,
+      "maxFromEnd": 410,
+      "maxTestLoadPa": "+5400/-2400",
+      "clampMinLength": 50,
+      "clampMinThickness": 4,
+      "frameOverlap": [10, 12],
+      "torqueNm": [16, 20],
+      "source": "AIKO PV Modules Installation Manual, s6.2.3 mono glass table, p10"
+    },
+    "note": "Method 6 is the ONLY permitted clamp method for MCE54Mw/Mb. Beware AIKO-Axxx-MAH54Tm shares the identical 1762x1134x30 size but requires 400-500mm."
+  }
+]

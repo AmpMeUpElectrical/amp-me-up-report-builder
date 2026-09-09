@@ -1,0 +1,1275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Amp Me Up Electrical — Solar Array Layout Planner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- Non-blocking: a stalled stylesheet must not stop the planner starting on a
+     roof with poor reception. Falls back to Segoe UI / system sans. -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap"
+      media="print" onload="this.media='all';this.onload=null">
+<style>
+  :root{
+    --orange:#F78419; --dark:#131313; --line:#e6e4dd; --muted:#6a6a66; --hint:#9a9a94; --tint:#fef8f1;
+    --ok:#1c7c4c; --bad:#c0392b; --warn:#b8860b; --soft:#fafaf8;
+    --zc:#e2504a; --ze:#ef9a3d; --zi:#f2d06b; --zn:#a8d8b0;
+    --sans:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--sans);color:var(--dark);background:#d7d5cf;line-height:1.5;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1240px;margin:0 auto;padding:24px 14px 56px}
+  .sheet{background:#fff;border-radius:8px;box-shadow:0 4px 24px rgba(0,0,0,.12);overflow:hidden}
+
+  .header{background:var(--dark);padding:20px 24px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+  .hleft{display:flex;align-items:center;gap:15px}
+  .logo{width:76px;height:76px;border-radius:8px;background:#fff;padding:5px;flex:0 0 76px;display:flex;align-items:center;justify-content:center}
+  .logo img{max-width:100%;max-height:100%;object-fit:contain}
+  .bname{color:#fff;font-size:19px;font-weight:800;letter-spacing:.2px}
+  .bsub{color:#b6bcc4;font-size:11px;margin-top:5px;line-height:1.5}
+  .contact{text-align:right;color:#b6bcc4;font-size:10.5px;line-height:1.7;white-space:nowrap}
+  .accent{height:4px;background:var(--orange)}
+  @media(max-width:620px){.contact{text-align:left}}
+
+  .toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:11px 20px;background:var(--soft);border-bottom:1px solid var(--line)}
+  .btn{font:inherit;font-size:12.5px;font-weight:700;border:1px solid var(--line);background:#fff;color:var(--dark);border-radius:6px;padding:7px 12px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:.13s}
+  .btn:hover{border-color:var(--orange)}
+  .btn.primary{background:var(--orange);border-color:var(--orange);color:#fff}
+  .btn.primary:hover{filter:brightness(1.06)}
+  .spacer{flex:1}
+  .savenote{font-size:11px;color:var(--hint)}
+
+  .tabs{display:flex;gap:2px;padding:0 12px;background:var(--soft);border-bottom:1px solid var(--line);overflow-x:auto}
+  .tab{font:inherit;font-size:13px;font-weight:700;color:var(--muted);background:none;border:0;border-bottom:3px solid transparent;padding:11px 13px;cursor:pointer;white-space:nowrap}
+  .tab:hover{color:var(--dark)}
+  .tab.on{color:var(--dark);border-bottom-color:var(--orange)}
+  .pane{display:none;padding:22px 20px 34px}
+  .pane.on{display:block}
+
+  h2.sect{font-size:15px;font-weight:800;letter-spacing:-.2px;margin:0 0 3px}
+  p.hint{font-size:12px;color:var(--muted);margin-bottom:14px;max-width:78ch}
+  .block{border:1px solid var(--line);border-radius:8px;padding:16px;margin-bottom:16px}
+  .block>h3{font-size:12.5px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:12px}
+  .banner{background:var(--tint);border:1px solid #f3d9bd;border-radius:8px;padding:12px 14px;font-size:12.5px;color:#7a4a12;margin-bottom:16px}
+  .banner.bad{background:#fdecea;border-color:#f2c1bb;color:#8e2c20}
+  .banner.good{background:#eaf6ee;border-color:#bfe0ca;color:#17603c}
+  .banner b{font-weight:800}
+  .banner ul{margin:6px 0 0 18px}
+  .banner li{margin:3px 0}
+
+  label.fl{display:block;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--hint);margin-bottom:4px}
+  input.f,select.f{font:inherit;font-size:12.5px;color:inherit;background:#fff;border:1px solid var(--line);border-radius:5px;padding:6px 8px;width:100%}
+  input.f:focus,select.f:focus{outline:2px solid rgba(247,132,25,.3);border-color:var(--orange)}
+  input.num{text-align:right}
+  .fgrid{display:grid;gap:10px;margin-bottom:10px}
+  .g2{grid-template-columns:repeat(2,1fr)} .g3{grid-template-columns:repeat(3,1fr)}
+  .g4{grid-template-columns:repeat(4,1fr)}
+  @media(max-width:820px){.g4{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:520px){.g2,.g3,.g4{grid-template-columns:1fr}}
+  .fnote{font-size:11px;color:var(--hint);margin:-2px 0 10px;line-height:1.6}
+
+  table.grid{width:100%;border-collapse:collapse;font-size:12.5px}
+  table.grid th{text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--hint);padding:7px 6px;border-bottom:1px solid var(--line);white-space:nowrap}
+  table.grid td{padding:5px 6px;border-bottom:1px solid #f4f3ef;vertical-align:top}
+  table.grid tr:last-child td{border-bottom:0}
+  table.grid td.n,table.grid th.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+  table.grid td.b{font-weight:800}
+
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:16px}
+  .card{border:1px solid var(--line);border-radius:8px;padding:14px 15px;background:#fff}
+  .card .k{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--hint)}
+  .card .v{font-size:26px;font-weight:800;letter-spacing:-.7px;margin-top:5px;font-variant-numeric:tabular-nums}
+  .card .s{font-size:11.5px;color:var(--muted);margin-top:4px;line-height:1.45}
+  .card.hero{background:var(--dark);border-color:var(--dark)}
+  .card.hero .k{color:#8d8d86} .card.hero .v{color:#fff} .card.hero .s{color:#b6bcc4}
+  .card.fail{background:#fdecea;border-color:#f2c1bb}
+  .card.pass{background:#eaf6ee;border-color:#bfe0ca}
+
+  .pill{display:inline-block;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;padding:2px 7px;border-radius:99px;border:1px solid}
+  .pill.ok{color:var(--ok);border-color:#bfe0ca;background:#eaf6ee}
+  .pill.no{color:var(--bad);border-color:#f2c1bb;background:#fdecea}
+  .pill.wa{color:var(--warn);border-color:#eedca8;background:#fdf6e3}
+
+  .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:11.5px;color:var(--muted);margin:10px 0 4px}
+  .legend span{display:inline-flex;align-items:center;gap:5px}
+  .sw{width:13px;height:13px;border-radius:3px;border:1px solid rgba(0,0,0,.15);display:inline-block}
+  .drawwrap{border:1px solid var(--line);border-radius:8px;background:#fff;padding:10px;overflow-x:auto}
+  svg.plan{display:block;min-width:640px;width:100%;height:auto}
+
+  .foot{padding:14px 20px 20px;font-size:11px;color:var(--hint);border-top:1px solid var(--line);line-height:1.7}
+
+  #printOnly{display:none}
+  @media print{
+    @page{size:A4 landscape;margin:10mm}
+    body{background:#fff}
+    .wrap{max-width:none;padding:0}
+    .sheet{box-shadow:none;border-radius:0}
+    .noprint,.toolbar,.tabs,.pane,.foot{display:none!important}
+    #printOnly{display:block}
+    .header,.accent{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    #printOnly .pbody{padding:14px 16px}
+    #printOnly h3{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#666;margin:12px 0 6px;padding-bottom:4px;border-bottom:1px solid #ddd;break-after:avoid;page-break-after:avoid}
+    #printOnly table{width:100%;border-collapse:collapse;font-size:9.5px}
+    #printOnly td,#printOnly th{padding:3px 5px;border-bottom:1px solid #eee;text-align:left}
+    #printOnly td.n,#printOnly th.n{text-align:right;font-variant-numeric:tabular-nums}
+    #printOnly svg{width:100%;height:auto;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    .avoid{break-inside:avoid;page-break-inside:avoid}
+    .pagebreak{break-before:page;page-break-before:always}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="sheet">
+
+    <div class="header">
+      <div class="hleft">
+        <div class="logo"><img src="../Company%20Logo/New-Logo-Google-PFP.png" alt="Amp Me Up Electrical"></div>
+        <div>
+          <div class="bname">Amp Me Up Electrical</div>
+          <div class="bsub">Solar Array Layout Planner<br>Contractor Lic 1513636 &middot; ABN 45 699 117 934</div>
+        </div>
+      </div>
+      <div class="contact">
+        <div>0432 533 873</div>
+        <div>logan@ampmeupelectrical.com</div>
+        <div id="hdrDate">&nbsp;</div>
+      </div>
+    </div>
+    <div class="accent"></div>
+
+    <div class="toolbar noprint">
+      <a class="btn" href="../index.html">&larr; Tools</a>
+      <button class="btn" id="btnSaveFile">Save job (.json)</button>
+      <button class="btn" id="btnLoadFile">Load job</button>
+      <button class="btn" id="btnReset">Reset</button>
+      <button class="btn primary" id="btnPrint">Print set-out sheet</button>
+      <span class="spacer"></span>
+      <span class="savenote" id="saveNote">&nbsp;</span>
+    </div>
+
+    <div class="tabs noprint">
+      <button class="tab on" data-p="setup">Job set-up</button>
+      <button class="tab" data-p="layout">Layout</button>
+      <button class="tab" data-p="markup">Mark-up sheet</button>
+      <button class="tab" data-p="compliance">Compliance</button>
+      <button class="tab" data-p="materials">Materials</button>
+    </div>
+
+    <!-- ============================ SET-UP ============================ -->
+    <div class="pane on" id="p-setup">
+      <h2 class="sect">Job set-up</h2>
+      <p class="hint">Everything is measured in millimetres. Measure the roof face
+        <b>capping edge to capping edge</b> &mdash; not by counting whole tiles, because the
+        edge tile usually overlaps a large part of the capping and counting can cost you a panel.</p>
+
+      <div class="block">
+        <h3>Roof &amp; site</h3>
+        <div class="fgrid g4">
+          <div><label class="fl">Roof type</label>
+            <select class="f" id="roof"><option value="tile">Tile</option><option value="tin">Tin (metal sheet)</option></select></div>
+          <div><label class="fl">Wind region</label>
+            <select class="f" id="region"><option>A</option><option selected>B1</option><option>B2</option><option>C</option><option>D</option></select></div>
+          <div><label class="fl">Terrain category</label>
+            <select class="f" id="tc"><option value="2">TC2 &mdash; open</option><option value="3" selected>TC3 &mdash; suburban</option></select></div>
+          <div><label class="fl">Roof pitch (deg)</label><input class="f num" id="pitch" type="number" value="22"></div>
+        </div>
+        <div class="fgrid g4">
+          <div><label class="fl">Building height h (m)</label><input class="f num" id="bh" type="number" value="5" step="0.1"></div>
+          <div><label class="fl">Building width b (m)</label><input class="f num" id="bb" type="number" value="12" step="0.1"></div>
+          <div><label class="fl">Building depth d (m)</label><input class="f num" id="bd" type="number" value="10" step="0.1"></div>
+          <div><label class="fl">Panel gap above roof s (mm)</label><input class="f num" id="gapS" type="number" value="50"></div>
+        </div>
+        <p class="fnote">h, b and d set the wind zone bands and the h/d ratio. s is the gap under the panel
+          &mdash; the certification bans a panel within 2s of any edge or the ridge, so the setback used is
+          whichever is larger of 200&nbsp;mm and 2s.</p>
+      </div>
+
+      <div class="block">
+        <h3>Roof face</h3>
+        <div class="fgrid g4">
+          <div><label class="fl">Width, capping to capping (mm)</label><input class="f num" id="faceW" type="number" value="8000"></div>
+          <div><label class="fl">Length, gutter to ridge (mm)</label><input class="f num" id="faceL" type="number" value="5000"></div>
+          <div><label class="fl">Truss / rafter spacing (mm)</label><input class="f num" id="trussPitch" type="number" value="600"></div>
+          <div><label class="fl">First truss from left edge (mm)</label><input class="f num" id="trussOffset" type="number" value="0"></div>
+        </div>
+        <p class="fnote">Trusses and rafters run up the slope, so their spacing is measured across the roof.</p>
+      </div>
+
+      <div class="block" id="tileBlock">
+        <h3>Tile</h3>
+        <div class="fgrid g4">
+          <div><label class="fl">Exposed length of a tile (mm)</label><input class="f num" id="gauge" type="number" value="330"></div>
+          <div><label class="fl">Tile cover width (mm)</label><input class="f num" id="coverW" type="number" value="300"></div>
+          <div><label class="fl">Tile profile</label>
+            <select class="f" id="tileProfile"><option value="flat">Flat &mdash; hook sits anywhere</option><option value="profiled">Profiled (Malibu etc) &mdash; hook must sit in a trough</option></select></div>
+          <div><label class="fl">Hook shift limit (mm)</label><input class="f num" id="hookShift" type="number" value="60"></div>
+        </div>
+        <div class="fgrid g4" id="troughRow" style="display:none">
+          <div><label class="fl">Trough width (mm)</label><input class="f num" id="troughW" type="number" value="250"></div>
+          <div><label class="fl">First trough from left edge (mm)</label><input class="f num" id="troughOffset" type="number" value="150"></div>
+          <div><label class="fl">Hook base width (mm)</label><input class="f num" id="hookW" type="number" value="40"></div>
+        </div>
+        <p class="fnote">Exposed length is the up-slope distance from one row of tiles to the next.
+          The hook shift limit is 60&nbsp;mm for a standard interface (120&nbsp;mm between the furthest screw holes).
+          On a profiled tile the hook is always screwed to a truss, then slid along until it lands in a trough.</p>
+      </div>
+
+      <div class="block" id="tinBlock" style="display:none">
+        <h3>Tin</h3>
+        <div class="fgrid g4">
+          <div><label class="fl">Purlin / batten spacing (mm)</label><input class="f num" id="purlinPitch" type="number" value="900"></div>
+          <div><label class="fl">First purlin from gutter (mm)</label><input class="f num" id="purlinOffset" type="number" value="300"></div>
+          <div><label class="fl">Fixing into</label>
+            <select class="f" id="fixing">
+              <option value="timber-35+">Timber, 35&nbsp;mm+ embedment</option>
+              <option value="timber-20">Timber, 20&nbsp;mm embedment</option>
+              <option value="steel-1.9+">Steel purlin 1.9&nbsp;mm+</option>
+              <option value="steel-1.5">Steel purlin 1.5&nbsp;mm</option>
+              <option value="steel-1.2">Steel purlin 1.2&nbsp;mm</option>
+              <option value="steel-0.75">Steel purlin 0.75&nbsp;mm</option>
+              <option value="steel-0.55">Steel purlin 0.55&nbsp;mm</option>
+            </select></div>
+        </div>
+        <p class="fnote">Purlins and battens run across the slope, so their spacing is measured up the roof.
+          Thin steel derates the certified spacing hard &mdash; 0.55&nbsp;mm is 27% of the table value.</p>
+      </div>
+
+      <div class="block">
+        <h3>Panel &amp; layout</h3>
+        <div class="fgrid g4">
+          <div><label class="fl">Panel</label><select class="f" id="panel"></select></div>
+          <div><label class="fl">Orientation</label>
+            <select class="f" id="orient">
+              <option value="both">Best fit &mdash; mix portrait and landscape</option>
+              <option value="portrait">Portrait only</option>
+              <option value="landscape">Landscape only</option>
+            </select></div>
+          <div><label class="fl">Rail cantilever limit</label>
+            <select class="f" id="cant">
+              <option value="0.25">1/4 of the span</option>
+              <option value="0.333">1/3 of the span</option>
+              <option value="0">No overhang</option>
+            </select></div>
+          <div><label class="fl">Tile fixing</label>
+            <select class="f" id="fixingTile">
+              <option value="timber-35+">Timber, 35&nbsp;mm+ embedment</option>
+              <option value="timber-20">Timber, 20&nbsp;mm embedment</option>
+              <option value="steel-1.9+">Steel 1.9&nbsp;mm+</option>
+              <option value="steel-1.5">Steel 1.5&nbsp;mm</option>
+              <option value="steel-1.2">Steel 1.2&nbsp;mm</option>
+              <option value="steel-0.75">Steel 0.75&nbsp;mm</option>
+              <option value="steel-0.55">Steel 0.55&nbsp;mm</option>
+            </select></div>
+        </div>
+        <div id="panelInfo" class="fnote"></div>
+      </div>
+    </div>
+
+    <!-- ============================ LAYOUT ============================ -->
+    <div class="pane" id="p-layout">
+      <div id="layoutOut"></div>
+    </div>
+
+    <!-- ============================ MARK-UP ============================ -->
+    <div class="pane" id="p-markup">
+      <div id="markupOut"></div>
+    </div>
+
+    <!-- ============================ COMPLIANCE ============================ -->
+    <div class="pane" id="p-compliance">
+      <div id="compOut"></div>
+    </div>
+
+    <!-- ============================ MATERIALS ============================ -->
+    <div class="pane" id="p-materials">
+      <div id="matOut"></div>
+    </div>
+
+    <div id="printOnly"><div class="pbody" id="printBody"></div></div>
+
+    <div class="foot noprint">
+      Spacings read from Gamcorp certification 14022-MA&nbsp;PRO-F1 (MA&nbsp;PRO Rail, tin &amp; tile,
+      AS/NZS&nbsp;1170.2:2021), valid to 30/11/2027. Clamp zones from the panel manufacturers' own
+      installation manuals. This tool assists set-out; it does not replace the certification, the panel
+      manual, or an assessment of the roof structure.
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================================
+   DATA — certified spacing tables, compacted from the Gamcorp PDF.
+   Axis order per table: h/d block, wind region, height band, zone.
+   ============================================================================ */
+const TABLES_RAW = {"zones":["corner","edge","intermediate","internal"],"bands":["h<=5","5<h<=10","10<h<=15","15<h<=20"],"hd":["h/d<=0.5","h/d>=1.0"],"tables":[{"r":"tin","p":"1.67mx1m","t":2,"g":"A|B1|B2|C|D","v":"1060,1480,1655,1920,870,1335,1540,1805,785,1200,1480,1735,740,1135,1450,1695,790,1215,1655,1920,650,995,1350,1805,585,895,1215,1735,555,845,1145,1695,640,980,1335,1795,530,805,1090,1665,,730,985,1520,,685,925,1425,,560,760,1170,,460,620,955,,415,560,860,,,530,810,,,535,820,,,440,675,,,,610,,,,575,720,1105,1435,1680,595,905,1225,1560,535,815,1105,1500,,770,1045,1470,540,820,1115,1680,,675,915,1410,,610,825,1265,,575,775,1190,,670,905,1390,,550,740,1135,,,670,1025,,,630,965,,,515,790,,,425,645,,,,585,,,,550,,,,560,,,,460,,,,415,,,,"},{"r":"tin","p":"1.67mx1m","t":3,"g":"A|B1|B2|C|D","v":"1290,1590,1785,2045,1290,1590,1785,2045,1110,1505,1685,1950,990,1445,1615,1880,960,1480,1780,2040,960,1480,1780,2040,830,1270,1685,1945,740,1135,1545,1880,780,1195,1630,1905,780,1195,1630,1905,675,1030,1400,1825,600,920,1245,1750,445,680,920,1430,445,680,920,1430,,590,795,1230,,525,710,1090,,485,650,1000,,485,650,1000,,415,560,860,,,500,765,875,1345,1540,1810,875,1345,1540,1810,755,1155,1460,1715,675,1030,1400,1635,655,1000,1360,1805,655,1000,1360,1805,565,860,1170,1710,,770,1045,1610,530,810,1100,1670,530,810,1100,1670,,700,945,1460,,625,845,1295,,465,625,960,,465,625,960,,,540,830,,,485,740,,,445,680,,,445,680,,,,585,,,,520"},{"r":"tin","p":"1.97mx1m","t":2,"g":"A|B1|B2|C|D","v":"900,1390,1565,1840,735,1135,1455,1715,665,1020,1390,1645,630,965,1310,1605,670,1030,1400,1840,550,845,1145,1710,495,760,1030,1600,470,715,970,1500,545,830,1130,1700,450,685,925,1430,,615,835,1290,,580,785,1210,,475,645,990,,390,525,810,,355,475,730,,,450,690,,,455,695,,,375,570,,,,515,,,,485,610,935,1275,1590,500,765,1040,1475,455,690,935,1420,,655,885,1365,455,695,945,1460,,575,775,1195,,515,700,1070,,490,660,1010,,565,765,1175,,465,630,965,,,570,870,,,535,815,,,440,670,,,360,550,,,,495,,,,465,,,,475,,,,390,,,,350,,,,"},{"r":"tin","p":"1.97mx1m","t":3,"g":"A|B1|B2|C|D","v":"1095,1505,1690,1960,1095,1505,1690,1960,940,1425,1595,1870,840,1295,1525,1805,815,1255,1685,1955,815,1255,1685,1955,700,1080,1470,1865,630,965,1310,1805,660,1015,1380,1830,660,1015,1380,1830,570,870,1185,1735,510,780,1055,1640,380,575,780,1210,380,575,780,1210,,500,675,1040,,445,600,925,,410,550,850,,410,550,850,,355,475,730,,,425,650,740,1140,1460,1715,740,1140,1460,1715,640,980,1335,1620,570,875,1190,1550,555,845,1150,1710,555,845,1150,1710,480,730,990,1535,,655,885,1365,450,685,930,1440,450,685,930,1440,,595,800,1235,,530,715,1100,,395,530,815,,395,530,815,,,460,700,,,410,625,,,375,575,,,375,575,,,,495,,,,440"},{"r":"tin","p":"2.1mx1.05m","t":2,"g":"A|B1|B2|C|D","v":"845,1305,1535,1810,690,1060,1425,1675,620,955,1300,1610,590,905,1230,1570,630,965,1315,1810,515,790,1075,1670,465,710,965,1500,440,670,910,1410,510,780,1060,1650,420,640,865,1340,,580,785,1210,,545,735,1135,,445,605,930,,365,495,760,,,445,685,,,420,645,,,425,655,,,350,535,,,,485,,,,455,575,880,1195,1555,470,720,975,1445,425,645,875,1355,,615,830,1280,430,655,885,1370,,540,725,1120,,485,655,1005,,455,615,945,,530,715,1105,,435,590,905,,,535,815,,,500,765,,,410,630,,,,515,,,,465,,,,440,,,,445,,,,365,,,,,,,,"},{"r":"tin","p":"2.1mx1.05m","t":3,"g":"A|B1|B2|C|D","v":"1025,1475,1655,1930,1025,1475,1655,1930,880,1365,1565,1840,790,1215,1495,1765,765,1180,1615,1925,765,1180,1615,1925,660,1010,1380,1835,590,905,1230,1765,620,950,1295,1800,620,950,1295,1800,535,820,1115,1700,480,730,990,1540,355,540,735,1135,355,540,735,1135,,470,635,975,,415,565,870,,385,520,795,,385,520,795,,,445,685,,,400,610,695,1065,1425,1680,695,1065,1425,1680,600,920,1250,1585,535,820,1115,1515,520,795,1080,1675,520,795,1080,1675,450,685,930,1440,,615,830,1280,425,645,875,1350,425,645,875,1350,,555,750,1160,,495,670,1030,,370,495,765,,370,495,765,,,430,660,,,385,585,,,355,540,,,355,540,,,,465,,,,415"},{"r":"tin","p":"2.2mx1.2m","t":2,"g":"A|B1|B2|C|D","v":"805,1245,1510,1790,660,1015,1385,1650,595,910,1245,1585,560,860,1175,1550,600,920,1255,1790,495,755,1025,1595,445,680,920,1430,420,640,870,1345,485,745,1010,1575,400,610,830,1280,,555,750,1155,,520,700,1080,,425,575,890,,,470,725,,,425,655,,,400,615,,,405,625,,,,510,,,,460,,,,435,550,840,1140,1530,450,685,930,1425,405,620,835,1295,,585,790,1225,410,625,845,1305,,515,695,1070,,465,625,960,,435,590,905,,505,685,1055,,415,560,860,,,510,780,,,480,730,,,390,600,,,,490,,,,445,,,,420,,,,425,,,,,,,,,,,,"},{"r":"tin","p":"2.2mx1.2m","t":3,"g":"A|B1|B2|C|D","v":"980,1450,1630,1910,980,1450,1630,1910,840,1305,1540,1820,750,1160,1470,1740,730,1125,1540,1905,730,1125,1540,1905,630,965,1320,1815,560,860,1175,1740,590,905,1235,1775,590,905,1235,1775,510,780,1060,1655,455,695,945,1470,,515,700,1085,,515,700,1085,,445,605,935,,395,540,830,,,495,760,,,495,760,,,425,655,,,,580,660,1020,1395,1655,660,1020,1395,1655,570,875,1195,1565,510,785,1065,1495,495,760,1030,1605,495,760,1030,1605,430,655,885,1375,,585,790,1225,405,615,835,1290,405,615,835,1290,,530,720,1105,,475,640,985,,,475,730,,,475,730,,,410,630,,,,560,,,,515,,,,515,,,,445,,,,390"},{"r":"tin","p":"2.4mx1.2m","t":2,"g":"A|B1|B2|C|D","v":"740,1140,1465,1735,605,930,1270,1605,545,835,1140,1540,515,790,1075,1505,550,845,1150,1735,450,690,940,1465,410,625,845,1310,,585,795,1230,445,685,925,1445,,560,760,1175,,505,685,1055,,475,645,990,,365,530,815,,,430,665,,,365,600,,,,565,,,,570,,,,470,,,,420,,,,395,500,770,1045,1490,410,630,855,1325,,565,765,1185,,535,725,1120,,570,775,1200,,470,635,980,,425,575,880,,400,540,830,,465,625,965,,,515,790,,,465,715,,,440,670,,,,550,,,,450,,,,405,,,,,,,,,,,,,,,,,,,,"},{"r":"tin","p":"2.4mx1.2m","t":3,"g":"A|B1|B2|C|D","v":"895,1395,1580,1865,895,1395,1580,1865,770,1195,1495,1775,690,1065,1430,1690,670,1030,1410,1865,670,1030,1410,1865,575,885,1210,1770,515,790,1075,1685,540,830,1135,1725,540,830,1135,1725,470,715,975,1520,420,640,865,1345,,475,640,995,,475,640,995,,410,555,855,,,495,760,,,455,695,,,455,695,,,365,600,,,,535,605,935,1275,1605,605,935,1275,1605,525,805,1095,1520,470,715,975,1450,455,695,945,1475,455,695,945,1475,390,600,810,1260,,535,725,1120,,565,765,1180,,565,765,1180,,485,660,1015,,435,585,900,,,435,665,,,435,665,,,,575,,,,515,,,,470,,,,470,,,,405,,,,"},{"r":"tile","p":"1.67mx1m","t":2,"g":"A|B1|B2|C|D","v":"480,755,1060,1760,395,610,850,1385,355,550,755,1220,330,515,710,1140,480,755,1060,1760,390,610,845,1375,355,550,755,1220,330,515,710,1140,385,600,835,1355,,490,670,1075,,440,605,960,,415,570,900,,400,550,870,,325,445,695,,,400,625,,,380,590,,,420,660,,,345,535,,,,480,,,,450,,500,690,1105,,410,560,885,,365,500,790,,345,470,740,,500,690,1105,,405,555,880,,365,500,790,,345,470,740,,400,550,870,,325,445,700,,,405,630,,,380,590,,,370,570,,,,465,,,,420,,,,395,,,,440,,,,360,,,,,,,,"},{"r":"tile","p":"1.67mx1m","t":3,"g":"A|B1|B2|C|D","v":"590,940,1330,2045,590,940,1330,2045,505,800,1120,1875,450,705,980,1620,585,930,1320,2040,585,930,1320,2040,505,795,1115,1860,450,705,980,1620,470,740,1035,1720,470,740,1035,1720,405,635,880,1445,360,560,775,1255,,490,670,1075,,490,670,1075,,420,575,915,,375,510,805,,375,515,810,,375,515,810,,305,445,695,,,395,615,395,615,855,1395,395,615,855,1395,340,530,730,1175,,470,640,1025,395,610,850,1380,395,610,850,1380,340,525,725,1165,,470,640,1025,,490,675,1085,,490,675,1085,,425,580,925,,375,515,810,,325,445,700,,325,445,700,,,385,600,,,345,530,,,345,535,,,345,535,,,,460,,,,410"},{"r":"tile","p":"1.97mx1m","t":2,"g":"A|B1|B2|C|D","v":"410,640,895,1495,335,520,720,1175,,465,640,1035,,435,600,970,410,640,895,1495,330,515,715,1165,,465,640,1035,,435,600,970,325,510,705,1150,,415,570,910,,375,510,815,,350,480,765,,340,465,735,,,375,590,,,340,530,,,,500,,,360,560,,,,450,,,,405,,,,385,,425,585,940,,345,475,750,,,425,670,,,400,630,,425,585,940,,345,470,745,,,425,670,,,400,630,,340,465,740,,,380,595,,,340,535,,,,500,,,,485,,,,395,,,,355,,,,335,,,,375,,,,,,,,,,,,"},{"r":"tile","p":"1.97mx1m","t":3,"g":"A|B1|B2|C|D","v":"500,795,1125,1925,500,795,1125,1925,430,675,950,1590,380,595,830,1375,495,790,1120,1910,495,790,1120,1910,425,670,945,1580,380,595,830,1375,400,630,880,1460,400,630,880,1460,345,540,750,1220,,475,655,1065,,415,570,910,,415,570,910,,355,490,775,,,430,680,,,435,690,,,435,690,,,375,590,,,335,520,335,520,725,1180,335,520,725,1180,,450,620,995,,395,545,870,330,520,720,1170,330,520,720,1170,,445,615,990,,395,545,870,,415,575,920,,415,575,920,,360,490,780,,,435,685,,,380,595,,,380,595,,,325,510,,,,450,,,,455,,,,455,,,,390,,,,345"},{"r":"tile","p":"2.1mx1.05m","t":2,"g":"A|B1|B2|C|D","v":"380,600,840,1400,,485,675,1100,,435,600,970,,410,565,905,380,600,840,1400,,485,670,1090,,435,600,970,,410,565,905,,480,665,1080,,390,535,855,,350,480,765,,,450,715,,,435,690,,,355,555,,,,500,,,,465,,,,525,,,,425,,,,380,,,,360,,400,550,880,,,445,705,,,400,630,,,375,590,,400,550,880,,,445,700,,,400,630,,,375,590,,,435,690,,,355,555,,,,500,,,,470,,,,455,,,,370,,,,,,,,,,,,350,,,,,,,,,,,,"},{"r":"tile","p":"2.1mx1.05m","t":3,"g":"A|B1|B2|C|D","v":"470,745,1055,1805,470,745,1055,1805,405,635,890,1490,355,560,780,1285,465,740,1050,1790,465,740,1050,1790,400,630,885,1480,355,560,780,1285,375,590,825,1365,375,590,825,1365,,505,700,1150,,445,615,995,,390,535,855,,390,535,855,,,460,725,,,405,640,,,410,645,,,410,645,,,350,550,,,,485,,490,680,1110,,490,680,1110,,420,580,935,,370,510,815,,485,675,1100,,485,675,1100,,415,575,925,,370,510,815,,390,540,860,,390,540,860,,,460,735,,,410,645,,,355,555,,,355,555,,,,480,,,,425,,,,425,,,,425,,,,365,,,,"},{"r":"tile","p":"2.2mx1.2m","t":2,"g":"A|B1|B2|C|D","v":",575,805,1340,,465,645,1050,,415,575,925,,365,540,865,,575,805,1340,,460,640,1045,,415,575,925,,365,540,865,,455,630,1030,,,510,815,,,460,730,,,430,685,,,415,660,,,,530,,,,475,,,,445,,,,500,,,,405,,,,,,,,,,,525,840,,,425,675,,,,600,,,,560,,,525,840,,,425,670,,,,600,,,,560,,,415,660,,,,530,,,,480,,,,450,,,,435,,,,,,,,,,,,,,,,,,,,,,,,,,,,"},{"r":"tile","p":"2.2mx1.2m","t":3,"g":"A|B1|B2|C|D","v":"450,710,1010,1725,450,710,1010,1725,,605,850,1420,,535,745,1230,445,705,1000,1710,445,705,1000,1710,,600,845,1415,,535,745,1230,,560,785,1305,,560,785,1305,,480,670,1095,,425,590,950,,,510,815,,,510,815,,,435,695,,,,610,,,365,615,,,365,615,,,,525,,,,465,,470,650,1055,,470,650,1055,,400,555,890,,,485,775,,465,645,1050,,465,645,1050,,395,550,885,,,485,775,,,515,820,,,515,820,,,440,700,,,340,615,,,,530,,,,530,,,,455,,,,405,,,,405,,,,405,,,,,,,,"},{"r":"tile","p":"2.4mx1.2m","t":2,"g":"A|B1|B2|C|D","v":",525,735,1225,,425,590,960,,,525,850,,,495,795,,525,735,1225,,425,585,955,,,525,850,,,495,795,,420,580,945,,,465,745,,,420,670,,,390,625,,,,605,,,,485,,,,435,,,,410,,,,460,,,,,,,,,,,,,,,480,770,,,340,615,,,,550,,,,515,,,480,770,,,,615,,,,550,,,,515,,,,605,,,,485,,,,440,,,,410,,,,395,,,,,,,,,,,,,,,,,,,,,,,,,,,,"},{"r":"tile","p":"2.4mx1.2m","t":3,"g":"A|B1|B2|C|D","v":"410,650,925,1580,410,650,925,1580,,555,780,1305,,490,680,1125,410,645,915,1570,410,645,915,1570,,550,775,1295,,490,680,1125,,515,720,1195,,515,720,1195,,440,615,1005,,340,540,870,,,465,745,,,465,745,,,400,635,,,,560,,,,565,,,,565,,,,480,,,,425,,430,595,970,,430,595,970,,,505,815,,,445,715,,425,590,960,,425,590,960,,,505,810,,,445,715,,,470,755,,,470,755,,,405,640,,,,565,,,,485,,,,485,,,,420,,,,,,,,,,,,,,,,,,,,"}]};
+
+const PANELS = [
+  {
+    id:'jinko-51QL6-DV', brand:'JinkoSolar', series:'Tiger Neo 51QL6-DV',
+    model:'JKM510N-51QL6-DV-F2-OC', typeCode:'JKMxxxN-51QL6-DV',
+    length:1906, width:1134, frameHeight:30, weightKg:23.0,
+    clamp:{ rule:'L = A/5 ~ A/4', minFromEnd:382, maxFromEnd:476,
+            source:'TUV Installation Manual, Table 5 p17' }
+  },
+  {
+    id:'aiko-MCE54Mw', brand:'AIKO', series:'Neostar 3P54',
+    model:'AIKO-A495-MCE54Mw', typeCode:'AIKO-Axxx-MCE54Mw',
+    length:1762, width:1134, frameHeight:30, weightKg:21.1,
+    clamp:{ rule:'310-410 mm from short edge', minFromEnd:310, maxFromEnd:410,
+            source:'AIKO Installation Manual, s6.2.3 mono glass table p10' }
+  }
+];
+
+/* ============================================================================
+   ENGINE — certified spacing lookup
+   ============================================================================ */
+const ZONES = ['corner','edge','intermediate','internal'];
+const ZONE_LABEL = {corner:'Corner', edge:'Edge', intermediate:'Intermediate', internal:'Internal'};
+const HBANDS = ['h<=5','5<h<=10','10<h<=15','15<h<=20'];
+const HD = ['h/d<=0.5','h/d>=1.0'];
+const CERTIFIED_SIZES = [[1670,1000],[1970,1000],[2100,1050],[2200,1200],[2400,1200]];
+const SIZE_KEY = {'1670x1000':'1.67mx1m','1970x1000':'1.97mx1m','2100x1050':'2.1mx1.05m',
+                  '2200x1200':'2.2mx1.2m','2400x1200':'2.4mx1.2m'};
+const CERT = { rail:'MA PRO Rail', standard:'AS/NZS 1170.2:2021',
+               id:'Gamcorp 14022-MA PRO-F1', validUntil:'30/11/2027' };
+
+/* Note 2 derates. Tin is punishing; tile is mostly neutral. */
+const DERATES = {
+  tin:{ 'steel-0.55':()=>0.27, 'steel-0.75':()=>0.36, 'steel-1.2':()=>0.70,
+        'steel-1.5':()=>0.79, 'steel-1.9+':()=>1, 'timber-20':r=>(r==='C'||r==='D'?0.79:0.63),
+        'timber-35+':()=>1 },
+  tile:{ 'steel-0.55':r=>(r==='C'||r==='D'?0.53:0.66), 'steel-0.75':r=>(r==='C'||r==='D'?0.72:0.90),
+         'steel-1.2':()=>1, 'steel-1.5':()=>1, 'steel-1.9+':()=>1, 'timber-20':()=>1,
+         'timber-35+':()=>1 }
+};
+
+let TABLES = null;
+function buildTables(){
+  TABLES = TABLES_RAW.tables.map(t=>{
+    const regions = t.g.split('|');
+    const vals = t.v.split(',');
+    const data = {}; let i = 0;
+    for(const hd of HD){ data[hd] = {};
+      for(const r of regions){ data[hd][r] = {};
+        for(const hb of HBANDS){ data[hd][r][hb] = {};
+          for(const z of ZONES){ const v = vals[i++]; data[hd][r][hb][z] = v===''?null:+v; }
+        } } }
+    return { roof:t.r, panel:t.p, tc:t.t, regions, data };
+  });
+}
+
+function heightBand(h){
+  if(h<=5) return 'h<=5';
+  if(h<=10) return '5<h<=10';
+  if(h<=15) return '10<h<=15';
+  if(h<=20) return '15<h<=20';
+  return null;
+}
+
+function panelDims(key){
+  const m = key.match(/^([\d.]+)m[x]([\d.]+)m$/);
+  return { length:Math.round(parseFloat(m[1])*1000), width:Math.round(parseFloat(m[2])*1000) };
+}
+
+/**
+ * Which certified panel size governs a real panel. Nothing may be read off a
+ * table for a size the engineer did not certify, so a panel that is not an
+ * exact match is run against the smallest certified size at least as large in
+ * BOTH dimensions — larger panel, tighter spacing, errs the safe way.
+ */
+function certifiedEnvelope(p){
+  const exact = CERTIFIED_SIZES.find(c=>c[0]===p.length && c[1]===p.width);
+  if(exact) return { key:SIZE_KEY[exact.join('x')], exact:true, note:null };
+  const bigger = CERTIFIED_SIZES.filter(c=>c[0]>=p.length && c[1]>=p.width)
+                   .sort((a,b)=>a[0]*a[1]-b[0]*b[1])[0];
+  if(!bigger) return { key:null, exact:false,
+    note:`${p.length}×${p.width} mm exceeds every certified panel size — outside the certification.` };
+  return { key:SIZE_KEY[bigger.join('x')], exact:false,
+    note:`${p.model} is ${p.length}×${p.width} mm, which is not a certified panel size. Read against the next-larger certified size ${bigger[0]}×${bigger[1]} mm (conservative).` };
+}
+
+function checkPanelWeight(p){
+  const kgm2 = p.weightKg / ((p.length/1000)*(p.width/1000));
+  return { kgm2:+kgm2.toFixed(2), ok:kgm2<=15 };
+}
+
+/** Maximum certified interface spacing for one zone. mm===null means NOT SUITABLE. */
+function maxSpacing(job, zone){
+  const notes = [];
+  const band = heightBand(job.h);
+  if(!band) return { mm:null, notes:['Building height exceeds the 20 m certification limit.'] };
+  const t = TABLES.find(x=>x.roof===job.roof && x.panel===job.panelKey && x.tc===job.tc);
+  if(!t) return { mm:null, notes:['No certified table for this combination.'] };
+  const lo = t.data['h/d<=0.5'][job.region], hi = t.data['h/d>=1.0'][job.region];
+  if(!lo||!hi) return { mm:null, notes:[`Wind region ${job.region} is not in this certification.`] };
+  const vLo = lo[band][zone], vHi = hi[band][zone];
+  const ratio = job.h/job.d;
+  let base;
+  if(ratio<=0.5) base = vLo;
+  else if(ratio>=1) base = vHi;
+  else if(vLo===null||vHi===null){
+    base = null;
+    notes.push(`h/d = ${ratio.toFixed(2)} sits between tabulated ratios and one bound is "not suitable".`);
+  } else {
+    base = vLo + (vHi-vLo)*((ratio-0.5)/0.5);
+    notes.push(`h/d = ${ratio.toFixed(2)} interpolated between ${vLo} and ${vHi} mm.`);
+  }
+  if(base===null) return { mm:null, notes, band };
+  const fn = DERATES[job.roof][job.fixing];
+  const factor = fn ? fn(job.region) : 1;
+  let mm = base*factor;
+  if(factor!==1) notes.push(`Fixing "${job.fixing}" derates to ${Math.round(factor*100)}% → ${Math.round(mm)} mm.`);
+  const floor = panelDims(job.panelKey).width/3;
+  let belowFloor = false;
+  if(mm<floor){ belowFloor = true;
+    notes.push(`Derated spacing ${Math.round(mm)} mm is below one third of panel width (${Math.round(floor)} mm) — outside the certification, refer to the engineer.`); }
+  return { mm:Math.floor(mm), notes, belowFloor, band };
+}
+
+/**
+ * Roof zones. a = min(0.2b, 0.2d) if h/b or h/d >= 0.2, else 2h.
+ * Edge = outer a/2, Intermediate = next a/2, Corner = outer a/2 both ways.
+ * At pitch >= 10 deg the ridge counts as an edge too.
+ */
+function zoneMap(job){
+  const b = job.b*1000, d = job.d*1000, h = job.h*1000;
+  const a = (h/b>=0.2 || h/d>=0.2) ? Math.min(0.2*b,0.2*d) : 2*h;
+  const half = a/2, ridgeIsEdge = job.pitch>=10;
+  return { a, half, ridgeIsEdge,
+    at(x,y){
+      const dx = Math.min(x, job.faceW-x);
+      let dy = y;
+      if(ridgeIsEdge) dy = Math.min(y, job.faceL-y);
+      const bandOf = t => t<half?0 : t<a?1 : 2;
+      const bx = bandOf(dx), by = bandOf(dy);
+      if(bx===0 && by===0) return 'corner';
+      const worst = Math.min(bx,by);
+      return worst===0?'edge' : worst===1?'intermediate':'internal';
+    } };
+}
+
+/* ============================================================================
+   GEOMETRY — setbacks, tile grid, interface positions, foot solving
+   ============================================================================ */
+const EDGE_SETBACK_MIN = 200;   // no panel edge within 200 mm of gutter or roof edge
+const ROW_GAP = 20;             // Amp Me Up standard, and >= AIKO's 10 mm minimum
+const PANEL_GAP = 20;
+
+function edgeSetback(gapS){
+  const twoS = 2*gapS;
+  return { mm:Math.max(EDGE_SETBACK_MIN, twoS), twoS,
+           governedBy: twoS>EDGE_SETBACK_MIN ? `certification 2s (s = ${gapS} mm)` : '200 mm edge rule' };
+}
+
+function railSeparationWindow(p){
+  return { min:p.length-2*p.clamp.maxFromEnd, max:p.length-2*p.clamp.minFromEnd };
+}
+
+/**
+ * Tile courses. Only the ridge-cap rule is applied here — the top course cannot
+ * take an interface because the cap is bedded over it. Orientation-specific
+ * exclusions belong to placement: a course too low for a portrait rail is still
+ * fine for a hook on an up-slope landscape rail.
+ */
+function tileGrid(job){
+  const courses = Math.floor(job.faceL/job.gauge);
+  const lines = [];
+  for(let n=1;n<=courses;n++){
+    const top = n>courses-1;
+    lines.push({ course:n, y:n*job.gauge, usable:!top,
+                 reason: top?'top course — ridge cap prevents lifting the tile':null });
+  }
+  return { courses, lines, usable:lines.filter(l=>l.usable),
+           tilesPerCourse: Math.floor(job.faceW/job.coverW) };
+}
+
+const r1 = v => Math.round(v*10)/10;
+
+/**
+ * Across-slope positions where a tile interface can be fixed. The hook is
+ * always screwed to a truss; on a profiled tile it is then slid along (up to
+ * the 60 mm limit, either direction) until it sits in a trough. The foot ends
+ * up AT THE TROUGH, so real spans differ from the truss pitch.
+ */
+function interfacePositions(job){
+  const trusses = [];
+  for(let x=job.trussOffset; x<=job.faceW+1e-6; x+=job.trussPitch) if(x>=0) trusses.push(x);
+
+  if(job.roof!=='tile' || job.tileProfile!=='profiled'){
+    return { positions:trusses.map(x=>({x,truss:x,trough:null,shift:0})), trusses, blocked:[] };
+  }
+  const play = Math.max(0,(job.troughW-job.hookW)/2);
+  const slide = job.hookShift;
+  const troughs = [];
+  for(let x=job.troughOffset-job.coverW; x<=job.faceW+job.coverW; x+=job.coverW) troughs.push(x);
+
+  const positions = [], blocked = [];
+  for(const t of trusses){
+    const lo = t-slide, hi = t+slide;
+    let best = null;
+    for(const g of troughs){
+      const l = Math.max(lo, g-play), hh = Math.min(hi, g+play);
+      if(l>hh) continue;
+      const l2 = Math.max(l,0), h2 = Math.min(hh, job.faceW);
+      if(l2>h2) continue;
+      const x = Math.min(Math.max(t,l2),h2);
+      const cand = { x:r1(x), truss:t, trough:g, shift:r1(x-t) };
+      if(!best || Math.abs(cand.shift)<Math.abs(best.shift)) best = cand;
+    }
+    if(best) positions.push(best);
+    else {
+      const reachable = troughs.filter(g=>Math.max(t-slide,g-play)<=Math.min(t+slide,g+play));
+      const nearest = troughs.reduce((a,g)=>Math.abs(g-t)<Math.abs(a-t)?g:a, troughs[0]);
+      blocked.push({ truss:t, offFace:reachable.length>0,
+        reason: reachable.length
+          ? `truss at ${Math.round(t)} mm — the trough it can reach (${Math.round(reachable[0])} mm) falls outside the roof face`
+          : `truss at ${Math.round(t)} mm cannot reach a trough in either direction — nearest is ${Math.round(Math.abs(nearest-t))} mm away, ${Math.round(Math.abs(nearest-t)-play-slide)} mm beyond the ${slide} mm shift` });
+    }
+  }
+  return { positions, trusses, blocked, troughPlay:play };
+}
+
+/** Can every truss reach a trough at all, given the hook's physical limit? */
+function troughReachability(job){
+  const play = Math.max(0,(job.troughW-job.hookW)/2);
+  const reach = play + job.hookShift, worst = job.coverW/2;
+  return { reach, worst, always:reach>=worst, shortBy:Math.max(0,Math.round(worst-reach)),
+           minTroughWidth: Math.round(2*(worst-job.hookShift)+job.hookW) };
+}
+
+/**
+ * Place feet along one rail run. A span must satisfy the tightest zone it
+ * crosses, not just its endpoints.
+ */
+function solveFeet(opts){
+  const { start, end, maxAt, members, free } = opts;
+  const step = 25;
+  const limitOver = (p,q)=>{
+    let lim = Infinity;
+    for(let s=p;s<=q;s+=step) lim = Math.min(lim, maxAt(s)??-Infinity);
+    return Math.min(lim, maxAt(q)??-Infinity);
+  };
+  if(free){
+    const feet=[start]; let cur=start, guard=0;
+    while(cur<end-1 && guard++<4000){
+      const lim = maxAt(cur);
+      if(!lim || lim<=0) return { ok:false, feet, why:`Not suitable for installation at ${Math.round(cur)} mm along the run.` };
+      let next = Math.min(cur+lim, end);
+      while(next>cur && limitOver(cur,next)<next-cur) next -= step;
+      if(next<=cur) return { ok:false, feet, why:`Cannot advance past ${Math.round(cur)} mm.` };
+      feet.push(r1(next)); cur = next;
+    }
+    if(feet[feet.length-1]<end-1) feet.push(end);
+    return { ok:true, feet, spans:feet.slice(1).map((f,i)=>r1(f-feet[i])) };
+  }
+  // Feet may sit OUTSIDE the panel run — the rail simply extends past it. What
+  // matters is that the panel run is supported: every span carrying panel is
+  // within the certified maximum, and each panel end is either past a foot or
+  // within the cantilever allowance of one.
+  const cant = opts.cant ?? 0;
+  const allowAt = pos => cant * (maxAt(pos) || 0);
+  const all = members.slice().sort((a,b)=>a-b);
+  // A zone with no certified spacing is "NOT SUITABLE FOR INSTALLATION" — that is a
+  // prohibition on fixing there, not merely an unknown limit.
+  const m = all.filter(pos=>{ const v = maxAt(pos); return v!==null && v>0; });
+  if(!m.length) return { ok:false, feet:[],
+    why: all.length ? 'Every fixing position along this rail falls in a zone the certification marks not suitable for installation.'
+                    : 'No usable fixing position on this roof face.' };
+
+  let i = -1;
+  for(let k=0;k<m.length;k++) if(m[k]<=start+1e-6) i=k;      // last foot at or before the run
+  if(i===-1){
+    i = 0;
+    const lead = m[0]-start;
+    if(lead > allowAt(start)+1e-6)
+      return { ok:false, feet:[], why:`The first fixing position is ${Math.round(lead)} mm past the start of the panel, more than the ${Math.round(allowAt(start))} mm cantilever allowance.` };
+  }
+
+  const feet=[m[i]];
+  while(m[i]<end){
+    const cur=m[i]; let chosen=-1;
+    for(let j=m.length-1;j>i;j--){
+      const lim = limitOver(Math.max(cur,start), Math.min(m[j],end));
+      if(lim>0 && m[j]-cur<=lim){ chosen=j; break; }
+    }
+    if(chosen===-1){
+      const tail = end-cur;
+      const lastSpan = feet.length>1 ? feet[feet.length-1]-feet[feet.length-2] : (maxAt(cur)||0);
+      const allow = cant*lastSpan;
+      if(tail<=allow+1e-6) break;
+      const gap = m[i+1]!==undefined ? Math.round(m[i+1]-cur) : null;
+      const lim = maxAt(Math.max(cur,start));
+      return { ok:false, feet, why: gap===null
+        ? `The panel reaches ${Math.round(end)} mm but the last fixing position is at ${Math.round(cur)} mm — a ${Math.round(tail)} mm overhang, over the ${Math.round(allow)} mm cantilever allowance.`
+        : `Fixing positions cannot meet the ${lim===null?'(not suitable)':lim+' mm'} maximum at ${Math.round(cur)} mm — the next usable position is ${gap} mm away. Additional blocking or a noggin is required.` };
+    }
+    feet.push(m[chosen]); i=chosen;
+  }
+  return { ok:true, feet, spans:feet.slice(1).map((f,i)=>r1(f-feet[i])),
+           overhang:{ lead:r1(m[0]-start), tail:r1(end-feet[feet.length-1]) } };
+}
+
+/* ============================================================================
+   PLACEMENT — the two orientations have opposite freedoms
+   ============================================================================ */
+
+/**
+ * PORTRAIT: rails run across-slope, so their up-slope position is quantised to
+ * tile courses / purlin lines. The panel edge sits a further L beyond each rail.
+ */
+function portraitRows(panel, lines, job, setback){
+  const A = panel.length, {minFromEnd:Lmin, maxFromEnd:Lmax} = panel.clamp;
+  const out = [];
+  for(let i=0;i<lines.length;i++) for(let j=i+1;j<lines.length;j++){
+    const y1=lines[i].y, y2=lines[j].y, sep=y2-y1, L=(A-sep)/2;
+    if(L<Lmin||L>Lmax) continue;
+    const bottom=y1-L, top=y2+L;
+    if(bottom<setback || top>job.faceL-setback) continue;
+    out.push({ orientation:'portrait', railY:[y1,y2], separation:sep, clampFromEnd:r1(L),
+               panelBottom:r1(bottom), panelTop:r1(top), depth:A });
+  }
+  return out.sort((a,b)=>a.panelBottom-b.panelBottom);
+}
+
+/**
+ * LANDSCAPE: rails run up-slope and are continuous, so a panel clamps anywhere
+ * along them. Up-slope placement is FREE — the first row starts exactly at the
+ * setback, at any gauge.
+ */
+function landscapeRowAt(panel, bottom){
+  return { orientation:'landscape', railY:null, separation:null, clampFromEnd:null,
+           panelBottom:r1(bottom), panelTop:r1(bottom+panel.width), depth:panel.width };
+}
+
+function panelsAcross(panel, orientation, job, setback){
+  const usable = job.faceW - 2*setback;
+  const w = orientation==='portrait' ? panel.width : panel.length;
+  const n = Math.floor((usable+PANEL_GAP)/(w+PANEL_GAP));
+  return { panels:Math.max(0,n), usable,
+           widthUsed: n>0 ? n*w+(n-1)*PANEL_GAP : 0 };
+}
+
+/**
+ * Stack rows up the roof, greedily taking whichever orientation places the most
+ * panels for the depth it costs, then whichever starts lowest.
+ */
+function stackFrom(panel, job, setback, allow, lines, y0, portraitAll, across){
+  const rows = [];
+  let y = y0, guard = 0;
+  while(guard++ < 40){
+    const cands = [];
+    if(allow.includes('landscape') && across.landscape>0 && y+panel.width <= job.faceL-setback)
+      cands.push({ ...landscapeRowAt(panel,y), n:across.landscape });
+    if(across.portrait>0){
+      const p = portraitAll.find(r=>r.panelBottom>=y-0.01);
+      if(p) cands.push({ ...p, n:across.portrait });
+    }
+    if(!cands.length) break;
+    cands.sort((a,b)=> (b.n-a.n) || (a.panelTop-b.panelTop));
+    const pick = cands[0];
+    rows.push(pick);
+    y = pick.panelTop + ROW_GAP;
+  }
+  return rows;
+}
+
+/**
+ * Stacking from the gutter up is not enough. In the harsher wind regions the
+ * edge band along the gutter and the ridge is marked not suitable, so the only
+ * workable array sits in the middle of the face. Try several starting heights —
+ * the setback, the zone band boundaries, and each fixing line — and keep
+ * whichever stack the caller scores highest.
+ */
+function stackCandidates(panel, job, setback, allow, lines){
+  const across = { portrait: panelsAcross(panel,'portrait',job,setback).panels,
+                   landscape: panelsAcross(panel,'landscape',job,setback).panels };
+  const portraitAll = allow.includes('portrait') ? portraitRows(panel, lines, job, setback) : [];
+  const zm = zoneMap(job);
+  const starts = new Set([setback, Math.ceil(zm.half), Math.ceil(zm.a)]);
+  lines.forEach(l=>{ if(l.y>=setback) starts.add(l.y); });
+  portraitAll.forEach(r=>starts.add(r.panelBottom));
+  const limit = job.faceL - setback - Math.min(panel.width, panel.length);
+  return [...starts].filter(v=>v>=setback && v<=limit).sort((a,b)=>a-b)
+    .map(y0=>stackFrom(panel, job, setback, allow, lines, y0, portraitAll, across));
+}
+
+/* ============================================================================
+   SOLVE
+   ============================================================================ */
+function readJob(){
+  const v = id => document.getElementById(id).value;
+  const n = id => parseFloat(document.getElementById(id).value)||0;
+  const roof = v('roof');
+  const panel = PANELS.find(p=>p.id===v('panel'));
+  const env = certifiedEnvelope(panel);
+  return {
+    roof, region:v('region'), tc:+v('tc'), pitch:n('pitch'),
+    h:n('bh'), b:n('bb'), d:n('bd'), gapS:n('gapS'),
+    faceW:n('faceW'), faceL:n('faceL'),
+    trussPitch:n('trussPitch'), trussOffset:n('trussOffset'),
+    gauge:n('gauge'), coverW:n('coverW'), tileProfile:v('tileProfile'),
+    troughW:n('troughW'), troughOffset:n('troughOffset'), hookW:n('hookW'),
+    hookShift:n('hookShift'),
+    purlinPitch:n('purlinPitch'), purlinOffset:n('purlinOffset'),
+    fixing: roof==='tin' ? v('fixing') : v('fixingTile'),
+    panel, panelKey:env.key, envelope:env,
+    orient:v('orient'), cant:parseFloat(v('cant'))
+  };
+}
+
+function solve(){
+  const job = readJob();
+  const issues = [], warnings = [];
+  if(!job.panelKey){ issues.push(job.envelope.note); return { job, issues, warnings, rows:[] }; }
+  if(job.envelope.note) warnings.push(job.envelope.note);
+
+  const wt = checkPanelWeight(job.panel);
+  if(!wt.ok) issues.push(`Panel is ${wt.kgm2} kg/m², over the 15 kg/m² certification limit.`);
+
+  const sb = edgeSetback(job.gapS);
+  const zm = zoneMap(job);
+  const sep = railSeparationWindow(job.panel);
+
+  // Zone maxima, for the report
+  const zoneMax = {};
+  for(const z of ZONES) zoneMax[z] = maxSpacing(job, z);
+  if(ZONES.every(z=>zoneMax[z].mm===null))
+    issues.push('Not suitable for installation anywhere on this roof under this certification.');
+  for(const z of ZONES) if(zoneMax[z].belowFloor)
+    warnings.push(`${ZONE_LABEL[z]} zone: ${zoneMax[z].notes.find(n=>n.includes('one third'))}`);
+
+  // Up-slope fixing lines: tile courses, or purlin lines on tin
+  let lines, gridInfo = null;
+  if(job.roof==='tile'){
+    const g = tileGrid(job); gridInfo = g; lines = g.usable;
+    if(!g.courses) issues.push('The roof face is shorter than one tile course.');
+  } else {
+    lines = [];
+    for(let y=job.purlinOffset; y<=job.faceL; y+=job.purlinPitch) if(y>0) lines.push({y, course:null, usable:true});
+    gridInfo = { courses:lines.length, lines, usable:lines, tilesPerCourse:null };
+  }
+
+  // Across-slope interface positions
+  const iface = interfacePositions(job);
+  const reach = (job.roof==='tile' && job.tileProfile==='profiled') ? troughReachability(job) : null;
+  if(reach && !reach.always)
+    warnings.push(`On this tile, a hook can only reach ${reach.reach} mm from a truss but may need ${reach.worst} mm. ${iface.blocked.length} truss position(s) unusable. A trough of at least ${reach.minTroughWidth} mm would clear it.`);
+
+  const allow = job.orient==='both' ? ['portrait','landscape'] : [job.orient];
+  // Try the mix AND each orientation on its own. Stacking picks an orientation by
+  // panel count before feasibility is known, so in the harsher regions the
+  // higher-yielding orientation can be the one that cannot be fixed at all —
+  // without these single-orientation passes the layout would come back empty.
+  const allowSets = allow.length>1 ? [allow, ['portrait'], ['landscape']] : [allow];
+  const stacks = allowSets.flatMap(a=>stackCandidates(job.panel, job, sb.mm, a, lines));
+
+  // Rails and feet for each row.
+  //
+  // A row is tried at several across-slope insets. The corner zone is often
+  // impossible to meet with normal truss centres, and the practical answer is
+  // to hold the array in off the rake rather than to add noggins — so the
+  // search tries the setback first, then the edge band, then the full zone
+  // dimension, and keeps whichever compliant option places the most panels.
+  const insetChoices = [...new Set([sb.mm, Math.ceil(zm.half), Math.ceil(zm.a)])]
+                        .filter(v=>v>=sb.mm).sort((x,y)=>x-y);
+
+  function fitRow(row, inset){
+    const out = { ...row, rails:[], ok:true, problems:[], inset };
+    const pw = row.orientation==='portrait' ? job.panel.width : job.panel.length;
+    const usable = job.faceW - 2*inset;
+    const n = Math.floor((usable+PANEL_GAP)/(pw+PANEL_GAP));
+    out.panels = Math.max(0,n);
+    if(!out.panels){ out.ok=false; out.problems.push(`No panel fits across at a ${inset} mm inset.`); return out; }
+    out.panelStartX = inset;
+    out.panelPitchX = pw+PANEL_GAP;
+    const widthUsed = n*pw+(n-1)*PANEL_GAP;
+
+    // Refuse outright to lay panels across a zone the certification marks unsuitable.
+    const unsuitable = new Set();
+    for(let x=inset; x<=inset+widthUsed; x+=100)
+      for(let y=row.panelBottom; y<=row.panelTop; y+=100){
+        const z = zm.at(x,y);
+        if(zoneMax[z].mm===null) unsuitable.add(z);
+      }
+    if(unsuitable.size){
+      out.ok=false;
+      out.problems.push(`The array would sit over the ${[...unsuitable].map(z=>ZONE_LABEL[z].toLowerCase()).join(' and ')} zone, which this certification marks not suitable for installation.`);
+      return out;
+    }
+
+    if(row.orientation==='portrait'){
+      const xs = iface.positions.map(p=>p.x);
+      const runStart = inset, runEnd = inset+widthUsed;
+      for(const y of row.railY){
+        const maxAt = x => zoneMax[zm.at(x,y)].mm;
+        const s2 = job.roof==='tile'
+          ? solveFeet({ start:runStart, end:runEnd, maxAt, members:xs, cant:job.cant })
+          : solveFeet({ start:runStart, end:runEnd, maxAt, free:true });
+        if(!s2.ok){ out.ok=false; out.problems.push(`Rail at ${y} mm: ${s2.why}`); }
+        const f0 = s2.feet.length?Math.min(runStart,s2.feet[0]):runStart;
+        const f1 = s2.feet.length?Math.max(runEnd,s2.feet[s2.feet.length-1]):runEnd;
+        out.rails.push({ axis:'horizontal', y, from:r1(f0), to:r1(f1),
+                         panelFrom:runStart, panelTo:runEnd,
+                         feet:s2.feet, spans:s2.spans||[], ok:s2.ok, overhang:s2.overhang });
+      }
+    } else {
+      const opts = [];
+      for(let k=1;k*job.trussPitch<=sep.max+2*job.hookShift;k++){
+        const nominal = k*job.trussPitch;
+        const lo = Math.max(nominal-2*job.hookShift, sep.min);
+        const hi = Math.min(nominal+2*job.hookShift, sep.max);
+        if(lo<=hi) opts.push({k, use:Math.min(Math.max(nominal,lo),hi)});
+      }
+      if(!opts.length){
+        out.ok=false;
+        out.problems.push(`No rail separation works: trusses at ${job.trussPitch} mm cannot land the two rails ${sep.min}–${sep.max} mm apart, even with ${job.hookShift} mm of hook shift.`);
+        return out;
+      }
+      const pick = opts[0];
+      const mem = lines.map(l=>l.y);
+      for(let i2=0;i2<out.panels;i2++){
+        const px = inset + i2*out.panelPitchX;
+        const centre = px + job.panel.length/2;
+        for(const sgn of [-1,1]){
+          const x = centre + sgn*pick.use/2;
+          const maxAt = yy => zoneMax[zm.at(x,yy)].mm;
+          const sol = solveFeet({ start:row.panelBottom, end:row.panelTop, maxAt,
+                                  members:mem, cant:job.cant });
+          if(!sol.ok){ out.ok=false; out.problems.push(`Rail at ${Math.round(x)} mm across: ${sol.why}`); }
+          const g0 = sol.feet.length?Math.min(row.panelBottom,sol.feet[0]):row.panelBottom;
+          const g1 = sol.feet.length?Math.max(row.panelTop,sol.feet[sol.feet.length-1]):row.panelTop;
+          out.rails.push({ axis:'vertical', x:r1(x), from:r1(g0), to:r1(g1),
+                           panelFrom:row.panelBottom, panelTo:row.panelTop,
+                           feet:sol.feet, spans:sol.spans||[], ok:sol.ok, panel:i2+1, overhang:sol.overhang });
+        }
+      }
+      out.railSeparation = pick.use;
+      out.railSeparationNote = `${pick.k} truss bay(s) at ${job.trussPitch} mm, set to ${Math.round(pick.use)} mm (clamp window ${sep.min}–${sep.max} mm)`;
+    }
+    return out;
+  }
+
+  function layOut(rows){
+    return rows.map((row,idx)=>{
+    const tries = insetChoices.map(v=>fitRow(row,v));
+    const good = tries.filter(t=>t.ok && t.panels>0);
+    // Most panels wins; among equals prefer the smallest inset.
+    good.sort((x,y)=>(y.panels-x.panels)||(x.inset-y.inset));
+    const chosen = good[0] || tries[0];
+    chosen.index = idx+1;
+    if(good.length && chosen.inset>sb.mm)
+      chosen.insetNote = `Held in ${chosen.inset} mm from each rake — at the ${sb.mm} mm setback the array cannot be fixed compliantly with ${job.trussPitch} mm centres.`;
+    if(!good.length){
+      chosen.rejected = true;
+      // Report the least-bad attempt's reason, de-duplicated.
+      const reasons = [...new Set(tries.flatMap(t=>t.problems))];
+      chosen.rejectReasons = reasons.slice(0,3);
+    }
+    return chosen;
+    });
+  }
+
+  // Score every starting height and keep the best compliant layout.
+  let best = null;
+  for(const stack of stacks){
+    const laidStack = layOut(stack);
+    const keep = laidStack.filter(r=>!r.rejected);
+    const n = keep.reduce((a,r)=>a+(r.panels||0),0);
+    if(!best || n>best.n) best = { n, laid:laidStack, keep };
+  }
+  if(!best) best = { n:0, laid:[], keep:[] };
+  const laid = best.laid;
+  const kept = best.keep;
+  kept.forEach((r,i)=>r.index=i+1);
+  const rejected = laid.filter(r=>r.rejected);
+
+  const total = kept.reduce((a,r)=>a+(r.panels||0),0);
+  const depthUsed = kept.length ? kept[kept.length-1].panelTop - kept[0].panelBottom : 0;
+  if(!kept.length && laid.length)
+    issues.push('No row can be laid out compliantly on this roof face.');
+  return { job, sb, zm, zoneMax, sep, gridInfo, iface, reach, rows:kept, rejected, total,
+           depthUsed, issues, warnings };
+}
+</script>
+<script>
+/* ============================================================================
+   UI
+   ============================================================================ */
+const $ = id => document.getElementById(id);
+let RESULT = null;
+
+function fmt(n){ return (Math.round(n*10)/10).toLocaleString('en-AU'); }
+function esc(s){ return String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
+
+function initPanels(){
+  $('panel').innerHTML = PANELS.map(p=>`<option value="${p.id}">${esc(p.brand)} ${esc(p.model)}</option>`).join('');
+}
+
+function panelInfo(){
+  const p = PANELS.find(x=>x.id===$('panel').value);
+  const s = railSeparationWindow(p), w = checkPanelWeight(p), env = certifiedEnvelope(p);
+  $('panelInfo').innerHTML =
+    `<b>${esc(p.model)}</b> &mdash; ${p.length}&times;${p.width}&times;${p.frameHeight} mm, ${p.weightKg} kg (${w.kgm2} kg/m&sup2;, limit 15).<br>` +
+    `Clamp zone <b>${p.clamp.minFromEnd}&ndash;${p.clamp.maxFromEnd} mm</b> from each short edge (${esc(p.clamp.rule)}), so the two rails sit <b>${s.min}&ndash;${s.max} mm</b> apart. Source: ${esc(p.clamp.source)}.` +
+    (env.note?`<br><span style="color:var(--warn)">${esc(env.note)}</span>`:'');
+}
+
+function toggleRoof(){
+  const tile = $('roof').value==='tile';
+  $('tileBlock').style.display = tile?'':'none';
+  $('tinBlock').style.display = tile?'none':'';
+  $('troughRow').style.display = (tile && $('tileProfile').value==='profiled')?'':'none';
+}
+
+/* ---------- rendering ---------- */
+
+function renderLayout(R){
+  const {job,sb,rows,total,zoneMax,zm} = R;
+  let h = '';
+
+  if(R.issues.length) h += `<div class="banner bad"><b>Cannot lay out this roof.</b><ul>${R.issues.map(i=>`<li>${esc(i)}</li>`).join('')}</ul></div>`;
+  if(R.warnings.length) h += `<div class="banner"><b>Read before you set out.</b><ul>${R.warnings.map(i=>`<li>${esc(i)}</li>`).join('')}</ul></div>`;
+
+  const bad = rows.filter(r=>!r.ok).length;
+  h += `<div class="cards">
+    <div class="card hero"><div class="k">Panels</div><div class="v">${total}</div><div class="s">${rows.length} row${rows.length===1?'':'s'}${rows.length>1&&new Set(rows.map(r=>r.orientation)).size>1?', mixed orientation':''}</div></div>
+    <div class="card"><div class="k">Setback</div><div class="v">${sb.mm}</div><div class="s">mm, ${esc(sb.governedBy)}</div></div>
+    <div class="card"><div class="k">Zone dimension a</div><div class="v">${fmt(zm.a)}</div><div class="s">mm &mdash; edge band ${fmt(zm.half)} mm</div></div>
+    <div class="card ${bad?'fail':'pass'}"><div class="k">Set-out</div><div class="v">${bad?'CHECK':'OK'}</div><div class="s">${bad?bad+' row(s) with a problem':'every span within the certified maximum'}</div></div>
+  </div>`;
+
+  h += `<div class="block"><h3>Certified maximum spacing by zone</h3>
+    <table class="grid"><thead><tr><th>Zone</th><th class="n">Max spacing</th><th>Notes</th></tr></thead><tbody>` +
+    ZONES.map(z=>`<tr><td class="b">${ZONE_LABEL[z]}</td><td class="n">${zoneMax[z].mm===null?'<span class="pill no">Not suitable</span>':fmt(zoneMax[z].mm)+' mm'}</td><td style="font-size:11.5px;color:var(--muted)">${zoneMax[z].notes.map(esc).join('<br>')||'&mdash;'}</td></tr>`).join('') +
+    `</tbody></table></div>`;
+
+  h += `<div class="block"><h3>Roof plan</h3>${drawPlan(R)}
+    <div class="legend">
+      <span><i class="sw" style="background:var(--zc)"></i>Corner</span>
+      <span><i class="sw" style="background:var(--ze)"></i>Edge</span>
+      <span><i class="sw" style="background:var(--zi)"></i>Intermediate</span>
+      <span><i class="sw" style="background:var(--zn)"></i>Internal</span>
+      <span><i class="sw" style="background:#2b6cb0"></i>Rail</span>
+      <span><i class="sw" style="background:#131313;border-radius:99px"></i>Foot / interface</span>
+      <span><i class="sw" style="background:rgba(19,19,19,.10);border:1px solid #131313"></i>Panel</span>
+    </div></div>`;
+
+  rows.forEach(r=>{
+    h += `<div class="block"><h3>Row ${r.index} &mdash; ${r.orientation} &mdash; ${r.panels} panel${r.panels===1?'':'s'} ${r.ok?'<span class="pill ok">OK</span>':'<span class="pill no">Check</span>'}</h3>`;
+    h += `<table class="grid"><tbody>
+      <tr><td>Panel bottom edge</td><td class="n b">${fmt(r.panelBottom)} mm</td><td>up-slope from the gutter line</td></tr>
+      <tr><td>Panel top edge</td><td class="n b">${fmt(r.panelTop)} mm</td><td></td></tr>`;
+    if(r.orientation==='portrait'){
+      h += `<tr><td>Rail lines</td><td class="n b">${r.railY.map(y=>fmt(y)).join(' and ')} mm</td><td>${job.roof==='tile'?'tile course lines':'purlin lines'}</td></tr>
+            <tr><td>Rail separation</td><td class="n b">${fmt(r.separation)} mm</td><td>clamp ${fmt(r.clampFromEnd)} mm in from each short edge</td></tr>`;
+    } else {
+      h += `<tr><td>Rail separation</td><td class="n b">${r.railSeparation?fmt(r.railSeparation)+' mm':'&mdash;'}</td><td>${esc(r.railSeparationNote||'')}</td></tr>`;
+    }
+    h += `</tbody></table>`;
+    if(r.insetNote) h += `<div class="banner" style="margin-top:10px">${esc(r.insetNote)}</div>`;
+    if(r.problems.length) h += `<div class="banner bad" style="margin-top:10px"><ul>${r.problems.map(p=>`<li>${esc(p)}</li>`).join('')}</ul></div>`;
+    h += `</div>`;
+  });
+
+  if(R.rejected && R.rejected.length){
+    h += `<div class="block"><h3>Rows that could not be laid out</h3>
+      <p class="hint">These were tried and left out, so the layout above is compliant as drawn.</p>` +
+      R.rejected.map(r=>`<div class="banner bad" style="margin-bottom:8px"><b>${r.orientation} row at ${fmt(r.panelBottom)}–${fmt(r.panelTop)} mm</b><ul>${(r.rejectReasons||[]).map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>`).join('') +
+      `</div>`;
+  }
+
+  if(!rows.length && !R.issues.length)
+    h += `<div class="banner bad">No row fits this roof face. The usable depth after setbacks is ${fmt(job.faceL-2*sb.mm)} mm.</div>`;
+
+  $('layoutOut').innerHTML = h;
+}
+
+function drawPlan(R){
+  const {job,zm,rows,sb} = R;
+  const W = job.faceW, L = job.faceL;
+  const pad = 60, scale = 900/W;
+  const w = W*scale, hgt = L*scale;
+  const X = x => pad + x*scale, Y = y => pad + (L-y)*scale;   // gutter at the bottom
+  let s = `<svg class="plan" viewBox="0 0 ${w+pad*2} ${hgt+pad*2}" xmlns="http://www.w3.org/2000/svg">`;
+
+  // zone shading, sampled on a grid
+  const step = Math.max(80, W/90);
+  const col = {corner:'var(--zc)', edge:'var(--ze)', intermediate:'var(--zi)', internal:'var(--zn)'};
+  for(let x=0;x<W;x+=step) for(let y=0;y<L;y+=step){
+    const z = zm.at(x+step/2, y+step/2);
+    s += `<rect x="${X(x)}" y="${Y(y+step)}" width="${step*scale+.6}" height="${step*scale+.6}" fill="${col[z]}" opacity=".5"/>`;
+  }
+  // roof outline
+  s += `<rect x="${X(0)}" y="${Y(L)}" width="${w}" height="${hgt}" fill="none" stroke="#131313" stroke-width="2"/>`;
+  // setback boundary
+  s += `<rect x="${X(sb.mm)}" y="${Y(L-sb.mm)}" width="${(W-2*sb.mm)*scale}" height="${(L-2*sb.mm)*scale}" fill="none" stroke="#c0392b" stroke-width="1" stroke-dasharray="6 4"/>`;
+
+  // structure: trusses up-slope
+  for(let x=job.trussOffset;x<=W;x+=job.trussPitch)
+    s += `<line x1="${X(x)}" y1="${Y(0)}" x2="${X(x)}" y2="${Y(L)}" stroke="#8a8a84" stroke-width=".8" stroke-dasharray="3 3"/>`;
+  // tile courses / purlins across-slope
+  const upLines = R.gridInfo.lines||[];
+  upLines.forEach(l=>{
+    s += `<line x1="${X(0)}" y1="${Y(l.y)}" x2="${X(W)}" y2="${Y(l.y)}" stroke="${l.usable?'#c9c7c0':'#e8b4ae'}" stroke-width=".8"/>`;
+  });
+
+  // panels
+  rows.forEach(r=>{
+    const pw = (r.orientation==='portrait'?job.panel.width:job.panel.length);
+    for(let i=0;i<r.panels;i++){
+      const px = (r.panelStartX ?? sb.mm) + i*(pw+PANEL_GAP);
+      s += `<rect x="${X(px)}" y="${Y(r.panelTop)}" width="${pw*scale}" height="${(r.panelTop-r.panelBottom)*scale}" fill="rgba(19,19,19,.10)" stroke="#131313" stroke-width="1"/>`;
+    }
+  });
+
+  // rails + feet
+  rows.forEach(r=>{
+    r.rails.forEach(rail=>{
+      if(rail.axis==='horizontal'){
+        s += `<line x1="${X(rail.from)}" y1="${Y(rail.y)}" x2="${X(rail.to)}" y2="${Y(rail.y)}" stroke="${rail.ok?'#2b6cb0':'#c0392b'}" stroke-width="2.4"/>`;
+        rail.feet.forEach(f=>{ s += `<circle cx="${X(f)}" cy="${Y(rail.y)}" r="3" fill="#131313"/>`; });
+      } else {
+        s += `<line x1="${X(rail.x)}" y1="${Y(rail.from)}" x2="${X(rail.x)}" y2="${Y(rail.to)}" stroke="${rail.ok?'#2b6cb0':'#c0392b'}" stroke-width="2.4"/>`;
+        rail.feet.forEach(f=>{ s += `<circle cx="${X(rail.x)}" cy="${Y(f)}" r="3" fill="#131313"/>`; });
+      }
+    });
+  });
+
+  // dimensions
+  s += `<text x="${pad+w/2}" y="${pad+hgt+34}" text-anchor="middle" font-size="13" font-family="sans-serif" font-weight="700">${fmt(W)} mm &#8212; capping to capping</text>`;
+  s += `<text x="${pad-16}" y="${pad+hgt/2}" text-anchor="middle" font-size="13" font-family="sans-serif" font-weight="700" transform="rotate(-90 ${pad-16} ${pad+hgt/2})">${fmt(L)} mm &#8212; gutter to ridge</text>`;
+  s += `<text x="${pad}" y="${pad+hgt+52}" font-size="11" font-family="sans-serif" fill="#6a6a66">Datum: bottom-left corner of the face, at the capping edge and gutter line.</text>`;
+  s += `</svg>`;
+  return s;
+}
+
+function renderMarkup(R){
+  const {job,rows,sb} = R;
+  let h = `<h2 class="sect">Mark-up sheet</h2>
+    <p class="hint">All measurements from the <b>bottom-left corner of the roof face</b> &mdash; along the
+    capping edge and up from the gutter line. Across = left to right. Up = gutter to ridge.</p>`;
+
+  h += `<div class="block"><h3>Set-out datum</h3><table class="grid"><tbody>
+    <tr><td>Roof face</td><td class="n b">${fmt(job.faceW)} &times; ${fmt(job.faceL)} mm</td></tr>
+    <tr><td>Setback from every edge</td><td class="n b">${sb.mm} mm</td></tr>
+    <tr><td>Rows</td><td class="n b">${rows.length}</td></tr>
+    <tr><td>Panels</td><td class="n b">${R.total}</td></tr>
+    </tbody></table>
+    <p class="fnote">Each row states its own start across the roof &mdash; rows are held in further
+    from the rake where the wind zone requires it.</p></div>`;
+
+  rows.forEach(r=>{
+    const pw = (r.orientation==='portrait'?job.panel.width:job.panel.length);
+    h += `<div class="block"><h3>Row ${r.index} &mdash; ${r.orientation}</h3>`;
+    h += `<table class="grid"><thead><tr><th>Item</th><th class="n">Across (mm)</th><th class="n">Up (mm)</th><th>Note</th></tr></thead><tbody>`;
+    h += `<tr><td class="b">Panel bottom edge</td><td class="n">&mdash;</td><td class="n b">${fmt(r.panelBottom)}</td><td>chalk this line first</td></tr>`;
+    h += `<tr><td class="b">Panel top edge</td><td class="n">&mdash;</td><td class="n b">${fmt(r.panelTop)}</td><td></td></tr>`;
+    for(let i=0;i<r.panels;i++){
+      const px = (r.panelStartX ?? sb.mm)+i*(pw+PANEL_GAP);
+      h += `<tr><td>Panel ${i+1} left edge</td><td class="n">${fmt(px)}</td><td class="n">${fmt(r.panelBottom)}</td><td>${fmt(px+pw)} mm at its right edge</td></tr>`;
+    }
+    r.rails.forEach((rail,k)=>{
+      if(rail.axis==='horizontal'){
+        h += `<tr><td class="b">Rail ${k+1}</td><td class="n">${fmt(rail.from)} → ${fmt(rail.to)}</td><td class="n b">${fmt(rail.y)}</td><td>${rail.feet.length} feet, ${fmt(rail.to-rail.from)} mm of rail (panels span ${fmt(rail.panelFrom)}–${fmt(rail.panelTo)})</td></tr>`;
+        h += `<tr><td style="padding-left:18px;color:var(--muted)">Feet across at</td><td class="n" colspan="2" style="font-size:11.5px">${rail.feet.map(f=>fmt(f)).join(', ')}</td><td style="font-size:11.5px">spans ${rail.spans.map(s=>fmt(s)).join(', ')}</td></tr>`;
+      } else {
+        h += `<tr><td class="b">Rail ${k+1} (panel ${rail.panel})</td><td class="n b">${fmt(rail.x)}</td><td class="n">${fmt(rail.from)} → ${fmt(rail.to)}</td><td>${rail.feet.length} feet, ${fmt(rail.to-rail.from)} mm of rail</td></tr>`;
+        h += `<tr><td style="padding-left:18px;color:var(--muted)">Feet up at</td><td class="n" colspan="2" style="font-size:11.5px">${rail.feet.map(f=>fmt(f)).join(', ')}</td><td style="font-size:11.5px">spans ${rail.spans.map(s=>fmt(s)).join(', ')}</td></tr>`;
+      }
+    });
+    h += `</tbody></table></div>`;
+  });
+
+  if(R.iface && R.iface.positions.length && job.roof==='tile' && job.tileProfile==='profiled'){
+    h += `<div class="block"><h3>Interface shift on this tile</h3>
+      <p class="hint">The hook screws to the truss, then slides to the trough. Positive shifts move right.</p>
+      <table class="grid"><thead><tr><th class="n">Truss at</th><th class="n">Hook lands at</th><th class="n">Shift</th></tr></thead><tbody>` +
+      R.iface.positions.map(p=>`<tr><td class="n">${fmt(p.truss)}</td><td class="n b">${fmt(p.x)}</td><td class="n">${p.shift>0?'+':''}${fmt(p.shift)}</td></tr>`).join('') +
+      `</tbody></table></div>`;
+  }
+  $('markupOut').innerHTML = h;
+}
+
+function renderCompliance(R){
+  const {job,zoneMax,sb,rows} = R;
+  let h = `<h2 class="sect">Compliance</h2>`;
+  const fails = [];
+  rows.forEach(r=>{ r.rails.forEach(rail=>{
+    const lim = null;
+    rail.spans.forEach((s,i)=>{ /* checked during solve; problems captured per row */ });
+  }); if(!r.ok) fails.push(`Row ${r.index}: ${r.problems.join(' ')}`); });
+
+  h += fails.length
+    ? `<div class="banner bad"><b>Not compliant as laid out.</b><ul>${fails.map(f=>`<li>${esc(f)}</li>`).join('')}</ul></div>`
+    : (rows.length ? `<div class="banner good"><b>Every span is inside the certified maximum for its zone.</b></div>` : '');
+
+  h += `<div class="block"><h3>Basis</h3><table class="grid"><tbody>
+    <tr><td>Certification</td><td class="b">${CERT.id}</td><td>${CERT.rail}, ${CERT.standard}</td></tr>
+    <tr><td>Valid until</td><td class="b">${CERT.validUntil}</td><td></td></tr>
+    <tr><td>Roof type</td><td class="b">${job.roof}</td><td>fixing: ${esc(job.fixing)}</td></tr>
+    <tr><td>Wind region / terrain</td><td class="b">${job.region} / TC${job.tc}</td><td></td></tr>
+    <tr><td>Building h / b / d</td><td class="b">${job.h} / ${job.b} / ${job.d} m</td><td>h/d = ${(job.h/job.d).toFixed(2)}, height band ${esc(zoneMax.internal.band||'—')}</td></tr>
+    <tr><td>Panel</td><td class="b">${esc(job.panel.model)}</td><td>read against certified size ${esc(job.panelKey||'—')}</td></tr>
+    <tr><td>Setback</td><td class="b">${sb.mm} mm</td><td>${esc(sb.governedBy)}; 2s = ${sb.twoS} mm</td></tr>
+    </tbody></table></div>`;
+
+  h += `<div class="block"><h3>Checks</h3><table class="grid"><thead><tr><th>Check</th><th>Result</th></tr></thead><tbody>`;
+  const wt = checkPanelWeight(job.panel);
+  const chk = (label, ok, detail) => `<tr><td>${esc(label)}</td><td>${ok?'<span class="pill ok">Pass</span>':'<span class="pill no">Fail</span>'} <span style="font-size:11.5px;color:var(--muted)">${esc(detail)}</span></td></tr>`;
+  const note = (label, detail) => `<tr><td>${esc(label)}</td><td><span class="pill wa">Note</span> <span style="font-size:11.5px;color:var(--muted)">${esc(detail)}</span></td></tr>`;
+  h += chk('Panel + frame mass ≤ 15 kg/m²', wt.ok, `${wt.kgm2} kg/m²`);
+  // Substituting to a larger certified size is conservative, not a failure.
+  h += job.envelope.exact
+    ? chk('Panel size within certification', true, 'exact certified size')
+    : note('Panel size within certification', `${job.panel.length}×${job.panel.width} mm is not a certified size; read against the larger ${job.panelKey.replace('mx','m × ')} table, which is conservative`);
+  h += chk('Every panel edge ≥ setback from gutter, ridge and rake', rows.every(r=>r.panelBottom>=sb.mm && r.panelTop<=job.faceL-sb.mm), `${sb.mm} mm`);
+  h += chk('Two rails per panel', true, 'certification requires a minimum of two');
+  h += chk('Rail separation inside the panel clamp zone', rows.every(r=>r.orientation!=='portrait' || (r.separation>=R.sep.min && r.separation<=R.sep.max)), `${R.sep.min}–${R.sep.max} mm`);
+  h += chk('Array inside the roof face', rows.every(r=>r.panelTop<=job.faceL-sb.mm), `array depth ${fmt(R.depthUsed)} mm`);
+  if(R.reach) h += chk('Every truss can reach a trough', R.reach.always, R.reach.always?'yes':`short by ${R.reach.shortBy} mm; needs a ${R.reach.minTroughWidth} mm trough`);
+  h += `</tbody></table></div>`;
+
+  h += `<div class="block"><h3>Conditions carried from the certification</h3>
+    <table class="grid"><tbody>
+    <tr><td>Splices</td><td>At a quarter of the span. Never mid-span and never over an interface.</td></tr>
+    <tr><td>Tile hooks</td><td>Fixed to the truss top chord, two screws minimum.</td></tr>
+    <tr><td>Roof structure</td><td>The certification excludes assessment of the roof structure and the PV panels.</td></tr>
+    <tr><td>Most critical spacing</td><td>It is the installer's responsibility to adopt the most critical spacing.</td></tr>
+    </tbody></table></div>`;
+  $('compOut').innerHTML = h;
+}
+
+function renderMaterials(R){
+  const {job,rows} = R;
+  let feet = 0, railLen = 0, railRuns = 0;
+  rows.forEach(r=>r.rails.forEach(rail=>{
+    feet += rail.feet.length; railRuns++;
+    railLen += rail.axis==='horizontal' ? (rail.to-rail.from) : (rail.to-rail.from);
+  }));
+  const panels = R.total;
+  const midClamps = rows.reduce((a,r)=>a + Math.max(0,(r.panels-1))*2, 0);
+  const endClamps = rows.reduce((a,r)=>a + (r.panels>0?4:0), 0);
+
+  let h = `<h2 class="sect">Materials</h2><p class="hint">Rail length is the total run required; add your own allowance for cuts and splices.</p>`;
+  h += `<div class="cards">
+    <div class="card hero"><div class="k">Panels</div><div class="v">${panels}</div><div class="s">${esc(job.panel.model)}</div></div>
+    <div class="card"><div class="k">${job.roof==='tile'?'Tile interfaces':'L-feet'}</div><div class="v">${feet}</div><div class="s">across ${railRuns} rail runs</div></div>
+    <div class="card"><div class="k">Rail</div><div class="v">${fmt(railLen/1000)}</div><div class="s">metres total run</div></div>
+    <div class="card"><div class="k">Clamps</div><div class="v">${midClamps+endClamps}</div><div class="s">${midClamps} mid, ${endClamps} end</div></div>
+  </div>`;
+  h += `<div class="block"><h3>Per row</h3><table class="grid"><thead><tr><th>Row</th><th>Orientation</th><th class="n">Panels</th><th class="n">Rails</th><th class="n">Feet</th><th class="n">Rail run</th></tr></thead><tbody>` +
+    rows.map(r=>{
+      const f = r.rails.reduce((a,x)=>a+x.feet.length,0);
+      const rl = r.rails.reduce((a,x)=>a+(x.to-x.from),0);
+      return `<tr><td class="b">${r.index}</td><td>${r.orientation}</td><td class="n">${r.panels}</td><td class="n">${r.rails.length}</td><td class="n">${f}</td><td class="n">${fmt(rl/1000)} m</td></tr>`;
+    }).join('') + `</tbody></table></div>`;
+  $('matOut').innerHTML = h;
+}
+
+function renderPrint(R){
+  const {job,rows,sb} = R;
+  let h = `<h3>Set-out sheet &mdash; ${esc(job.panel.model)} on ${job.roof}</h3>`;
+  h += `<table><tbody>
+    <tr><td>Roof face</td><td class="n">${fmt(job.faceW)} &times; ${fmt(job.faceL)} mm</td>
+        <td>Region / TC</td><td class="n">${job.region} / TC${job.tc}</td>
+        <td>Setback</td><td class="n">${sb.mm} mm</td>
+        <td>Panels</td><td class="n">${R.total}</td></tr></tbody></table>`;
+  h += drawPlan(R);
+  rows.forEach(r=>{
+    h += `<h3>Row ${r.index} &mdash; ${r.orientation} &mdash; ${r.panels} panels</h3>`;
+    h += `<table><thead><tr><th>Item</th><th class="n">Across</th><th class="n">Up</th><th>Feet</th></tr></thead><tbody>`;
+    h += `<tr><td>Panel bottom / top edge</td><td class="n">&mdash;</td><td class="n">${fmt(r.panelBottom)} / ${fmt(r.panelTop)}</td><td></td></tr>`;
+    r.rails.forEach((rail,k)=>{
+      h += rail.axis==='horizontal'
+        ? `<tr><td>Rail ${k+1}</td><td class="n">${fmt(rail.from)}→${fmt(rail.to)}</td><td class="n">${fmt(rail.y)}</td><td>${rail.feet.map(f=>fmt(f)).join(', ')}</td></tr>`
+        : `<tr><td>Rail ${k+1}</td><td class="n">${fmt(rail.x)}</td><td class="n">${fmt(rail.from)}→${fmt(rail.to)}</td><td>${rail.feet.map(f=>fmt(f)).join(', ')}</td></tr>`;
+    });
+    h += `</tbody></table>`;
+  });
+  $('printBody').innerHTML = h;
+}
+
+/* ---------- run ---------- */
+function run(){
+  try{
+    RESULT = solve();
+    renderLayout(RESULT);
+    renderMarkup(RESULT);
+    renderCompliance(RESULT);
+    renderMaterials(RESULT);
+    renderPrint(RESULT);
+    save();
+  }catch(e){
+    $('layoutOut').innerHTML = `<div class="banner bad"><b>Something went wrong working this out.</b><br>${esc(e.message)}</div>`;
+    console.error(e);
+  }
+}
+
+/* ---------- persistence ---------- */
+const KEY = 'amu-solar-layout-v1';
+const FIELDS = ['roof','region','tc','pitch','bh','bb','bd','gapS','faceW','faceL','trussPitch',
+  'trussOffset','gauge','coverW','tileProfile','troughW','troughOffset','hookW','hookShift',
+  'purlinPitch','purlinOffset','fixing','fixingTile','panel','orient','cant'];
+
+function save(){
+  try{
+    const o = {}; FIELDS.forEach(f=>o[f]=$(f).value);
+    localStorage.setItem(KEY, JSON.stringify(o));
+    $('saveNote').textContent = 'Saved on this device';
+  }catch(e){ $('saveNote').textContent = ''; }
+}
+function load(){
+  try{
+    const o = JSON.parse(localStorage.getItem(KEY)||'null');
+    if(o) FIELDS.forEach(f=>{ if(o[f]!==undefined && $(f)) $(f).value = o[f]; });
+  }catch(e){}
+}
+
+document.addEventListener('DOMContentLoaded',()=>{
+  buildTables();
+  initPanels();
+  load();
+  toggleRoof();
+  panelInfo();
+
+  $('hdrDate').textContent = new Date().toLocaleDateString('en-AU',{day:'2-digit',month:'short',year:'numeric'});
+
+  document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));
+    document.querySelectorAll('.pane').forEach(x=>x.classList.remove('on'));
+    t.classList.add('on'); $('p-'+t.dataset.p).classList.add('on');
+  }));
+
+  // The solver searches many starting heights and insets, so a full solve is a
+  // few hundred milliseconds — too slow to run on every keystroke.
+  let t=null;
+  const runSoon = ()=>{ clearTimeout(t); t=setTimeout(run,180); };
+  FIELDS.forEach(f=>{ const el=$(f); if(el) el.addEventListener('input',()=>{ toggleRoof(); panelInfo(); runSoon(); }); });
+  $('roof').addEventListener('change',()=>{ toggleRoof(); runSoon(); });
+  $('tileProfile').addEventListener('change',()=>{ toggleRoof(); runSoon(); });
+
+  $('btnPrint').addEventListener('click',()=>window.print());
+  $('btnReset').addEventListener('click',()=>{ localStorage.removeItem(KEY); location.reload(); });
+  $('btnSaveFile').addEventListener('click',()=>{
+    const o={}; FIELDS.forEach(f=>o[f]=$(f).value);
+    const b=new Blob([JSON.stringify(o,null,2)],{type:'application/json'});
+    const a=document.createElement('a'); a.href=URL.createObjectURL(b);
+    a.download='solar-layout-job.json'; a.click(); URL.revokeObjectURL(a.href);
+  });
+  $('btnLoadFile').addEventListener('click',()=>{
+    const i=document.createElement('input'); i.type='file'; i.accept='.json';
+    i.onchange=()=>{ const f=i.files[0]; if(!f) return;
+      const r=new FileReader(); r.onload=()=>{ try{
+        const o=JSON.parse(r.result); FIELDS.forEach(k=>{ if(o[k]!==undefined && $(k)) $(k).value=o[k]; });
+        toggleRoof(); panelInfo(); run();
+      }catch(e){ alert('That file could not be read.'); } }; r.readAsText(f); };
+    i.click();
+  });
+
+  run();
+});
+</script>
+</body>
+</html>

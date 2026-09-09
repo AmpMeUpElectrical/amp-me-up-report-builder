@@ -1,0 +1,7962 @@
+[
+ {
+  "cert": "gamcorp-14022-MAPRO-2023",
+  "standard": "AS/NZS 1170.2:2021",
+  "rail": "MA PRO Rail",
+  "roof": "tin",
+  "interface": "L Feet Set",
+  "panel": "1.67mx1m",
+  "terrain_category": 2,
+  "regions": [
+   "A",
+   "B1",
+   "B2",
+   "C",
+   "D"
+  ],
+  "data": {
+   "h/d<=0.5": {
+    "A": {
+     "h<=5": {
+      "corner": 1060,
+      "edge": 1480,
+      "intermediate": 1655,
+      "internal": 1920
+     },
+     "5<h<=10": {
+      "corner": 870,
+      "edge": 1335,
+      "intermediate": 1540,
+      "internal": 1805
+     },
+     "10<h<=15": {
+      "corner": 785,
+      "edge": 1200,
+      "intermediate": 1480,
+      "internal": 1735
+     },
+     "15<h<=20": {
+      "corner": 740,
+      "edge": 1135,
+      "intermediate": 1450,
+      "internal": 1695
+     }
+    },
+    "B1": {
+     "h<=5": {
+      "corner": 790,
+      "edge": 1215,
+      "intermediate": 1655,
+      "internal": 1920
+     },
+     "5<h<=10": {
+      "corner": 650,
+      "edge": 995,
+      "intermediate": 1350,
+      "internal": 1805
+     },
+     "10<h<=15": {
+      "corner": 585,
+      "edge": 895,
+      "intermediate": 1215,
+      "internal": 1735
+     },
+     "15<h<=20": {
+      "corner": 555,
+      "edge": 845,
+      "intermediate": 1145,
+      "internal": 1695
+     }
+    },
+    "B2": {
+     "h<=5": {
+      "corner": 640,
+      "edge": 980,
+      "intermediate": 1335,
+      "internal": 1795
+     },
+     "5<h<=10": {
+      "corner": 530,
+      "edge": 805,
+      "intermediate": 1090,
+      "internal": 1665
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": 730,
+      "intermediate": 985,
+      "internal": 1520
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": 685,
+      "intermediate": 925,
+      "internal": 1425
+     }
+    },
+    "C": {
+     "h<=5": {
+      "corner": null,
+      "edge": 560,
+      "intermediate": 760,
+      "internal": 1170
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": 460,
+      "intermediate": 620,
+      "internal": 955
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": 415,
+      "intermediate": 560,
+      "internal": 860
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 530,
+      "internal": 810
+     }
+    },
+    "D": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 535,
+      "internal": 820
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 440,
+      "internal": 675
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 610
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 575
+     }
+    }
+   },
+   "h/d>=1.0": {
+    "A": {
+     "h<=5": {
+      "corner": 720,
+      "edge": 1105,
+      "intermediate": 1435,
+      "internal": 1680
+     },
+     "5<h<=10": {
+      "corner": 595,
+      "edge": 905,
+      "intermediate": 1225,
+      "internal": 1560
+     },
+     "10<h<=15": {
+      "corner": 535,
+      "edge": 815,
+      "intermediate": 1105,
+      "internal": 1500
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": 770,
+      "intermediate": 1045,
+      "internal": 1470
+     }
+    },
+    "B1": {
+     "h<=5": {
+      "corner": 540,
+      "edge": 820,
+      "intermediate": 1115,
+      "internal": 1680
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": 675,
+      "intermediate": 915,
+      "internal": 1410
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": 610,
+      "intermediate": 825,
+      "internal": 1265
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": 575,
+      "intermediate": 775,
+      "internal": 1190
+     }
+    },
+    "B2": {
+     "h<=5": {
+      "corner": null,
+      "edge": 670,
+      "intermediate": 905,
+      "internal": 1390
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": 550,
+      "intermediate": 740,
+      "internal": 1135
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 670,
+      "internal": 1025
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 630,
+      "internal": 965
+     }
+    },
+    "C": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 515,
+      "internal": 790
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 425,
+      "internal": 645
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 585
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 550
+     }
+    },
+    "D": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 560
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 460
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 415
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": null
+     }
+    }
+   }
+  },
+  "source_page": 7
+ },
+ {
+  "cert": "gamcorp-14022-MAPRO-2023",
+  "standard": "AS/NZS 1170.2:2021",
+  "rail": "MA PRO Rail",
+  "roof": "tin",
+  "interface": "L Feet Set",
+  "panel": "1.67mx1m",
+  "terrain_category": 3,
+  "regions": [
+   "A",
+   "B1",
+   "B2",
+   "C",
+   "D"
+  ],
+  "data": {
+   "h/d<=0.5": {
+    "A": {
+     "h<=5": {
+      "corner": 1290,
+      "edge": 1590,
+      "intermediate": 1785,
+      "internal": 2045
+     },
+     "5<h<=10": {
+      "corner": 1290,
+      "edge": 1590,
+      "intermediate": 1785,
+      "internal": 2045
+     },
+     "10<h<=15": {
+      "corner": 1110,
+      "edge": 1505,
+      "intermediate": 1685,
+      "internal": 1950
+     },
+     "15<h<=20": {
+      "corner": 990,
+      "edge": 1445,
+      "intermediate": 1615,
+      "internal": 1880
+     }
+    },
+    "B1": {
+     "h<=5": {
+      "corner": 960,
+      "edge": 1480,
+      "intermediate": 1780,
+      "internal": 2040
+     },
+     "5<h<=10": {
+      "corner": 960,
+      "edge": 1480,
+      "intermediate": 1780,
+      "internal": 2040
+     },
+     "10<h<=15": {
+      "corner": 830,
+      "edge": 1270,
+      "intermediate": 1685,
+      "internal": 1945
+     },
+     "15<h<=20": {
+      "corner": 740,
+      "edge": 1135,
+      "intermediate": 1545,
+      "internal": 1880
+     }
+    },
+    "B2": {
+     "h<=5": {
+      "corner": 780,
+      "edge": 1195,
+      "intermediate": 1630,
+      "internal": 1905
+     },
+     "5<h<=10": {
+      "corner": 780,
+      "edge": 1195,
+      "intermediate": 1630,
+      "internal": 1905
+     },
+     "10<h<=15": {
+      "corner": 675,
+      "edge": 1030,
+      "intermediate": 1400,
+      "internal": 1825
+     },
+     "15<h<=20": {
+      "corner": 600,
+      "edge": 920,
+      "intermediate": 1245,
+      "internal": 1750
+     }
+    },
+    "C": {
+     "h<=5": {
+      "corner": 445,
+      "edge": 680,
+      "intermediate": 920,
+      "internal": 1430
+     },
+     "5<h<=10": {
+      "corner": 445,
+      "edge": 680,
+      "intermediate": 920,
+      "internal": 1430
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": 590,
+      "intermediate": 795,
+      "internal": 1230
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": 525,
+      "intermediate": 710,
+      "internal": 1090
+     }
+    },
+    "D": {
+     "h<=5": {
+      "corner": null,
+      "edge": 485,
+      "intermediate": 650,
+      "internal": 1000
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": 485,
+      "intermediate": 650,
+      "internal": 1000
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": 415,
+      "intermediate": 560,
+      "internal": 860
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 500,
+      "internal": 765
+     }
+    }
+   },
+   "h/d>=1.0": {
+    "A": {
+     "h<=5": {
+      "corner": 875,
+      "edge": 1345,
+      "intermediate": 1540,
+      "internal": 1810
+     },
+     "5<h<=10": {
+      "corner": 875,
+      "edge": 1345,
+      "intermediate": 1540,
+      "internal": 1810
+     },
+     "10<h<=15": {
+      "corner": 755,
+      "edge": 1155,
+      "intermediate": 1460,
+      "internal": 1715
+     },
+     "15<h<=20": {
+      "corner": 675,
+      "edge": 1030,
+      "intermediate": 1400,
+      "internal": 1635
+     }
+    },
+    "B1": {
+     "h<=5": {
+      "corner": 655,
+      "edge": 1000,
+      "intermediate": 1360,
+      "internal": 1805
+     },
+     "5<h<=10": {
+      "corner": 655,
+      "edge": 1000,
+      "intermediate": 1360,
+      "internal": 1805
+     },
+     "10<h<=15": {
+      "corner": 565,
+      "edge": 860,
+      "intermediate": 1170,
+      "internal": 1710
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": 770,
+      "intermediate": 1045,
+      "internal": 1610
+     }
+    },
+    "B2": {
+     "h<=5": {
+      "corner": 530,
+      "edge": 810,
+      "intermediate": 1100,
+      "internal": 1670
+     },
+     "5<h<=10": {
+      "corner": 530,
+      "edge": 810,
+      "intermediate": 1100,
+      "internal": 1670
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": 700,
+      "intermediate": 945,
+      "internal": 1460
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": 625,
+      "intermediate": 845,
+      "internal": 1295
+     }
+    },
+    "C": {
+     "h<=5": {
+      "corner": null,
+      "edge": 465,
+      "intermediate": 625,
+      "internal": 960
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": 465,
+      "intermediate": 625,
+      "internal": 960
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 540,
+      "internal": 830
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 485,
+      "internal": 740
+     }
+    },
+    "D": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 445,
+      "internal": 680
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 445,
+      "internal": 680
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 585
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 520
+     }
+    }
+   }
+  },
+  "source_page": 8
+ },
+ {
+  "cert": "gamcorp-14022-MAPRO-2023",
+  "standard": "AS/NZS 1170.2:2021",
+  "rail": "MA PRO Rail",
+  "roof": "tin",
+  "interface": "L Feet Set",
+  "panel": "1.97mx1m",
+  "terrain_category": 2,
+  "regions": [
+   "A",
+   "B1",
+   "B2",
+   "C",
+   "D"
+  ],
+  "data": {
+   "h/d<=0.5": {
+    "A": {
+     "h<=5": {
+      "corner": 900,
+      "edge": 1390,
+      "intermediate": 1565,
+      "internal": 1840
+     },
+     "5<h<=10": {
+      "corner": 735,
+      "edge": 1135,
+      "intermediate": 1455,
+      "internal": 1715
+     },
+     "10<h<=15": {
+      "corner": 665,
+      "edge": 1020,
+      "intermediate": 1390,
+      "internal": 1645
+     },
+     "15<h<=20": {
+      "corner": 630,
+      "edge": 965,
+      "intermediate": 1310,
+      "internal": 1605
+     }
+    },
+    "B1": {
+     "h<=5": {
+      "corner": 670,
+      "edge": 1030,
+      "intermediate": 1400,
+      "internal": 1840
+     },
+     "5<h<=10": {
+      "corner": 550,
+      "edge": 845,
+      "intermediate": 1145,
+      "internal": 1710
+     },
+     "10<h<=15": {
+      "corner": 495,
+      "edge": 760,
+      "intermediate": 1030,
+      "internal": 1600
+     },
+     "15<h<=20": {
+      "corner": 470,
+      "edge": 715,
+      "intermediate": 970,
+      "internal": 1500
+     }
+    },
+    "B2": {
+     "h<=5": {
+      "corner": 545,
+      "edge": 830,
+      "intermediate": 1130,
+      "internal": 1700
+     },
+     "5<h<=10": {
+      "corner": 450,
+      "edge": 685,
+      "intermediate": 925,
+      "internal": 1430
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": 615,
+      "intermediate": 835,
+      "internal": 1290
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": 580,
+      "intermediate": 785,
+      "internal": 1210
+     }
+    },
+    "C": {
+     "h<=5": {
+      "corner": null,
+      "edge": 475,
+      "intermediate": 645,
+      "internal": 990
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": 390,
+      "intermediate": 525,
+      "internal": 810
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": 355,
+      "intermediate": 475,
+      "internal": 730
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 450,
+      "internal": 690
+     }
+    },
+    "D": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 455,
+      "internal": 695
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 375,
+      "internal": 570
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 515
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 485
+     }
+    }
+   },
+   "h/d>=1.0": {
+    "A": {
+     "h<=5": {
+      "corner": 610,
+      "edge": 935,
+      "intermediate": 1275,
+      "internal": 1590
+     },
+     "5<h<=10": {
+      "corner": 500,
+      "edge": 765,
+      "intermediate": 1040,
+      "internal": 1475
+     },
+     "10<h<=15": {
+      "corner": 455,
+      "edge": 690,
+      "intermediate": 935,
+      "internal": 1420
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": 655,
+      "intermediate": 885,
+      "internal": 1365
+     }
+    },
+    "B1": {
+     "h<=5": {
+      "corner": 455,
+      "edge": 695,
+      "intermediate": 945,
+      "internal": 1460
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": 575,
+      "intermediate": 775,
+      "internal": 1195
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": 515,
+      "intermediate": 700,
+      "internal": 1070
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": 490,
+      "intermediate": 660,
+      "internal": 1010
+     }
+    },
+    "B2": {
+     "h<=5": {
+      "corner": null,
+      "edge": 565,
+      "intermediate": 765,
+      "internal": 1175
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": 465,
+      "intermediate": 630,
+      "internal": 965
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 570,
+      "internal": 870
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 535,
+      "internal": 815
+     }
+    },
+    "C": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 440,
+      "internal": 670
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 360,
+      "internal": 550
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 495
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 465
+     }
+    },
+    "D": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 475
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 390
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 350
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": null
+     }
+    }
+   }
+  },
+  "source_page": 9
+ },
+ {
+  "cert": "gamcorp-14022-MAPRO-2023",
+  "standard": "AS/NZS 1170.2:2021",
+  "rail": "MA PRO Rail",
+  "roof": "tin",
+  "interface": "L Feet Set",
+  "panel": "1.97mx1m",
+  "terrain_category": 3,
+  "regions": [
+   "A",
+   "B1",
+   "B2",
+   "C",
+   "D"
+  ],
+  "data": {
+   "h/d<=0.5": {
+    "A": {
+     "h<=5": {
+      "corner": 1095,
+      "edge": 1505,
+      "intermediate": 1690,
+      "internal": 1960
+     },
+     "5<h<=10": {
+      "corner": 1095,
+      "edge": 1505,
+      "intermediate": 1690,
+      "internal": 1960
+     },
+     "10<h<=15": {
+      "corner": 940,
+      "edge": 1425,
+      "intermediate": 1595,
+      "internal": 1870
+     },
+     "15<h<=20": {
+      "corner": 840,
+      "edge": 1295,
+      "intermediate": 1525,
+      "internal": 1805
+     }
+    },
+    "B1": {
+     "h<=5": {
+      "corner": 815,
+      "edge": 1255,
+      "intermediate": 1685,
+      "internal": 1955
+     },
+     "5<h<=10": {
+      "corner": 815,
+      "edge": 1255,
+      "intermediate": 1685,
+      "internal": 1955
+     },
+     "10<h<=15": {
+      "corner": 700,
+      "edge": 1080,
+      "intermediate": 1470,
+      "internal": 1865
+     },
+     "15<h<=20": {
+      "corner": 630,
+      "edge": 965,
+      "intermediate": 1310,
+      "internal": 1805
+     }
+    },
+    "B2": {
+     "h<=5": {
+      "corner": 660,
+      "edge": 1015,
+      "intermediate": 1380,
+      "internal": 1830
+     },
+     "5<h<=10": {
+      "corner": 660,
+      "edge": 1015,
+      "intermediate": 1380,
+      "internal": 1830
+     },
+     "10<h<=15": {
+      "corner": 570,
+      "edge": 870,
+      "intermediate": 1185,
+      "internal": 1735
+     },
+     "15<h<=20": {
+      "corner": 510,
+      "edge": 780,
+      "intermediate": 1055,
+      "internal": 1640
+     }
+    },
+    "C": {
+     "h<=5": {
+      "corner": 380,
+      "edge": 575,
+      "intermediate": 780,
+      "internal": 1210
+     },
+     "5<h<=10": {
+      "corner": 380,
+      "edge": 575,
+      "intermediate": 780,
+      "internal": 1210
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": 500,
+      "intermediate": 675,
+      "internal": 1040
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": 445,
+      "intermediate": 600,
+      "internal": 925
+     }
+    },
+    "D": {
+     "h<=5": {
+      "corner": null,
+      "edge": 410,
+      "intermediate": 550,
+      "internal": 850
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": 410,
+      "intermediate": 550,
+      "internal": 850
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": 355,
+      "intermediate": 475,
+      "internal": 730
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 425,
+      "internal": 650
+     }
+    }
+   },
+   "h/d>=1.0": {
+    "A": {
+     "h<=5": {
+      "corner": 740,
+      "edge": 1140,
+      "intermediate": 1460,
+      "internal": 1715
+     },
+     "5<h<=10": {
+      "corner": 740,
+      "edge": 1140,
+      "intermediate": 1460,
+      "internal": 1715
+     },
+     "10<h<=15": {
+      "corner": 640,
+      "edge": 980,
+      "intermediate": 1335,
+      "internal": 1620
+     },
+     "15<h<=20": {
+      "corner": 570,
+      "edge": 875,
+      "intermediate": 1190,
+      "internal": 1550
+     }
+    },
+    "B1": {
+     "h<=5": {
+      "corner": 555,
+      "edge": 845,
+      "intermediate": 1150,
+      "internal": 1710
+     },
+     "5<h<=10": {
+      "corner": 555,
+      "edge": 845,
+      "intermediate": 1150,
+      "internal": 1710
+     },
+     "10<h<=15": {
+      "corner": 480,
+      "edge": 730,
+      "intermediate": 990,
+      "internal": 1535
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": 655,
+      "intermediate": 885,
+      "internal": 1365
+     }
+    },
+    "B2": {
+     "h<=5": {
+      "corner": 450,
+      "edge": 685,
+      "intermediate": 930,
+      "internal": 1440
+     },
+     "5<h<=10": {
+      "corner": 450,
+      "edge": 685,
+      "intermediate": 930,
+      "internal": 1440
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": 595,
+      "intermediate": 800,
+      "internal": 1235
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": 530,
+      "intermediate": 715,
+      "internal": 1100
+     }
+    },
+    "C": {
+     "h<=5": {
+      "corner": null,
+      "edge": 395,
+      "intermediate": 530,
+      "internal": 815
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": 395,
+      "intermediate": 530,
+      "internal": 815
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 460,
+      "internal": 700
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 410,
+      "internal": 625
+     }
+    },
+    "D": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 375,
+      "internal": 575
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 375,
+      "internal": 575
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 495
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 440
+     }
+    }
+   }
+  },
+  "source_page": 10
+ },
+ {
+  "cert": "gamcorp-14022-MAPRO-2023",
+  "standard": "AS/NZS 1170.2:2021",
+  "rail": "MA PRO Rail",
+  "roof": "tin",
+  "interface": "L Feet Set",
+  "panel": "2.1mx1.05m",
+  "terrain_category": 2,
+  "regions": [
+   "A",
+   "B1",
+   "B2",
+   "C",
+   "D"
+  ],
+  "data": {
+   "h/d<=0.5": {
+    "A": {
+     "h<=5": {
+      "corner": 845,
+      "edge": 1305,
+      "intermediate": 1535,
+      "internal": 1810
+     },
+     "5<h<=10": {
+      "corner": 690,
+      "edge": 1060,
+      "intermediate": 1425,
+      "internal": 1675
+     },
+     "10<h<=15": {
+      "corner": 620,
+      "edge": 955,
+      "intermediate": 1300,
+      "internal": 1610
+     },
+     "15<h<=20": {
+      "corner": 590,
+      "edge": 905,
+      "intermediate": 1230,
+      "internal": 1570
+     }
+    },
+    "B1": {
+     "h<=5": {
+      "corner": 630,
+      "edge": 965,
+      "intermediate": 1315,
+      "internal": 1810
+     },
+     "5<h<=10": {
+      "corner": 515,
+      "edge": 790,
+      "intermediate": 1075,
+      "internal": 1670
+     },
+     "10<h<=15": {
+      "corner": 465,
+      "edge": 710,
+      "intermediate": 965,
+      "internal": 1500
+     },
+     "15<h<=20": {
+      "corner": 440,
+      "edge": 670,
+      "intermediate": 910,
+      "internal": 1410
+     }
+    },
+    "B2": {
+     "h<=5": {
+      "corner": 510,
+      "edge": 780,
+      "intermediate": 1060,
+      "internal": 1650
+     },
+     "5<h<=10": {
+      "corner": 420,
+      "edge": 640,
+      "intermediate": 865,
+      "internal": 1340
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": 580,
+      "intermediate": 785,
+      "internal": 1210
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": 545,
+      "intermediate": 735,
+      "internal": 1135
+     }
+    },
+    "C": {
+     "h<=5": {
+      "corner": null,
+      "edge": 445,
+      "intermediate": 605,
+      "internal": 930
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": 365,
+      "intermediate": 495,
+      "internal": 760
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 445,
+      "internal": 685
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 420,
+      "internal": 645
+     }
+    },
+    "D": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 425,
+      "internal": 655
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 350,
+      "internal": 535
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 485
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 455
+     }
+    }
+   },
+   "h/d>=1.0": {
+    "A": {
+     "h<=5": {
+      "corner": 575,
+      "edge": 880,
+      "intermediate": 1195,
+      "internal": 1555
+     },
+     "5<h<=10": {
+      "corner": 470,
+      "edge": 720,
+      "intermediate": 975,
+      "internal": 1445
+     },
+     "10<h<=15": {
+      "corner": 425,
+      "edge": 645,
+      "intermediate": 875,
+      "internal": 1355
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": 615,
+      "intermediate": 830,
+      "internal": 1280
+     }
+    },
+    "B1": {
+     "h<=5": {
+      "corner": 430,
+      "edge": 655,
+      "intermediate": 885,
+      "internal": 1370
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": 540,
+      "intermediate": 725,
+      "internal": 1120
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": 485,
+      "intermediate": 655,
+      "internal": 1005
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": 455,
+      "intermediate": 615,
+      "internal": 945
+     }
+    },
+    "B2": {
+     "h<=5": {
+      "corner": null,
+      "edge": 530,
+      "intermediate": 715,
+      "internal": 1105
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": 435,
+      "intermediate": 590,
+      "internal": 905
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 535,
+      "internal": 815
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 500,
+      "internal": 765
+     }
+    },
+    "C": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 410,
+      "internal": 630
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 515
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 465
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 440
+     }
+    },
+    "D": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 445
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 365
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": null
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": null
+     }
+    }
+   }
+  },
+  "source_page": 11
+ },
+ {
+  "cert": "gamcorp-14022-MAPRO-2023",
+  "standard": "AS/NZS 1170.2:2021",
+  "rail": "MA PRO Rail",
+  "roof": "tin",
+  "interface": "L Feet Set",
+  "panel": "2.1mx1.05m",
+  "terrain_category": 3,
+  "regions": [
+   "A",
+   "B1",
+   "B2",
+   "C",
+   "D"
+  ],
+  "data": {
+   "h/d<=0.5": {
+    "A": {
+     "h<=5": {
+      "corner": 1025,
+      "edge": 1475,
+      "intermediate": 1655,
+      "internal": 1930
+     },
+     "5<h<=10": {
+      "corner": 1025,
+      "edge": 1475,
+      "intermediate": 1655,
+      "internal": 1930
+     },
+     "10<h<=15": {
+      "corner": 880,
+      "edge": 1365,
+      "intermediate": 1565,
+      "internal": 1840
+     },
+     "15<h<=20": {
+      "corner": 790,
+      "edge": 1215,
+      "intermediate": 1495,
+      "internal": 1765
+     }
+    },
+    "B1": {
+     "h<=5": {
+      "corner": 765,
+      "edge": 1180,
+      "intermediate": 1615,
+      "internal": 1925
+     },
+     "5<h<=10": {
+      "corner": 765,
+      "edge": 1180,
+      "intermediate": 1615,
+      "internal": 1925
+     },
+     "10<h<=15": {
+      "corner": 660,
+      "edge": 1010,
+      "intermediate": 1380,
+      "internal": 1835
+     },
+     "15<h<=20": {
+      "corner": 590,
+      "edge": 905,
+      "intermediate": 1230,
+      "internal": 1765
+     }
+    },
+    "B2": {
+     "h<=5": {
+      "corner": 620,
+      "edge": 950,
+      "intermediate": 1295,
+      "internal": 1800
+     },
+     "5<h<=10": {
+      "corner": 620,
+      "edge": 950,
+      "intermediate": 1295,
+      "internal": 1800
+     },
+     "10<h<=15": {
+      "corner": 535,
+      "edge": 820,
+      "intermediate": 1115,
+      "internal": 1700
+     },
+     "15<h<=20": {
+      "corner": 480,
+      "edge": 730,
+      "intermediate": 990,
+      "internal": 1540
+     }
+    },
+    "C": {
+     "h<=5": {
+      "corner": 355,
+      "edge": 540,
+      "intermediate": 735,
+      "internal": 1135
+     },
+     "5<h<=10": {
+      "corner": 355,
+      "edge": 540,
+      "intermediate": 735,
+      "internal": 1135
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": 470,
+      "intermediate": 635,
+      "internal": 975
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": 415,
+      "intermediate": 565,
+      "internal": 870
+     }
+    },
+    "D": {
+     "h<=5": {
+      "corner": null,
+      "edge": 385,
+      "intermediate": 520,
+      "internal": 795
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": 385,
+      "intermediate": 520,
+      "internal": 795
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 445,
+      "internal": 685
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 400,
+      "internal": 610
+     }
+    }
+   },
+   "h/d>=1.0": {
+    "A": {
+     "h<=5": {
+      "corner": 695,
+      "edge": 1065,
+      "intermediate": 1425,
+      "internal": 1680
+     },
+     "5<h<=10": {
+      "corner": 695,
+      "edge": 1065,
+      "intermediate": 1425,
+      "internal": 1680
+     },
+     "10<h<=15": {
+      "corner": 600,
+      "edge": 920,
+      "intermediate": 1250,
+      "internal": 1585
+     },
+     "15<h<=20": {
+      "corner": 535,
+      "edge": 820,
+      "intermediate": 1115,
+      "internal": 1515
+     }
+    },
+    "B1": {
+     "h<=5": {
+      "corner": 520,
+      "edge": 795,
+      "intermediate": 1080,
+      "internal": 1675
+     },
+     "5<h<=10": {
+      "corner": 520,
+      "edge": 795,
+      "intermediate": 1080,
+      "internal": 1675
+     },
+     "10<h<=15": {
+      "corner": 450,
+      "edge": 685,
+      "intermediate": 930,
+      "internal": 1440
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": 615,
+      "intermediate": 830,
+      "internal": 1280
+     }
+    },
+    "B2": {
+     "h<=5": {
+      "corner": 425,
+      "edge": 645,
+      "intermediate": 875,
+      "internal": 1350
+     },
+     "5<h<=10": {
+      "corner": 425,
+      "edge": 645,
+      "intermediate": 875,
+      "internal": 1350
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": 555,
+      "intermediate": 750,
+      "internal": 1160
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": 495,
+      "intermediate": 670,
+      "internal": 1030
+     }
+    },
+    "C": {
+     "h<=5": {
+      "corner": null,
+      "edge": 370,
+      "intermediate": 495,
+      "internal": 765
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": 370,
+      "intermediate": 495,
+      "internal": 765
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 430,
+      "internal": 660
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 385,
+      "internal": 585
+     }
+    },
+    "D": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 355,
+      "internal": 540
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 355,
+      "internal": 540
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 465
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 415
+     }
+    }
+   }
+  },
+  "source_page": 12
+ },
+ {
+  "cert": "gamcorp-14022-MAPRO-2023",
+  "standard": "AS/NZS 1170.2:2021",
+  "rail": "MA PRO Rail",
+  "roof": "tin",
+  "interface": "L Feet Set",
+  "panel": "2.2mx1.2m",
+  "terrain_category": 2,
+  "regions": [
+   "A",
+   "B1",
+   "B2",
+   "C",
+   "D"
+  ],
+  "data": {
+   "h/d<=0.5": {
+    "A": {
+     "h<=5": {
+      "corner": 805,
+      "edge": 1245,
+      "intermediate": 1510,
+      "internal": 1790
+     },
+     "5<h<=10": {
+      "corner": 660,
+      "edge": 1015,
+      "intermediate": 1385,
+      "internal": 1650
+     },
+     "10<h<=15": {
+      "corner": 595,
+      "edge": 910,
+      "intermediate": 1245,
+      "internal": 1585
+     },
+     "15<h<=20": {
+      "corner": 560,
+      "edge": 860,
+      "intermediate": 1175,
+      "internal": 1550
+     }
+    },
+    "B1": {
+     "h<=5": {
+      "corner": 600,
+      "edge": 920,
+      "intermediate": 1255,
+      "internal": 1790
+     },
+     "5<h<=10": {
+      "corner": 495,
+      "edge": 755,
+      "intermediate": 1025,
+      "internal": 1595
+     },
+     "10<h<=15": {
+      "corner": 445,
+      "edge": 680,
+      "intermediate": 920,
+      "internal": 1430
+     },
+     "15<h<=20": {
+      "corner": 420,
+      "edge": 640,
+      "intermediate": 870,
+      "internal": 1345
+     }
+    },
+    "B2": {
+     "h<=5": {
+      "corner": 485,
+      "edge": 745,
+      "intermediate": 1010,
+      "internal": 1575
+     },
+     "5<h<=10": {
+      "corner": 400,
+      "edge": 610,
+      "intermediate": 830,
+      "internal": 1280
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": 555,
+      "intermediate": 750,
+      "internal": 1155
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": 520,
+      "intermediate": 700,
+      "internal": 1080
+     }
+    },
+    "C": {
+     "h<=5": {
+      "corner": null,
+      "edge": 425,
+      "intermediate": 575,
+      "internal": 890
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 470,
+      "internal": 725
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 425,
+      "internal": 655
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 400,
+      "internal": 615
+     }
+    },
+    "D": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 405,
+      "internal": 625
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 510
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 460
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 435
+     }
+    }
+   },
+   "h/d>=1.0": {
+    "A": {
+     "h<=5": {
+      "corner": 550,
+      "edge": 840,
+      "intermediate": 1140,
+      "internal": 1530
+     },
+     "5<h<=10": {
+      "corner": 450,
+      "edge": 685,
+      "intermediate": 930,
+      "internal": 1425
+     },
+     "10<h<=15": {
+      "corner": 405,
+      "edge": 620,
+      "intermediate": 835,
+      "internal": 1295
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": 585,
+      "intermediate": 790,
+      "internal": 1225
+     }
+    },
+    "B1": {
+     "h<=5": {
+      "corner": 410,
+      "edge": 625,
+      "intermediate": 845,
+      "internal": 1305
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": 515,
+      "intermediate": 695,
+      "internal": 1070
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": 465,
+      "intermediate": 625,
+      "internal": 960
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": 435,
+      "intermediate": 590,
+      "internal": 905
+     }
+    },
+    "B2": {
+     "h<=5": {
+      "corner": null,
+      "edge": 505,
+      "intermediate": 685,
+      "internal": 1055
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": 415,
+      "intermediate": 560,
+      "internal": 860
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 510,
+      "internal": 780
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 480,
+      "internal": 730
+     }
+    },
+    "C": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 390,
+      "internal": 600
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 490
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 445
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 420
+     }
+    },
+    "D": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 425
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": null
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": null
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": null
+     }
+    }
+   }
+  },
+  "source_page": 13
+ },
+ {
+  "cert": "gamcorp-14022-MAPRO-2023",
+  "standard": "AS/NZS 1170.2:2021",
+  "rail": "MA PRO Rail",
+  "roof": "tin",
+  "interface": "L Feet Set",
+  "panel": "2.2mx1.2m",
+  "terrain_category": 3,
+  "regions": [
+   "A",
+   "B1",
+   "B2",
+   "C",
+   "D"
+  ],
+  "data": {
+   "h/d<=0.5": {
+    "A": {
+     "h<=5": {
+      "corner": 980,
+      "edge": 1450,
+      "intermediate": 1630,
+      "internal": 1910
+     },
+     "5<h<=10": {
+      "corner": 980,
+      "edge": 1450,
+      "intermediate": 1630,
+      "internal": 1910
+     },
+     "10<h<=15": {
+      "corner": 840,
+      "edge": 1305,
+      "intermediate": 1540,
+      "internal": 1820
+     },
+     "15<h<=20": {
+      "corner": 750,
+      "edge": 1160,
+      "intermediate": 1470,
+      "internal": 1740
+     }
+    },
+    "B1": {
+     "h<=5": {
+      "corner": 730,
+      "edge": 1125,
+      "intermediate": 1540,
+      "internal": 1905
+     },
+     "5<h<=10": {
+      "corner": 730,
+      "edge": 1125,
+      "intermediate": 1540,
+      "internal": 1905
+     },
+     "10<h<=15": {
+      "corner": 630,
+      "edge": 965,
+      "intermediate": 1320,
+      "internal": 1815
+     },
+     "15<h<=20": {
+      "corner": 560,
+      "edge": 860,
+      "intermediate": 1175,
+      "internal": 1740
+     }
+    },
+    "B2": {
+     "h<=5": {
+      "corner": 590,
+      "edge": 905,
+      "intermediate": 1235,
+      "internal": 1775
+     },
+     "5<h<=10": {
+      "corner": 590,
+      "edge": 905,
+      "intermediate": 1235,
+      "internal": 1775
+     },
+     "10<h<=15": {
+      "corner": 510,
+      "edge": 780,
+      "intermediate": 1060,
+      "internal": 1655
+     },
+     "15<h<=20": {
+      "corner": 455,
+      "edge": 695,
+      "intermediate": 945,
+      "internal": 1470
+     }
+    },
+    "C": {
+     "h<=5": {
+      "corner": null,
+      "edge": 515,
+      "intermediate": 700,
+      "internal": 1085
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": 515,
+      "intermediate": 700,
+      "internal": 1085
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": 445,
+      "intermediate": 605,
+      "internal": 935
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": 395,
+      "intermediate": 540,
+      "internal": 830
+     }
+    },
+    "D": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 495,
+      "internal": 760
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 495,
+      "internal": 760
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 425,
+      "internal": 655
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 580
+     }
+    }
+   },
+   "h/d>=1.0": {
+    "A": {
+     "h<=5": {
+      "corner": 660,
+      "edge": 1020,
+      "intermediate": 1395,
+      "internal": 1655
+     },
+     "5<h<=10": {
+      "corner": 660,
+      "edge": 1020,
+      "intermediate": 1395,
+      "internal": 1655
+     },
+     "10<h<=15": {
+      "corner": 570,
+      "edge": 875,
+      "intermediate": 1195,
+      "internal": 1565
+     },
+     "15<h<=20": {
+      "corner": 510,
+      "edge": 785,
+      "intermediate": 1065,
+      "internal": 1495
+     }
+    },
+    "B1": {
+     "h<=5": {
+      "corner": 495,
+      "edge": 760,
+      "intermediate": 1030,
+      "internal": 1605
+     },
+     "5<h<=10": {
+      "corner": 495,
+      "edge": 760,
+      "intermediate": 1030,
+      "internal": 1605
+     },
+     "10<h<=15": {
+      "corner": 430,
+      "edge": 655,
+      "intermediate": 885,
+      "internal": 1375
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": 585,
+      "intermediate": 790,
+      "internal": 1225
+     }
+    },
+    "B2": {
+     "h<=5": {
+      "corner": 405,
+      "edge": 615,
+      "intermediate": 835,
+      "internal": 1290
+     },
+     "5<h<=10": {
+      "corner": 405,
+      "edge": 615,
+      "intermediate": 835,
+      "internal": 1290
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": 530,
+      "intermediate": 720,
+      "internal": 1105
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": 475,
+      "intermediate": 640,
+      "internal": 985
+     }
+    },
+    "C": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 475,
+      "internal": 730
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 475,
+      "internal": 730
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 410,
+      "internal": 630
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 560
+     }
+    },
+    "D": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 515
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 515
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 445
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 390
+     }
+    }
+   }
+  },
+  "source_page": 14
+ },
+ {
+  "cert": "gamcorp-14022-MAPRO-2023",
+  "standard": "AS/NZS 1170.2:2021",
+  "rail": "MA PRO Rail",
+  "roof": "tin",
+  "interface": "L Feet Set",
+  "panel": "2.4mx1.2m",
+  "terrain_category": 2,
+  "regions": [
+   "A",
+   "B1",
+   "B2",
+   "C",
+   "D"
+  ],
+  "data": {
+   "h/d<=0.5": {
+    "A": {
+     "h<=5": {
+      "corner": 740,
+      "edge": 1140,
+      "intermediate": 1465,
+      "internal": 1735
+     },
+     "5<h<=10": {
+      "corner": 605,
+      "edge": 930,
+      "intermediate": 1270,
+      "internal": 1605
+     },
+     "10<h<=15": {
+      "corner": 545,
+      "edge": 835,
+      "intermediate": 1140,
+      "internal": 1540
+     },
+     "15<h<=20": {
+      "corner": 515,
+      "edge": 790,
+      "intermediate": 1075,
+      "internal": 1505
+     }
+    },
+    "B1": {
+     "h<=5": {
+      "corner": 550,
+      "edge": 845,
+      "intermediate": 1150,
+      "internal": 1735
+     },
+     "5<h<=10": {
+      "corner": 450,
+      "edge": 690,
+      "intermediate": 940,
+      "internal": 1465
+     },
+     "10<h<=15": {
+      "corner": 410,
+      "edge": 625,
+      "intermediate": 845,
+      "internal": 1310
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": 585,
+      "intermediate": 795,
+      "internal": 1230
+     }
+    },
+    "B2": {
+     "h<=5": {
+      "corner": 445,
+      "edge": 685,
+      "intermediate": 925,
+      "internal": 1445
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": 560,
+      "intermediate": 760,
+      "internal": 1175
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": 505,
+      "intermediate": 685,
+      "internal": 1055
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": 475,
+      "intermediate": 645,
+      "internal": 990
+     }
+    },
+    "C": {
+     "h<=5": {
+      "corner": null,
+      "edge": 365,
+      "intermediate": 530,
+      "internal": 815
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 430,
+      "internal": 665
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 365,
+      "internal": 600
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 565
+     }
+    },
+    "D": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 570
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 470
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 420
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 395
+     }
+    }
+   },
+   "h/d>=1.0": {
+    "A": {
+     "h<=5": {
+      "corner": 500,
+      "edge": 770,
+      "intermediate": 1045,
+      "internal": 1490
+     },
+     "5<h<=10": {
+      "corner": 410,
+      "edge": 630,
+      "intermediate": 855,
+      "internal": 1325
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": 565,
+      "intermediate": 765,
+      "internal": 1185
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": 535,
+      "intermediate": 725,
+      "internal": 1120
+     }
+    },
+    "B1": {
+     "h<=5": {
+      "corner": null,
+      "edge": 570,
+      "intermediate": 775,
+      "internal": 1200
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": 470,
+      "intermediate": 635,
+      "internal": 980
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": 425,
+      "intermediate": 575,
+      "internal": 880
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": 400,
+      "intermediate": 540,
+      "internal": 830
+     }
+    },
+    "B2": {
+     "h<=5": {
+      "corner": null,
+      "edge": 465,
+      "intermediate": 625,
+      "internal": 965
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 515,
+      "internal": 790
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 465,
+      "internal": 715
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 440,
+      "internal": 670
+     }
+    },
+    "C": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 550
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 450
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 405
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": null
+     }
+    },
+    "D": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": null
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": null
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": null
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": null
+     }
+    }
+   }
+  },
+  "source_page": 15
+ },
+ {
+  "cert": "gamcorp-14022-MAPRO-2023",
+  "standard": "AS/NZS 1170.2:2021",
+  "rail": "MA PRO Rail",
+  "roof": "tin",
+  "interface": "L Feet Set",
+  "panel": "2.4mx1.2m",
+  "terrain_category": 3,
+  "regions": [
+   "A",
+   "B1",
+   "B2",
+   "C",
+   "D"
+  ],
+  "data": {
+   "h/d<=0.5": {
+    "A": {
+     "h<=5": {
+      "corner": 895,
+      "edge": 1395,
+      "intermediate": 1580,
+      "internal": 1865
+     },
+     "5<h<=10": {
+      "corner": 895,
+      "edge": 1395,
+      "intermediate": 1580,
+      "internal": 1865
+     },
+     "10<h<=15": {
+      "corner": 770,
+      "edge": 1195,
+      "intermediate": 1495,
+      "internal": 1775
+     },
+     "15<h<=20": {
+      "corner": 690,
+      "edge": 1065,
+      "intermediate": 1430,
+      "internal": 1690
+     }
+    },
+    "B1": {
+     "h<=5": {
+      "corner": 670,
+      "edge": 1030,
+      "intermediate": 1410,
+      "internal": 1865
+     },
+     "5<h<=10": {
+      "corner": 670,
+      "edge": 1030,
+      "intermediate": 1410,
+      "internal": 1865
+     },
+     "10<h<=15": {
+      "corner": 575,
+      "edge": 885,
+      "intermediate": 1210,
+      "internal": 1770
+     },
+     "15<h<=20": {
+      "corner": 515,
+      "edge": 790,
+      "intermediate": 1075,
+      "internal": 1685
+     }
+    },
+    "B2": {
+     "h<=5": {
+      "corner": 540,
+      "edge": 830,
+      "intermediate": 1135,
+      "internal": 1725
+     },
+     "5<h<=10": {
+      "corner": 540,
+      "edge": 830,
+      "intermediate": 1135,
+      "internal": 1725
+     },
+     "10<h<=15": {
+      "corner": 470,
+      "edge": 715,
+      "intermediate": 975,
+      "internal": 1520
+     },
+     "15<h<=20": {
+      "corner": 420,
+      "edge": 640,
+      "intermediate": 865,
+      "internal": 1345
+     }
+    },
+    "C": {
+     "h<=5": {
+      "corner": null,
+      "edge": 475,
+      "intermediate": 640,
+      "internal": 995
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": 475,
+      "intermediate": 640,
+      "internal": 995
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": 410,
+      "intermediate": 555,
+      "internal": 855
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 495,
+      "internal": 760
+     }
+    },
+    "D": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 455,
+      "internal": 695
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 455,
+      "internal": 695
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 365,
+      "internal": 600
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 535
+     }
+    }
+   },
+   "h/d>=1.0": {
+    "A": {
+     "h<=5": {
+      "corner": 605,
+      "edge": 935,
+      "intermediate": 1275,
+      "internal": 1605
+     },
+     "5<h<=10": {
+      "corner": 605,
+      "edge": 935,
+      "intermediate": 1275,
+      "internal": 1605
+     },
+     "10<h<=15": {
+      "corner": 525,
+      "edge": 805,
+      "intermediate": 1095,
+      "internal": 1520
+     },
+     "15<h<=20": {
+      "corner": 470,
+      "edge": 715,
+      "intermediate": 975,
+      "internal": 1450
+     }
+    },
+    "B1": {
+     "h<=5": {
+      "corner": 455,
+      "edge": 695,
+      "intermediate": 945,
+      "internal": 1475
+     },
+     "5<h<=10": {
+      "corner": 455,
+      "edge": 695,
+      "intermediate": 945,
+      "internal": 1475
+     },
+     "10<h<=15": {
+      "corner": 390,
+      "edge": 600,
+      "intermediate": 810,
+      "internal": 1260
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": 535,
+      "intermediate": 725,
+      "internal": 1120
+     }
+    },
+    "B2": {
+     "h<=5": {
+      "corner": null,
+      "edge": 565,
+      "intermediate": 765,
+      "internal": 1180
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": 565,
+      "intermediate": 765,
+      "internal": 1180
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": 485,
+      "intermediate": 660,
+      "internal": 1015
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": 435,
+      "intermediate": 585,
+      "internal": 900
+     }
+    },
+    "C": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 435,
+      "internal": 665
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 435,
+      "internal": 665
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 575
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 515
+     }
+    },
+    "D": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 470
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 470
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 405
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": null
+     }
+    }
+   }
+  },
+  "source_page": 16
+ },
+ {
+  "cert": "gamcorp-14022-MAPRO-2023",
+  "standard": "AS/NZS 1170.2:2021",
+  "rail": "MA PRO Rail",
+  "roof": "tile",
+  "interface": "Standard Tile Interface",
+  "panel": "1.67mx1m",
+  "terrain_category": 2,
+  "regions": [
+   "A",
+   "B1",
+   "B2",
+   "C",
+   "D"
+  ],
+  "data": {
+   "h/d<=0.5": {
+    "A": {
+     "h<=5": {
+      "corner": 480,
+      "edge": 755,
+      "intermediate": 1060,
+      "internal": 1760
+     },
+     "5<h<=10": {
+      "corner": 395,
+      "edge": 610,
+      "intermediate": 850,
+      "internal": 1385
+     },
+     "10<h<=15": {
+      "corner": 355,
+      "edge": 550,
+      "intermediate": 755,
+      "internal": 1220
+     },
+     "15<h<=20": {
+      "corner": 330,
+      "edge": 515,
+      "intermediate": 710,
+      "internal": 1140
+     }
+    },
+    "B1": {
+     "h<=5": {
+      "corner": 480,
+      "edge": 755,
+      "intermediate": 1060,
+      "internal": 1760
+     },
+     "5<h<=10": {
+      "corner": 390,
+      "edge": 610,
+      "intermediate": 845,
+      "internal": 1375
+     },
+     "10<h<=15": {
+      "corner": 355,
+      "edge": 550,
+      "intermediate": 755,
+      "internal": 1220
+     },
+     "15<h<=20": {
+      "corner": 330,
+      "edge": 515,
+      "intermediate": 710,
+      "internal": 1140
+     }
+    },
+    "B2": {
+     "h<=5": {
+      "corner": 385,
+      "edge": 600,
+      "intermediate": 835,
+      "internal": 1355
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": 490,
+      "intermediate": 670,
+      "internal": 1075
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": 440,
+      "intermediate": 605,
+      "internal": 960
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": 415,
+      "intermediate": 570,
+      "internal": 900
+     }
+    },
+    "C": {
+     "h<=5": {
+      "corner": null,
+      "edge": 400,
+      "intermediate": 550,
+      "internal": 870
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": 325,
+      "intermediate": 445,
+      "internal": 695
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 400,
+      "internal": 625
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 380,
+      "internal": 590
+     }
+    },
+    "D": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 420,
+      "internal": 660
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 345,
+      "internal": 535
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 480
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 450
+     }
+    }
+   },
+   "h/d>=1.0": {
+    "A": {
+     "h<=5": {
+      "corner": null,
+      "edge": 500,
+      "intermediate": 690,
+      "internal": 1105
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": 410,
+      "intermediate": 560,
+      "internal": 885
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": 365,
+      "intermediate": 500,
+      "internal": 790
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": 345,
+      "intermediate": 470,
+      "internal": 740
+     }
+    },
+    "B1": {
+     "h<=5": {
+      "corner": null,
+      "edge": 500,
+      "intermediate": 690,
+      "internal": 1105
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": 405,
+      "intermediate": 555,
+      "internal": 880
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": 365,
+      "intermediate": 500,
+      "internal": 790
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": 345,
+      "intermediate": 470,
+      "internal": 740
+     }
+    },
+    "B2": {
+     "h<=5": {
+      "corner": null,
+      "edge": 400,
+      "intermediate": 550,
+      "internal": 870
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": 325,
+      "intermediate": 445,
+      "internal": 700
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 405,
+      "internal": 630
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 380,
+      "internal": 590
+     }
+    },
+    "C": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 370,
+      "internal": 570
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 465
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 420
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 395
+     }
+    },
+    "D": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 440
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 360
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": null
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": null
+     }
+    }
+   }
+  },
+  "source_page": 21
+ },
+ {
+  "cert": "gamcorp-14022-MAPRO-2023",
+  "standard": "AS/NZS 1170.2:2021",
+  "rail": "MA PRO Rail",
+  "roof": "tile",
+  "interface": "Standard Tile Interface",
+  "panel": "1.67mx1m",
+  "terrain_category": 3,
+  "regions": [
+   "A",
+   "B1",
+   "B2",
+   "C",
+   "D"
+  ],
+  "data": {
+   "h/d<=0.5": {
+    "A": {
+     "h<=5": {
+      "corner": 590,
+      "edge": 940,
+      "intermediate": 1330,
+      "internal": 2045
+     },
+     "5<h<=10": {
+      "corner": 590,
+      "edge": 940,
+      "intermediate": 1330,
+      "internal": 2045
+     },
+     "10<h<=15": {
+      "corner": 505,
+      "edge": 800,
+      "intermediate": 1120,
+      "internal": 1875
+     },
+     "15<h<=20": {
+      "corner": 450,
+      "edge": 705,
+      "intermediate": 980,
+      "internal": 1620
+     }
+    },
+    "B1": {
+     "h<=5": {
+      "corner": 585,
+      "edge": 930,
+      "intermediate": 1320,
+      "internal": 2040
+     },
+     "5<h<=10": {
+      "corner": 585,
+      "edge": 930,
+      "intermediate": 1320,
+      "internal": 2040
+     },
+     "10<h<=15": {
+      "corner": 505,
+      "edge": 795,
+      "intermediate": 1115,
+      "internal": 1860
+     },
+     "15<h<=20": {
+      "corner": 450,
+      "edge": 705,
+      "intermediate": 980,
+      "internal": 1620
+     }
+    },
+    "B2": {
+     "h<=5": {
+      "corner": 470,
+      "edge": 740,
+      "intermediate": 1035,
+      "internal": 1720
+     },
+     "5<h<=10": {
+      "corner": 470,
+      "edge": 740,
+      "intermediate": 1035,
+      "internal": 1720
+     },
+     "10<h<=15": {
+      "corner": 405,
+      "edge": 635,
+      "intermediate": 880,
+      "internal": 1445
+     },
+     "15<h<=20": {
+      "corner": 360,
+      "edge": 560,
+      "intermediate": 775,
+      "internal": 1255
+     }
+    },
+    "C": {
+     "h<=5": {
+      "corner": null,
+      "edge": 490,
+      "intermediate": 670,
+      "internal": 1075
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": 490,
+      "intermediate": 670,
+      "internal": 1075
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": 420,
+      "intermediate": 575,
+      "internal": 915
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": 375,
+      "intermediate": 510,
+      "internal": 805
+     }
+    },
+    "D": {
+     "h<=5": {
+      "corner": null,
+      "edge": 375,
+      "intermediate": 515,
+      "internal": 810
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": 375,
+      "intermediate": 515,
+      "internal": 810
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": 305,
+      "intermediate": 445,
+      "internal": 695
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 395,
+      "internal": 615
+     }
+    }
+   },
+   "h/d>=1.0": {
+    "A": {
+     "h<=5": {
+      "corner": 395,
+      "edge": 615,
+      "intermediate": 855,
+      "internal": 1395
+     },
+     "5<h<=10": {
+      "corner": 395,
+      "edge": 615,
+      "intermediate": 855,
+      "internal": 1395
+     },
+     "10<h<=15": {
+      "corner": 340,
+      "edge": 530,
+      "intermediate": 730,
+      "internal": 1175
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": 470,
+      "intermediate": 640,
+      "internal": 1025
+     }
+    },
+    "B1": {
+     "h<=5": {
+      "corner": 395,
+      "edge": 610,
+      "intermediate": 850,
+      "internal": 1380
+     },
+     "5<h<=10": {
+      "corner": 395,
+      "edge": 610,
+      "intermediate": 850,
+      "internal": 1380
+     },
+     "10<h<=15": {
+      "corner": 340,
+      "edge": 525,
+      "intermediate": 725,
+      "internal": 1165
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": 470,
+      "intermediate": 640,
+      "internal": 1025
+     }
+    },
+    "B2": {
+     "h<=5": {
+      "corner": null,
+      "edge": 490,
+      "intermediate": 675,
+      "internal": 1085
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": 490,
+      "intermediate": 675,
+      "internal": 1085
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": 425,
+      "intermediate": 580,
+      "internal": 925
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": 375,
+      "intermediate": 515,
+      "internal": 810
+     }
+    },
+    "C": {
+     "h<=5": {
+      "corner": null,
+      "edge": 325,
+      "intermediate": 445,
+      "internal": 700
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": 325,
+      "intermediate": 445,
+      "internal": 700
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 385,
+      "internal": 600
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 345,
+      "internal": 530
+     }
+    },
+    "D": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 345,
+      "internal": 535
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 345,
+      "internal": 535
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 460
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 410
+     }
+    }
+   }
+  },
+  "source_page": 22
+ },
+ {
+  "cert": "gamcorp-14022-MAPRO-2023",
+  "standard": "AS/NZS 1170.2:2021",
+  "rail": "MA PRO Rail",
+  "roof": "tile",
+  "interface": "Standard Tile Interface",
+  "panel": "1.97mx1m",
+  "terrain_category": 2,
+  "regions": [
+   "A",
+   "B1",
+   "B2",
+   "C",
+   "D"
+  ],
+  "data": {
+   "h/d<=0.5": {
+    "A": {
+     "h<=5": {
+      "corner": 410,
+      "edge": 640,
+      "intermediate": 895,
+      "internal": 1495
+     },
+     "5<h<=10": {
+      "corner": 335,
+      "edge": 520,
+      "intermediate": 720,
+      "internal": 1175
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": 465,
+      "intermediate": 640,
+      "internal": 1035
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": 435,
+      "intermediate": 600,
+      "internal": 970
+     }
+    },
+    "B1": {
+     "h<=5": {
+      "corner": 410,
+      "edge": 640,
+      "intermediate": 895,
+      "internal": 1495
+     },
+     "5<h<=10": {
+      "corner": 330,
+      "edge": 515,
+      "intermediate": 715,
+      "internal": 1165
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": 465,
+      "intermediate": 640,
+      "internal": 1035
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": 435,
+      "intermediate": 600,
+      "internal": 970
+     }
+    },
+    "B2": {
+     "h<=5": {
+      "corner": 325,
+      "edge": 510,
+      "intermediate": 705,
+      "internal": 1150
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": 415,
+      "intermediate": 570,
+      "internal": 910
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": 375,
+      "intermediate": 510,
+      "internal": 815
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": 350,
+      "intermediate": 480,
+      "internal": 765
+     }
+    },
+    "C": {
+     "h<=5": {
+      "corner": null,
+      "edge": 340,
+      "intermediate": 465,
+      "internal": 735
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 375,
+      "internal": 590
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 340,
+      "internal": 530
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 500
+     }
+    },
+    "D": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 360,
+      "internal": 560
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 450
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 405
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 385
+     }
+    }
+   },
+   "h/d>=1.0": {
+    "A": {
+     "h<=5": {
+      "corner": null,
+      "edge": 425,
+      "intermediate": 585,
+      "internal": 940
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": 345,
+      "intermediate": 475,
+      "internal": 750
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 425,
+      "internal": 670
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 400,
+      "internal": 630
+     }
+    },
+    "B1": {
+     "h<=5": {
+      "corner": null,
+      "edge": 425,
+      "intermediate": 585,
+      "internal": 940
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": 345,
+      "intermediate": 470,
+      "internal": 745
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 425,
+      "internal": 670
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 400,
+      "internal": 630
+     }
+    },
+    "B2": {
+     "h<=5": {
+      "corner": null,
+      "edge": 340,
+      "intermediate": 465,
+      "internal": 740
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 380,
+      "internal": 595
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 340,
+      "internal": 535
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 500
+     }
+    },
+    "C": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 485
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 395
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 355
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 335
+     }
+    },
+    "D": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 375
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": null
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": null
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": null
+     }
+    }
+   }
+  },
+  "source_page": 23
+ },
+ {
+  "cert": "gamcorp-14022-MAPRO-2023",
+  "standard": "AS/NZS 1170.2:2021",
+  "rail": "MA PRO Rail",
+  "roof": "tile",
+  "interface": "Standard Tile Interface",
+  "panel": "1.97mx1m",
+  "terrain_category": 3,
+  "regions": [
+   "A",
+   "B1",
+   "B2",
+   "C",
+   "D"
+  ],
+  "data": {
+   "h/d<=0.5": {
+    "A": {
+     "h<=5": {
+      "corner": 500,
+      "edge": 795,
+      "intermediate": 1125,
+      "internal": 1925
+     },
+     "5<h<=10": {
+      "corner": 500,
+      "edge": 795,
+      "intermediate": 1125,
+      "internal": 1925
+     },
+     "10<h<=15": {
+      "corner": 430,
+      "edge": 675,
+      "intermediate": 950,
+      "internal": 1590
+     },
+     "15<h<=20": {
+      "corner": 380,
+      "edge": 595,
+      "intermediate": 830,
+      "internal": 1375
+     }
+    },
+    "B1": {
+     "h<=5": {
+      "corner": 495,
+      "edge": 790,
+      "intermediate": 1120,
+      "internal": 1910
+     },
+     "5<h<=10": {
+      "corner": 495,
+      "edge": 790,
+      "intermediate": 1120,
+      "internal": 1910
+     },
+     "10<h<=15": {
+      "corner": 425,
+      "edge": 670,
+      "intermediate": 945,
+      "internal": 1580
+     },
+     "15<h<=20": {
+      "corner": 380,
+      "edge": 595,
+      "intermediate": 830,
+      "internal": 1375
+     }
+    },
+    "B2": {
+     "h<=5": {
+      "corner": 400,
+      "edge": 630,
+      "intermediate": 880,
+      "internal": 1460
+     },
+     "5<h<=10": {
+      "corner": 400,
+      "edge": 630,
+      "intermediate": 880,
+      "internal": 1460
+     },
+     "10<h<=15": {
+      "corner": 345,
+      "edge": 540,
+      "intermediate": 750,
+      "internal": 1220
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": 475,
+      "intermediate": 655,
+      "internal": 1065
+     }
+    },
+    "C": {
+     "h<=5": {
+      "corner": null,
+      "edge": 415,
+      "intermediate": 570,
+      "internal": 910
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": 415,
+      "intermediate": 570,
+      "internal": 910
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": 355,
+      "intermediate": 490,
+      "internal": 775
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 430,
+      "internal": 680
+     }
+    },
+    "D": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 435,
+      "internal": 690
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 435,
+      "internal": 690
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 375,
+      "internal": 590
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 335,
+      "internal": 520
+     }
+    }
+   },
+   "h/d>=1.0": {
+    "A": {
+     "h<=5": {
+      "corner": 335,
+      "edge": 520,
+      "intermediate": 725,
+      "internal": 1180
+     },
+     "5<h<=10": {
+      "corner": 335,
+      "edge": 520,
+      "intermediate": 725,
+      "internal": 1180
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": 450,
+      "intermediate": 620,
+      "internal": 995
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": 395,
+      "intermediate": 545,
+      "internal": 870
+     }
+    },
+    "B1": {
+     "h<=5": {
+      "corner": 330,
+      "edge": 520,
+      "intermediate": 720,
+      "internal": 1170
+     },
+     "5<h<=10": {
+      "corner": 330,
+      "edge": 520,
+      "intermediate": 720,
+      "internal": 1170
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": 445,
+      "intermediate": 615,
+      "internal": 990
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": 395,
+      "intermediate": 545,
+      "internal": 870
+     }
+    },
+    "B2": {
+     "h<=5": {
+      "corner": null,
+      "edge": 415,
+      "intermediate": 575,
+      "internal": 920
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": 415,
+      "intermediate": 575,
+      "internal": 920
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": 360,
+      "intermediate": 490,
+      "internal": 780
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 435,
+      "internal": 685
+     }
+    },
+    "C": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 380,
+      "internal": 595
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 380,
+      "internal": 595
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 325,
+      "internal": 510
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 450
+     }
+    },
+    "D": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 455
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 455
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 390
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 345
+     }
+    }
+   }
+  },
+  "source_page": 24
+ },
+ {
+  "cert": "gamcorp-14022-MAPRO-2023",
+  "standard": "AS/NZS 1170.2:2021",
+  "rail": "MA PRO Rail",
+  "roof": "tile",
+  "interface": "Standard Tile Interface",
+  "panel": "2.1mx1.05m",
+  "terrain_category": 2,
+  "regions": [
+   "A",
+   "B1",
+   "B2",
+   "C",
+   "D"
+  ],
+  "data": {
+   "h/d<=0.5": {
+    "A": {
+     "h<=5": {
+      "corner": 380,
+      "edge": 600,
+      "intermediate": 840,
+      "internal": 1400
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": 485,
+      "intermediate": 675,
+      "internal": 1100
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": 435,
+      "intermediate": 600,
+      "internal": 970
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": 410,
+      "intermediate": 565,
+      "internal": 905
+     }
+    },
+    "B1": {
+     "h<=5": {
+      "corner": 380,
+      "edge": 600,
+      "intermediate": 840,
+      "internal": 1400
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": 485,
+      "intermediate": 670,
+      "internal": 1090
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": 435,
+      "intermediate": 600,
+      "internal": 970
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": 410,
+      "intermediate": 565,
+      "internal": 905
+     }
+    },
+    "B2": {
+     "h<=5": {
+      "corner": null,
+      "edge": 480,
+      "intermediate": 665,
+      "internal": 1080
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": 390,
+      "intermediate": 535,
+      "internal": 855
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": 350,
+      "intermediate": 480,
+      "internal": 765
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 450,
+      "internal": 715
+     }
+    },
+    "C": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 435,
+      "internal": 690
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 355,
+      "internal": 555
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 500
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 465
+     }
+    },
+    "D": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 525
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 425
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 380
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 360
+     }
+    }
+   },
+   "h/d>=1.0": {
+    "A": {
+     "h<=5": {
+      "corner": null,
+      "edge": 400,
+      "intermediate": 550,
+      "internal": 880
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 445,
+      "internal": 705
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 400,
+      "internal": 630
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 375,
+      "internal": 590
+     }
+    },
+    "B1": {
+     "h<=5": {
+      "corner": null,
+      "edge": 400,
+      "intermediate": 550,
+      "internal": 880
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 445,
+      "internal": 700
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 400,
+      "internal": 630
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 375,
+      "internal": 590
+     }
+    },
+    "B2": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 435,
+      "internal": 690
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 355,
+      "internal": 555
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 500
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 470
+     }
+    },
+    "C": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 455
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 370
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": null
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": null
+     }
+    },
+    "D": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 350
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": null
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": null
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": null
+     }
+    }
+   }
+  },
+  "source_page": 25
+ },
+ {
+  "cert": "gamcorp-14022-MAPRO-2023",
+  "standard": "AS/NZS 1170.2:2021",
+  "rail": "MA PRO Rail",
+  "roof": "tile",
+  "interface": "Standard Tile Interface",
+  "panel": "2.1mx1.05m",
+  "terrain_category": 3,
+  "regions": [
+   "A",
+   "B1",
+   "B2",
+   "C",
+   "D"
+  ],
+  "data": {
+   "h/d<=0.5": {
+    "A": {
+     "h<=5": {
+      "corner": 470,
+      "edge": 745,
+      "intermediate": 1055,
+      "internal": 1805
+     },
+     "5<h<=10": {
+      "corner": 470,
+      "edge": 745,
+      "intermediate": 1055,
+      "internal": 1805
+     },
+     "10<h<=15": {
+      "corner": 405,
+      "edge": 635,
+      "intermediate": 890,
+      "internal": 1490
+     },
+     "15<h<=20": {
+      "corner": 355,
+      "edge": 560,
+      "intermediate": 780,
+      "internal": 1285
+     }
+    },
+    "B1": {
+     "h<=5": {
+      "corner": 465,
+      "edge": 740,
+      "intermediate": 1050,
+      "internal": 1790
+     },
+     "5<h<=10": {
+      "corner": 465,
+      "edge": 740,
+      "intermediate": 1050,
+      "internal": 1790
+     },
+     "10<h<=15": {
+      "corner": 400,
+      "edge": 630,
+      "intermediate": 885,
+      "internal": 1480
+     },
+     "15<h<=20": {
+      "corner": 355,
+      "edge": 560,
+      "intermediate": 780,
+      "internal": 1285
+     }
+    },
+    "B2": {
+     "h<=5": {
+      "corner": 375,
+      "edge": 590,
+      "intermediate": 825,
+      "internal": 1365
+     },
+     "5<h<=10": {
+      "corner": 375,
+      "edge": 590,
+      "intermediate": 825,
+      "internal": 1365
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": 505,
+      "intermediate": 700,
+      "internal": 1150
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": 445,
+      "intermediate": 615,
+      "internal": 995
+     }
+    },
+    "C": {
+     "h<=5": {
+      "corner": null,
+      "edge": 390,
+      "intermediate": 535,
+      "internal": 855
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": 390,
+      "intermediate": 535,
+      "internal": 855
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 460,
+      "internal": 725
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 405,
+      "internal": 640
+     }
+    },
+    "D": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 410,
+      "internal": 645
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 410,
+      "internal": 645
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 350,
+      "internal": 550
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 485
+     }
+    }
+   },
+   "h/d>=1.0": {
+    "A": {
+     "h<=5": {
+      "corner": null,
+      "edge": 490,
+      "intermediate": 680,
+      "internal": 1110
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": 490,
+      "intermediate": 680,
+      "internal": 1110
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": 420,
+      "intermediate": 580,
+      "internal": 935
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": 370,
+      "intermediate": 510,
+      "internal": 815
+     }
+    },
+    "B1": {
+     "h<=5": {
+      "corner": null,
+      "edge": 485,
+      "intermediate": 675,
+      "internal": 1100
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": 485,
+      "intermediate": 675,
+      "internal": 1100
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": 415,
+      "intermediate": 575,
+      "internal": 925
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": 370,
+      "intermediate": 510,
+      "internal": 815
+     }
+    },
+    "B2": {
+     "h<=5": {
+      "corner": null,
+      "edge": 390,
+      "intermediate": 540,
+      "internal": 860
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": 390,
+      "intermediate": 540,
+      "internal": 860
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 460,
+      "internal": 735
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 410,
+      "internal": 645
+     }
+    },
+    "C": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 355,
+      "internal": 555
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 355,
+      "internal": 555
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 480
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 425
+     }
+    },
+    "D": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 425
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 425
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 365
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": null
+     }
+    }
+   }
+  },
+  "source_page": 26
+ },
+ {
+  "cert": "gamcorp-14022-MAPRO-2023",
+  "standard": "AS/NZS 1170.2:2021",
+  "rail": "MA PRO Rail",
+  "roof": "tile",
+  "interface": "Standard Tile Interface",
+  "panel": "2.2mx1.2m",
+  "terrain_category": 2,
+  "regions": [
+   "A",
+   "B1",
+   "B2",
+   "C",
+   "D"
+  ],
+  "data": {
+   "h/d<=0.5": {
+    "A": {
+     "h<=5": {
+      "corner": null,
+      "edge": 575,
+      "intermediate": 805,
+      "internal": 1340
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": 465,
+      "intermediate": 645,
+      "internal": 1050
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": 415,
+      "intermediate": 575,
+      "internal": 925
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": 365,
+      "intermediate": 540,
+      "internal": 865
+     }
+    },
+    "B1": {
+     "h<=5": {
+      "corner": null,
+      "edge": 575,
+      "intermediate": 805,
+      "internal": 1340
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": 460,
+      "intermediate": 640,
+      "internal": 1045
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": 415,
+      "intermediate": 575,
+      "internal": 925
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": 365,
+      "intermediate": 540,
+      "internal": 865
+     }
+    },
+    "B2": {
+     "h<=5": {
+      "corner": null,
+      "edge": 455,
+      "intermediate": 630,
+      "internal": 1030
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 510,
+      "internal": 815
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 460,
+      "internal": 730
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 430,
+      "internal": 685
+     }
+    },
+    "C": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 415,
+      "internal": 660
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 530
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 475
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 445
+     }
+    },
+    "D": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 500
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 405
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": null
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": null
+     }
+    }
+   },
+   "h/d>=1.0": {
+    "A": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 525,
+      "internal": 840
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 425,
+      "internal": 675
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 600
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 560
+     }
+    },
+    "B1": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 525,
+      "internal": 840
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 425,
+      "internal": 670
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 600
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 560
+     }
+    },
+    "B2": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 415,
+      "internal": 660
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 530
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 480
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 450
+     }
+    },
+    "C": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 435
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": null
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": null
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": null
+     }
+    },
+    "D": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": null
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": null
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": null
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": null
+     }
+    }
+   }
+  },
+  "source_page": 27
+ },
+ {
+  "cert": "gamcorp-14022-MAPRO-2023",
+  "standard": "AS/NZS 1170.2:2021",
+  "rail": "MA PRO Rail",
+  "roof": "tile",
+  "interface": "Standard Tile Interface",
+  "panel": "2.2mx1.2m",
+  "terrain_category": 3,
+  "regions": [
+   "A",
+   "B1",
+   "B2",
+   "C",
+   "D"
+  ],
+  "data": {
+   "h/d<=0.5": {
+    "A": {
+     "h<=5": {
+      "corner": 450,
+      "edge": 710,
+      "intermediate": 1010,
+      "internal": 1725
+     },
+     "5<h<=10": {
+      "corner": 450,
+      "edge": 710,
+      "intermediate": 1010,
+      "internal": 1725
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": 605,
+      "intermediate": 850,
+      "internal": 1420
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": 535,
+      "intermediate": 745,
+      "internal": 1230
+     }
+    },
+    "B1": {
+     "h<=5": {
+      "corner": 445,
+      "edge": 705,
+      "intermediate": 1000,
+      "internal": 1710
+     },
+     "5<h<=10": {
+      "corner": 445,
+      "edge": 705,
+      "intermediate": 1000,
+      "internal": 1710
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": 600,
+      "intermediate": 845,
+      "internal": 1415
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": 535,
+      "intermediate": 745,
+      "internal": 1230
+     }
+    },
+    "B2": {
+     "h<=5": {
+      "corner": null,
+      "edge": 560,
+      "intermediate": 785,
+      "internal": 1305
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": 560,
+      "intermediate": 785,
+      "internal": 1305
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": 480,
+      "intermediate": 670,
+      "internal": 1095
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": 425,
+      "intermediate": 590,
+      "internal": 950
+     }
+    },
+    "C": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 510,
+      "internal": 815
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 510,
+      "internal": 815
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 435,
+      "internal": 695
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 610
+     }
+    },
+    "D": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 365,
+      "internal": 615
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 365,
+      "internal": 615
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 525
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 465
+     }
+    }
+   },
+   "h/d>=1.0": {
+    "A": {
+     "h<=5": {
+      "corner": null,
+      "edge": 470,
+      "intermediate": 650,
+      "internal": 1055
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": 470,
+      "intermediate": 650,
+      "internal": 1055
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": 400,
+      "intermediate": 555,
+      "internal": 890
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 485,
+      "internal": 775
+     }
+    },
+    "B1": {
+     "h<=5": {
+      "corner": null,
+      "edge": 465,
+      "intermediate": 645,
+      "internal": 1050
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": 465,
+      "intermediate": 645,
+      "internal": 1050
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": 395,
+      "intermediate": 550,
+      "internal": 885
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 485,
+      "internal": 775
+     }
+    },
+    "B2": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 515,
+      "internal": 820
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 515,
+      "internal": 820
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 440,
+      "internal": 700
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 340,
+      "internal": 615
+     }
+    },
+    "C": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 530
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 530
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 455
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 405
+     }
+    },
+    "D": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 405
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 405
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": null
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": null
+     }
+    }
+   }
+  },
+  "source_page": 28
+ },
+ {
+  "cert": "gamcorp-14022-MAPRO-2023",
+  "standard": "AS/NZS 1170.2:2021",
+  "rail": "MA PRO Rail",
+  "roof": "tile",
+  "interface": "Standard Tile Interface",
+  "panel": "2.4mx1.2m",
+  "terrain_category": 2,
+  "regions": [
+   "A",
+   "B1",
+   "B2",
+   "C",
+   "D"
+  ],
+  "data": {
+   "h/d<=0.5": {
+    "A": {
+     "h<=5": {
+      "corner": null,
+      "edge": 525,
+      "intermediate": 735,
+      "internal": 1225
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": 425,
+      "intermediate": 590,
+      "internal": 960
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 525,
+      "internal": 850
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 495,
+      "internal": 795
+     }
+    },
+    "B1": {
+     "h<=5": {
+      "corner": null,
+      "edge": 525,
+      "intermediate": 735,
+      "internal": 1225
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": 425,
+      "intermediate": 585,
+      "internal": 955
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 525,
+      "internal": 850
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 495,
+      "internal": 795
+     }
+    },
+    "B2": {
+     "h<=5": {
+      "corner": null,
+      "edge": 420,
+      "intermediate": 580,
+      "internal": 945
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 465,
+      "internal": 745
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 420,
+      "internal": 670
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 390,
+      "internal": 625
+     }
+    },
+    "C": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 605
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 485
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 435
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 410
+     }
+    },
+    "D": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 460
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": null
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": null
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": null
+     }
+    }
+   },
+   "h/d>=1.0": {
+    "A": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 480,
+      "internal": 770
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 340,
+      "internal": 615
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 550
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 515
+     }
+    },
+    "B1": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 480,
+      "internal": 770
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 615
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 550
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 515
+     }
+    },
+    "B2": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 605
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 485
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 440
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 410
+     }
+    },
+    "C": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 395
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": null
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": null
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": null
+     }
+    },
+    "D": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": null
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": null
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": null
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": null
+     }
+    }
+   }
+  },
+  "source_page": 29
+ },
+ {
+  "cert": "gamcorp-14022-MAPRO-2023",
+  "standard": "AS/NZS 1170.2:2021",
+  "rail": "MA PRO Rail",
+  "roof": "tile",
+  "interface": "Standard Tile Interface",
+  "panel": "2.4mx1.2m",
+  "terrain_category": 3,
+  "regions": [
+   "A",
+   "B1",
+   "B2",
+   "C",
+   "D"
+  ],
+  "data": {
+   "h/d<=0.5": {
+    "A": {
+     "h<=5": {
+      "corner": 410,
+      "edge": 650,
+      "intermediate": 925,
+      "internal": 1580
+     },
+     "5<h<=10": {
+      "corner": 410,
+      "edge": 650,
+      "intermediate": 925,
+      "internal": 1580
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": 555,
+      "intermediate": 780,
+      "internal": 1305
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": 490,
+      "intermediate": 680,
+      "internal": 1125
+     }
+    },
+    "B1": {
+     "h<=5": {
+      "corner": 410,
+      "edge": 645,
+      "intermediate": 915,
+      "internal": 1570
+     },
+     "5<h<=10": {
+      "corner": 410,
+      "edge": 645,
+      "intermediate": 915,
+      "internal": 1570
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": 550,
+      "intermediate": 775,
+      "internal": 1295
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": 490,
+      "intermediate": 680,
+      "internal": 1125
+     }
+    },
+    "B2": {
+     "h<=5": {
+      "corner": null,
+      "edge": 515,
+      "intermediate": 720,
+      "internal": 1195
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": 515,
+      "intermediate": 720,
+      "internal": 1195
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": 440,
+      "intermediate": 615,
+      "internal": 1005
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": 340,
+      "intermediate": 540,
+      "internal": 870
+     }
+    },
+    "C": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 465,
+      "internal": 745
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 465,
+      "internal": 745
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 400,
+      "internal": 635
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 560
+     }
+    },
+    "D": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 565
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 565
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 480
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 425
+     }
+    }
+   },
+   "h/d>=1.0": {
+    "A": {
+     "h<=5": {
+      "corner": null,
+      "edge": 430,
+      "intermediate": 595,
+      "internal": 970
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": 430,
+      "intermediate": 595,
+      "internal": 970
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 505,
+      "internal": 815
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 445,
+      "internal": 715
+     }
+    },
+    "B1": {
+     "h<=5": {
+      "corner": null,
+      "edge": 425,
+      "intermediate": 590,
+      "internal": 960
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": 425,
+      "intermediate": 590,
+      "internal": 960
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 505,
+      "internal": 810
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 445,
+      "internal": 715
+     }
+    },
+    "B2": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 470,
+      "internal": 755
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 470,
+      "internal": 755
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 405,
+      "internal": 640
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 565
+     }
+    },
+    "C": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 485
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 485
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 420
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": null
+     }
+    },
+    "D": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": null
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": null
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": null
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": null
+     }
+    }
+   }
+  },
+  "source_page": 30
+ },
+ {
+  "cert": "gamcorp-9981-03-01-KlipLok-2021",
+  "standard": "AS/NZS 1170.2:2011(R2016)",
+  "rail": "MA Rail",
+  "roof": "kliplok",
+  "interface": "Mibet Roof Clamp 700 Hi-Strength",
+  "panel": "1.67mx1m",
+  "terrain_category": 2,
+  "regions": [
+   "A",
+   "B",
+   "C",
+   "D"
+  ],
+  "data": {
+   "h/d<=0.5": {
+    "A": {
+     "h<=5": {
+      "corner": 835,
+      "edge": 1290,
+      "intermediate": 1620,
+      "internal": 1865
+     },
+     "5<h<=10": {
+      "corner": 685,
+      "edge": 1050,
+      "intermediate": 1435,
+      "internal": 1755
+     },
+     "10<h<=15": {
+      "corner": 615,
+      "edge": 945,
+      "intermediate": 1285,
+      "internal": 1700
+     },
+     "15<h<=20": {
+      "corner": 585,
+      "edge": 895,
+      "intermediate": 1215,
+      "internal": 1665
+     }
+    },
+    "B": {
+     "h<=5": {
+      "corner": 560,
+      "edge": 855,
+      "intermediate": 1165,
+      "internal": 1805
+     },
+     "5<h<=10": {
+      "corner": 460,
+      "edge": 700,
+      "intermediate": 950,
+      "internal": 1475
+     },
+     "10<h<=15": {
+      "corner": 415,
+      "edge": 635,
+      "intermediate": 855,
+      "internal": 1325
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": 595,
+      "intermediate": 805,
+      "internal": 1245
+     }
+    },
+    "C": {
+     "h<=5": {
+      "corner": null,
+      "edge": 555,
+      "intermediate": 750,
+      "internal": 1155
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": 455,
+      "intermediate": 615,
+      "internal": 940
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": 410,
+      "intermediate": 555,
+      "internal": 850
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 525,
+      "internal": 800
+     }
+    },
+    "D": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 480,
+      "internal": 735
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 605
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 545
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 515
+     }
+    }
+   },
+   "h/d>=1.0": {
+    "A": {
+     "h<=5": {
+      "corner": 565,
+      "edge": 870,
+      "intermediate": 1185,
+      "internal": 1645
+     },
+     "5<h<=10": {
+      "corner": 465,
+      "edge": 710,
+      "intermediate": 965,
+      "internal": 1500
+     },
+     "10<h<=15": {
+      "corner": 415,
+      "edge": 640,
+      "intermediate": 865,
+      "internal": 1340
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": 605,
+      "intermediate": 820,
+      "internal": 1265
+     }
+    },
+    "B": {
+     "h<=5": {
+      "corner": null,
+      "edge": 585,
+      "intermediate": 785,
+      "internal": 1215
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": 480,
+      "intermediate": 645,
+      "internal": 990
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": 430,
+      "intermediate": 585,
+      "internal": 895
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": 405,
+      "intermediate": 550,
+      "internal": 840
+     }
+    },
+    "C": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 510,
+      "internal": 780
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 420,
+      "internal": 640
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 575
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 545
+     }
+    },
+    "D": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 500
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 410
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": null
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": null
+     }
+    }
+   }
+  },
+  "source_page": 6
+ },
+ {
+  "cert": "gamcorp-9981-03-01-KlipLok-2021",
+  "standard": "AS/NZS 1170.2:2011(R2016)",
+  "rail": "MA Rail",
+  "roof": "kliplok",
+  "interface": "Mibet Roof Clamp 700 Hi-Strength",
+  "panel": "1.67mx1m",
+  "terrain_category": 3,
+  "regions": [
+   "A",
+   "B",
+   "C",
+   "D"
+  ],
+  "data": {
+   "h/d<=0.5": {
+    "A": {
+     "h<=5": {
+      "corner": 1015,
+      "edge": 1555,
+      "intermediate": 1740,
+      "internal": 1990
+     },
+     "5<h<=10": {
+      "corner": 1015,
+      "edge": 1555,
+      "intermediate": 1740,
+      "internal": 1990
+     },
+     "10<h<=15": {
+      "corner": 875,
+      "edge": 1350,
+      "intermediate": 1650,
+      "internal": 1895
+     },
+     "15<h<=20": {
+      "corner": 780,
+      "edge": 1205,
+      "intermediate": 1580,
+      "internal": 1830
+     }
+    },
+    "B": {
+     "h<=5": {
+      "corner": 675,
+      "edge": 1040,
+      "intermediate": 1420,
+      "internal": 1915
+     },
+     "5<h<=10": {
+      "corner": 675,
+      "edge": 1040,
+      "intermediate": 1420,
+      "internal": 1915
+     },
+     "10<h<=15": {
+      "corner": 585,
+      "edge": 895,
+      "intermediate": 1220,
+      "internal": 1830
+     },
+     "15<h<=20": {
+      "corner": 525,
+      "edge": 800,
+      "intermediate": 1085,
+      "internal": 1695
+     }
+    },
+    "C": {
+     "h<=5": {
+      "corner": 440,
+      "edge": 670,
+      "intermediate": 910,
+      "internal": 1410
+     },
+     "5<h<=10": {
+      "corner": 440,
+      "edge": 670,
+      "intermediate": 910,
+      "internal": 1410
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": 580,
+      "intermediate": 785,
+      "internal": 1210
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": 515,
+      "intermediate": 700,
+      "internal": 1075
+     }
+    },
+    "D": {
+     "h<=5": {
+      "corner": null,
+      "edge": 435,
+      "intermediate": 585,
+      "internal": 895
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": 435,
+      "intermediate": 585,
+      "internal": 895
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 505,
+      "internal": 770
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 450,
+      "internal": 685
+     }
+    }
+   },
+   "h/d>=1.0": {
+    "A": {
+     "h<=5": {
+      "corner": 685,
+      "edge": 1055,
+      "intermediate": 1445,
+      "internal": 1760
+     },
+     "5<h<=10": {
+      "corner": 685,
+      "edge": 1055,
+      "intermediate": 1445,
+      "internal": 1760
+     },
+     "10<h<=15": {
+      "corner": 595,
+      "edge": 910,
+      "intermediate": 1240,
+      "internal": 1680
+     },
+     "15<h<=20": {
+      "corner": 530,
+      "edge": 810,
+      "intermediate": 1105,
+      "internal": 1605
+     }
+    },
+    "B": {
+     "h<=5": {
+      "corner": 460,
+      "edge": 705,
+      "intermediate": 955,
+      "internal": 1480
+     },
+     "5<h<=10": {
+      "corner": 460,
+      "edge": 705,
+      "intermediate": 955,
+      "internal": 1480
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": 610,
+      "intermediate": 825,
+      "internal": 1275
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": 545,
+      "intermediate": 735,
+      "internal": 1130
+     }
+    },
+    "C": {
+     "h<=5": {
+      "corner": null,
+      "edge": 460,
+      "intermediate": 615,
+      "internal": 950
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": 460,
+      "intermediate": 615,
+      "internal": 950
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 535,
+      "internal": 815
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 475,
+      "internal": 725
+     }
+    },
+    "D": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 605
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 605
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 525
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 470
+     }
+    }
+   }
+  },
+  "source_page": 6
+ },
+ {
+  "cert": "gamcorp-9981-03-01-KlipLok-2021",
+  "standard": "AS/NZS 1170.2:2011(R2016)",
+  "rail": "MA Rail",
+  "roof": "kliplok",
+  "interface": "Mibet Roof Clamp 700 Hi-Strength",
+  "panel": "1.97mx1m",
+  "terrain_category": 2,
+  "regions": [
+   "A",
+   "B",
+   "C",
+   "D"
+  ],
+  "data": {
+   "h/d<=0.5": {
+    "A": {
+     "h<=5": {
+      "corner": 705,
+      "edge": 1095,
+      "intermediate": 1505,
+      "internal": 1790
+     },
+     "5<h<=10": {
+      "corner": 580,
+      "edge": 890,
+      "intermediate": 1215,
+      "internal": 1680
+     },
+     "10<h<=15": {
+      "corner": 520,
+      "edge": 800,
+      "intermediate": 1090,
+      "internal": 1610
+     },
+     "15<h<=20": {
+      "corner": 495,
+      "edge": 755,
+      "intermediate": 1030,
+      "internal": 1575
+     }
+    },
+    "B": {
+     "h<=5": {
+      "corner": 475,
+      "edge": 725,
+      "intermediate": 990,
+      "internal": 1545
+     },
+     "5<h<=10": {
+      "corner": 390,
+      "edge": 595,
+      "intermediate": 805,
+      "internal": 1250
+     },
+     "10<h<=15": {
+      "corner": 350,
+      "edge": 535,
+      "intermediate": 725,
+      "internal": 1125
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": 505,
+      "intermediate": 685,
+      "internal": 1055
+     }
+    },
+    "C": {
+     "h<=5": {
+      "corner": null,
+      "edge": 470,
+      "intermediate": 635,
+      "internal": 980
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": 385,
+      "intermediate": 520,
+      "internal": 800
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": 350,
+      "intermediate": 470,
+      "internal": 720
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 445,
+      "internal": 680
+     }
+    },
+    "D": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 410,
+      "internal": 625
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 510
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 460
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 435
+     }
+    }
+   },
+   "h/d>=1.0": {
+    "A": {
+     "h<=5": {
+      "corner": 480,
+      "edge": 735,
+      "intermediate": 1005,
+      "internal": 1555
+     },
+     "5<h<=10": {
+      "corner": 300,
+      "edge": 605,
+      "intermediate": 815,
+      "internal": 1270
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": 545,
+      "intermediate": 735,
+      "internal": 1135
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": 515,
+      "intermediate": 695,
+      "internal": 1075
+     }
+    },
+    "B": {
+     "h<=5": {
+      "corner": null,
+      "edge": 495,
+      "intermediate": 665,
+      "internal": 1030
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": 405,
+      "intermediate": 545,
+      "internal": 840
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": 365,
+      "intermediate": 495,
+      "internal": 755
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": 345,
+      "intermediate": 465,
+      "internal": 710
+     }
+    },
+    "C": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 430,
+      "internal": 660
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 355,
+      "internal": 540
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 490
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 460
+     }
+    },
+    "D": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 425
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 350
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": null
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": null
+     }
+    }
+   }
+  },
+  "source_page": 7
+ },
+ {
+  "cert": "gamcorp-9981-03-01-KlipLok-2021",
+  "standard": "AS/NZS 1170.2:2011(R2016)",
+  "rail": "MA Rail",
+  "roof": "kliplok",
+  "interface": "Mibet Roof Clamp 700 Hi-Strength",
+  "panel": "1.97mx1m",
+  "terrain_category": 3,
+  "regions": [
+   "A",
+   "B",
+   "C",
+   "D"
+  ],
+  "data": {
+   "h/d<=0.5": {
+    "A": {
+     "h<=5": {
+      "corner": 860,
+      "edge": 1335,
+      "intermediate": 1655,
+      "internal": 1910
+     },
+     "5<h<=10": {
+      "corner": 860,
+      "edge": 1335,
+      "intermediate": 1655,
+      "internal": 1910
+     },
+     "10<h<=15": {
+      "corner": 740,
+      "edge": 1145,
+      "intermediate": 1565,
+      "internal": 1820
+     },
+     "15<h<=20": {
+      "corner": 660,
+      "edge": 1020,
+      "intermediate": 1400,
+      "internal": 1755
+     }
+    },
+    "B": {
+     "h<=5": {
+      "corner": 575,
+      "edge": 880,
+      "intermediate": 1205,
+      "internal": 1840
+     },
+     "5<h<=10": {
+      "corner": 575,
+      "edge": 880,
+      "intermediate": 1205,
+      "internal": 1840
+     },
+     "10<h<=15": {
+      "corner": 495,
+      "edge": 760,
+      "intermediate": 1035,
+      "internal": 1620
+     },
+     "15<h<=20": {
+      "corner": 445,
+      "edge": 675,
+      "intermediate": 920,
+      "internal": 1435
+     }
+    },
+    "C": {
+     "h<=5": {
+      "corner": 375,
+      "edge": 570,
+      "intermediate": 770,
+      "internal": 1195
+     },
+     "5<h<=10": {
+      "corner": 375,
+      "edge": 570,
+      "intermediate": 770,
+      "internal": 1195
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": 490,
+      "intermediate": 665,
+      "internal": 1025
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": 440,
+      "intermediate": 590,
+      "internal": 910
+     }
+    },
+    "D": {
+     "h<=5": {
+      "corner": null,
+      "edge": 365,
+      "intermediate": 495,
+      "internal": 755
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": 365,
+      "intermediate": 495,
+      "internal": 755
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 425,
+      "internal": 655
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 380,
+      "internal": 580
+     }
+    }
+   },
+   "h/d>=1.0": {
+    "A": {
+     "h<=5": {
+      "corner": 580,
+      "edge": 895,
+      "intermediate": 1225,
+      "internal": 1680
+     },
+     "5<h<=10": {
+      "corner": 580,
+      "edge": 895,
+      "intermediate": 1225,
+      "internal": 1680
+     },
+     "10<h<=15": {
+      "corner": 500,
+      "edge": 770,
+      "intermediate": 1050,
+      "internal": 1590
+     },
+     "15<h<=20": {
+      "corner": 450,
+      "edge": 685,
+      "intermediate": 935,
+      "internal": 1460
+     }
+    },
+    "B": {
+     "h<=5": {
+      "corner": 390,
+      "edge": 595,
+      "intermediate": 810,
+      "internal": 1255
+     },
+     "5<h<=10": {
+      "corner": 390,
+      "edge": 595,
+      "intermediate": 810,
+      "internal": 1255
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": 515,
+      "intermediate": 700,
+      "internal": 1080
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": 460,
+      "intermediate": 620,
+      "internal": 960
+     }
+    },
+    "C": {
+     "h<=5": {
+      "corner": null,
+      "edge": 390,
+      "intermediate": 525,
+      "internal": 805
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": 390,
+      "intermediate": 525,
+      "internal": 805
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 450,
+      "internal": 690
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 405,
+      "internal": 615
+     }
+    },
+    "D": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 515
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 515
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 445
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 395
+     }
+    }
+   }
+  },
+  "source_page": 7
+ },
+ {
+  "cert": "gamcorp-9981-03-01-KlipLok-2021",
+  "standard": "AS/NZS 1170.2:2011(R2016)",
+  "rail": "MA Rail",
+  "roof": "kliplok",
+  "interface": "Mibet Roof Clamp 700 Hi-Strength",
+  "panel": "2.1mx1.05m",
+  "terrain_category": 2,
+  "regions": [
+   "A",
+   "B",
+   "C",
+   "D"
+  ],
+  "data": {
+   "h/d<=0.5": {
+    "A": {
+     "h<=5": {
+      "corner": 660,
+      "edge": 1025,
+      "intermediate": 1410,
+      "internal": 1765
+     },
+     "5<h<=10": {
+      "corner": 545,
+      "edge": 835,
+      "intermediate": 1140,
+      "internal": 1645
+     },
+     "10<h<=15": {
+      "corner": 490,
+      "edge": 750,
+      "intermediate": 1025,
+      "internal": 1575
+     },
+     "15<h<=20": {
+      "corner": 355,
+      "edge": 710,
+      "intermediate": 965,
+      "internal": 1515
+     }
+    },
+    "B": {
+     "h<=5": {
+      "corner": 445,
+      "edge": 680,
+      "intermediate": 925,
+      "internal": 1450
+     },
+     "5<h<=10": {
+      "corner": 365,
+      "edge": 560,
+      "intermediate": 755,
+      "internal": 1175
+     },
+     "10<h<=15": {
+      "corner": 205,
+      "edge": 505,
+      "intermediate": 680,
+      "internal": 1055
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": 475,
+      "intermediate": 640,
+      "internal": 990
+     }
+    },
+    "C": {
+     "h<=5": {
+      "corner": null,
+      "edge": 440,
+      "intermediate": 595,
+      "internal": 920
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": 360,
+      "intermediate": 490,
+      "internal": 750
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 440,
+      "internal": 675
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 415,
+      "internal": 635
+     }
+    },
+    "D": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 385,
+      "internal": 585
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 480
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 435
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 410
+     }
+    }
+   },
+   "h/d>=1.0": {
+    "A": {
+     "h<=5": {
+      "corner": 345,
+      "edge": 690,
+      "intermediate": 940,
+      "internal": 1475
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": 565,
+      "intermediate": 765,
+      "internal": 1190
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": 510,
+      "intermediate": 690,
+      "internal": 1065
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": 475,
+      "intermediate": 650,
+      "internal": 1005
+     }
+    },
+    "B": {
+     "h<=5": {
+      "corner": null,
+      "edge": 465,
+      "intermediate": 625,
+      "internal": 965
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": 380,
+      "intermediate": 515,
+      "internal": 785
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": 240,
+      "intermediate": 465,
+      "internal": 710
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 435,
+      "internal": 665
+     }
+    },
+    "C": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 405,
+      "internal": 620
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 505
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 460
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 435
+     }
+    },
+    "D": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 400
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": null
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": null
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": null
+     }
+    }
+   }
+  },
+  "source_page": 8
+ },
+ {
+  "cert": "gamcorp-9981-03-01-KlipLok-2021",
+  "standard": "AS/NZS 1170.2:2011(R2016)",
+  "rail": "MA Rail",
+  "roof": "kliplok",
+  "interface": "Mibet Roof Clamp 700 Hi-Strength",
+  "panel": "2.1mx1.05m",
+  "terrain_category": 3,
+  "regions": [
+   "A",
+   "B",
+   "C",
+   "D"
+  ],
+  "data": {
+   "h/d<=0.5": {
+    "A": {
+     "h<=5": {
+      "corner": 805,
+      "edge": 1255,
+      "intermediate": 1620,
+      "internal": 1880
+     },
+     "5<h<=10": {
+      "corner": 805,
+      "edge": 1255,
+      "intermediate": 1620,
+      "internal": 1880
+     },
+     "10<h<=15": {
+      "corner": 695,
+      "edge": 1075,
+      "intermediate": 1475,
+      "internal": 1790
+     },
+     "15<h<=20": {
+      "corner": 620,
+      "edge": 955,
+      "intermediate": 1310,
+      "internal": 1725
+     }
+    },
+    "B": {
+     "h<=5": {
+      "corner": 540,
+      "edge": 825,
+      "intermediate": 1130,
+      "internal": 1785
+     },
+     "5<h<=10": {
+      "corner": 540,
+      "edge": 825,
+      "intermediate": 1130,
+      "internal": 1785
+     },
+     "10<h<=15": {
+      "corner": 465,
+      "edge": 715,
+      "intermediate": 970,
+      "internal": 1520
+     },
+     "15<h<=20": {
+      "corner": 415,
+      "edge": 635,
+      "intermediate": 865,
+      "internal": 1345
+     }
+    },
+    "C": {
+     "h<=5": {
+      "corner": 350,
+      "edge": 535,
+      "intermediate": 725,
+      "internal": 1120
+     },
+     "5<h<=10": {
+      "corner": 350,
+      "edge": 535,
+      "intermediate": 725,
+      "internal": 1120
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": 460,
+      "intermediate": 620,
+      "internal": 960
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": 410,
+      "intermediate": 555,
+      "internal": 855
+     }
+    },
+    "D": {
+     "h<=5": {
+      "corner": null,
+      "edge": 340,
+      "intermediate": 465,
+      "internal": 710
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": 340,
+      "intermediate": 465,
+      "internal": 710
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 400,
+      "internal": 615
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 355,
+      "internal": 545
+     }
+    }
+   },
+   "h/d>=1.0": {
+    "A": {
+     "h<=5": {
+      "corner": 545,
+      "edge": 840,
+      "intermediate": 1145,
+      "internal": 1645
+     },
+     "5<h<=10": {
+      "corner": 545,
+      "edge": 840,
+      "intermediate": 1145,
+      "internal": 1645
+     },
+     "10<h<=15": {
+      "corner": 370,
+      "edge": 720,
+      "intermediate": 985,
+      "internal": 1545
+     },
+     "15<h<=20": {
+      "corner": 235,
+      "edge": 645,
+      "intermediate": 875,
+      "internal": 1365
+     }
+    },
+    "B": {
+     "h<=5": {
+      "corner": 365,
+      "edge": 560,
+      "intermediate": 760,
+      "internal": 1180
+     },
+     "5<h<=10": {
+      "corner": 365,
+      "edge": 560,
+      "intermediate": 760,
+      "internal": 1180
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": 485,
+      "intermediate": 655,
+      "internal": 1010
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": 430,
+      "intermediate": 585,
+      "internal": 900
+     }
+    },
+    "C": {
+     "h<=5": {
+      "corner": null,
+      "edge": 365,
+      "intermediate": 490,
+      "internal": 755
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": 365,
+      "intermediate": 490,
+      "internal": 755
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 425,
+      "internal": 650
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 380,
+      "internal": 575
+     }
+    },
+    "D": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 480
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 480
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 415
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 370
+     }
+    }
+   }
+  },
+  "source_page": 8
+ },
+ {
+  "cert": "gamcorp-9981-03-01-KlipLok-2021",
+  "standard": "AS/NZS 1170.2:2011(R2016)",
+  "rail": "MA Rail",
+  "roof": "kliplok",
+  "interface": "Mibet Roof Clamp 700 Hi-Strength",
+  "panel": "2.2mx1.2m",
+  "terrain_category": 2,
+  "regions": [
+   "A",
+   "B",
+   "C",
+   "D"
+  ],
+  "data": {
+   "h/d<=0.5": {
+    "A": {
+     "h<=5": {
+      "corner": null,
+      "edge": 845,
+      "intermediate": 1345,
+      "internal": 1745
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": 640,
+      "intermediate": 1090,
+      "internal": 1615
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": 595,
+      "intermediate": 845,
+      "internal": 1535
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": 500,
+      "intermediate": 725,
+      "internal": 1445
+     }
+    },
+    "B": {
+     "h<=5": {
+      "corner": null,
+      "edge": 650,
+      "intermediate": 885,
+      "internal": 1385
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": 530,
+      "intermediate": 720,
+      "internal": 1120
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": 305,
+      "intermediate": 650,
+      "internal": 1005
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": 235,
+      "intermediate": 610,
+      "internal": 945
+     }
+    },
+    "C": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 570,
+      "internal": 875
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 320,
+      "internal": 715
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 645
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 605
+     }
+    },
+    "D": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 560
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 460
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 350
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 275
+     }
+    }
+   },
+   "h/d>=1.0": {
+    "A": {
+     "h<=5": {
+      "corner": null,
+      "edge": 425,
+      "intermediate": 710,
+      "internal": 1405
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 595,
+      "internal": 1135
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 425,
+      "internal": 1015
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 785
+     }
+    },
+    "B": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 595,
+      "internal": 920
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 355,
+      "internal": 750
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 675
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 635
+     }
+    },
+    "C": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 590
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 370
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 235
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": null
+     }
+    },
+    "D": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": null
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": null
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": null
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": null
+     }
+    }
+   }
+  },
+  "source_page": 9
+ },
+ {
+  "cert": "gamcorp-9981-03-01-KlipLok-2021",
+  "standard": "AS/NZS 1170.2:2011(R2016)",
+  "rail": "MA Rail",
+  "roof": "kliplok",
+  "interface": "Mibet Roof Clamp 700 Hi-Strength",
+  "panel": "2.2mx1.2m",
+  "terrain_category": 3,
+  "regions": [
+   "A",
+   "B",
+   "C",
+   "D"
+  ],
+  "data": {
+   "h/d<=0.5": {
+    "A": {
+     "h<=5": {
+      "corner": 620,
+      "edge": 1195,
+      "intermediate": 1595,
+      "internal": 1855
+     },
+     "5<h<=10": {
+      "corner": 620,
+      "edge": 1195,
+      "intermediate": 1595,
+      "internal": 1855
+     },
+     "10<h<=15": {
+      "corner": 460,
+      "edge": 1025,
+      "intermediate": 1410,
+      "internal": 1770
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": 725,
+      "intermediate": 1250,
+      "internal": 1705
+     }
+    },
+    "B": {
+     "h<=5": {
+      "corner": 395,
+      "edge": 790,
+      "intermediate": 1080,
+      "internal": 1705
+     },
+     "5<h<=10": {
+      "corner": 395,
+      "edge": 790,
+      "intermediate": 1080,
+      "internal": 1705
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": 680,
+      "intermediate": 925,
+      "internal": 1455
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": 605,
+      "intermediate": 825,
+      "internal": 1285
+     }
+    },
+    "C": {
+     "h<=5": {
+      "corner": null,
+      "edge": 510,
+      "intermediate": 690,
+      "internal": 1070
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": 510,
+      "intermediate": 690,
+      "internal": 1070
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 595,
+      "internal": 915
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 525,
+      "internal": 815
+     }
+    },
+    "D": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 440,
+      "internal": 680
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 440,
+      "internal": 680
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 260,
+      "internal": 585
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 520
+     }
+    }
+   },
+   "h/d>=1.0": {
+    "A": {
+     "h<=5": {
+      "corner": null,
+      "edge": 640,
+      "intermediate": 1095,
+      "internal": 1620
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": 640,
+      "intermediate": 1095,
+      "internal": 1620
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": 505,
+      "intermediate": 755,
+      "internal": 1475
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 665,
+      "internal": 1305
+     }
+    },
+    "B": {
+     "h<=5": {
+      "corner": null,
+      "edge": 535,
+      "intermediate": 725,
+      "internal": 1125
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": 535,
+      "intermediate": 725,
+      "internal": 1125
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": 260,
+      "intermediate": 625,
+      "internal": 965
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 555,
+      "internal": 860
+     }
+    },
+    "C": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 345,
+      "internal": 720
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 345,
+      "internal": 720
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 620
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 550
+     }
+    },
+    "D": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 460
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 460
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 275
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": null
+     }
+    }
+   }
+  },
+  "source_page": 9
+ },
+ {
+  "cert": "gamcorp-9981-03-01-KlipLok-2021",
+  "standard": "AS/NZS 1170.2:2011(R2016)",
+  "rail": "MA Rail",
+  "roof": "kliplok",
+  "interface": "Mibet Roof Clamp 700 Hi-Strength",
+  "panel": "2.4mx1.2m",
+  "terrain_category": 2,
+  "regions": [
+   "A",
+   "B",
+   "C",
+   "D"
+  ],
+  "data": {
+   "h/d<=0.5": {
+    "A": {
+     "h<=5": {
+      "corner": null,
+      "edge": 710,
+      "intermediate": 1235,
+      "internal": 1700
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": 600,
+      "intermediate": 995,
+      "internal": 1570
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": 425,
+      "intermediate": 715,
+      "internal": 1405
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 675,
+      "internal": 1325
+     }
+    },
+    "B": {
+     "h<=5": {
+      "corner": null,
+      "edge": 595,
+      "intermediate": 810,
+      "internal": 1270
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": 355,
+      "intermediate": 660,
+      "internal": 1025
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 595,
+      "internal": 925
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 560,
+      "internal": 865
+     }
+    },
+    "C": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 520,
+      "internal": 805
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 655
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 590
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 555
+     }
+    },
+    "D": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 510
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 415
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": null
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": null
+     }
+    }
+   },
+   "h/d>=1.0": {
+    "A": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 655,
+      "internal": 1290
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 485,
+      "internal": 1040
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 745
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 700
+     }
+    },
+    "B": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 545,
+      "internal": 845
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 235,
+      "internal": 690
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 620
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 585
+     }
+    },
+    "C": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 540
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 260
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": null
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": null
+     }
+    },
+    "D": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": null
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": null
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": null
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": null
+     }
+    }
+   }
+  },
+  "source_page": 10
+ },
+ {
+  "cert": "gamcorp-9981-03-01-KlipLok-2021",
+  "standard": "AS/NZS 1170.2:2011(R2016)",
+  "rail": "MA Rail",
+  "roof": "kliplok",
+  "interface": "Mibet Roof Clamp 700 Hi-Strength",
+  "panel": "2.4mx1.2m",
+  "terrain_category": 3,
+  "regions": [
+   "A",
+   "B",
+   "C",
+   "D"
+  ],
+  "data": {
+   "h/d<=0.5": {
+    "A": {
+     "h<=5": {
+      "corner": 555,
+      "edge": 1095,
+      "intermediate": 1520,
+      "internal": 1815
+     },
+     "5<h<=10": {
+      "corner": 555,
+      "edge": 1095,
+      "intermediate": 1520,
+      "internal": 1815
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": 760,
+      "intermediate": 1295,
+      "internal": 1730
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": 665,
+      "intermediate": 1145,
+      "internal": 1655
+     }
+    },
+    "B": {
+     "h<=5": {
+      "corner": 285,
+      "edge": 725,
+      "intermediate": 990,
+      "internal": 1560
+     },
+     "5<h<=10": {
+      "corner": 285,
+      "edge": 725,
+      "intermediate": 990,
+      "internal": 1560
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": 625,
+      "intermediate": 850,
+      "internal": 1330
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": 555,
+      "intermediate": 755,
+      "internal": 1180
+     }
+    },
+    "C": {
+     "h<=5": {
+      "corner": null,
+      "edge": 345,
+      "intermediate": 635,
+      "internal": 980
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": 345,
+      "intermediate": 635,
+      "internal": 980
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 545,
+      "internal": 840
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 370,
+      "internal": 745
+     }
+    },
+    "D": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 290,
+      "internal": 620
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 290,
+      "internal": 620
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 535
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 475
+     }
+    }
+   },
+   "h/d>=1.0": {
+    "A": {
+     "h<=5": {
+      "corner": null,
+      "edge": 605,
+      "intermediate": 1005,
+      "internal": 1575
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": 605,
+      "intermediate": 1005,
+      "internal": 1575
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 690,
+      "internal": 1350
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 620,
+      "internal": 1195
+     }
+    },
+    "B": {
+     "h<=5": {
+      "corner": null,
+      "edge": 355,
+      "intermediate": 665,
+      "internal": 1030
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": 355,
+      "intermediate": 665,
+      "internal": 1030
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 575,
+      "internal": 885
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": 395,
+      "internal": 785
+     }
+    },
+    "C": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 660
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 660
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 565
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 495
+     }
+    },
+    "D": {
+     "h<=5": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 415
+     },
+     "5<h<=10": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": 415
+     },
+     "10<h<=15": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": null
+     },
+     "15<h<=20": {
+      "corner": null,
+      "edge": null,
+      "intermediate": null,
+      "internal": null
+     }
+    }
+   }
+  },
+  "source_page": 10
+ }
+]
