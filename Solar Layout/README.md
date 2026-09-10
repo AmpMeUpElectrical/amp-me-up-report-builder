@@ -33,9 +33,29 @@ offer it. Supply a rib pitch and it can be switched back on.
 - **Spacing floor.** Never below one third of the panel width — below that the tool
   refers you to the engineer rather than returning a smaller number.
 - **Setback** = `max(200 mm, 2s)` from gutter, ridge and rake.
+- **Building height h** is the *average roof height above ground* (Note 9, Figure 1) — not
+  the gutter and not the ridge, but halfway between, so the roof is included. Enter the
+  gutter and ridge heights and the planner takes the average; reading the ridge alone can
+  put you in the wrong height band.
 - **Panel size.** Neither panel is a certified size (both are 1134 mm wide). Each is read
   against the smallest certified size at least as large in *both* dimensions —
   2200×1200 — which is conservative. Worth chasing a Gamcorp addendum.
+
+## Which direction is fixed, which is free
+
+A structural member is continuous along its own length, so placement *along* it is free
+and placement *across* it is fixed to the member spacing. That one idea covers every roof:
+
+| Roof | Up-slope | Across-slope |
+|---|---|---|
+| Tile | fixed — tile courses | fixed — trusses (hook shifted up to ±60 mm) |
+| Tin, purlins **across** the slope | fixed — purlin spacing | **free** |
+| Tin, purlins **up** the slope | **free** | fixed — purlin spacing |
+
+Purlins do not always run parallel to the gutter, so the direction is an input. It
+changes the answer: on the same face, tin with purlins running up the slope starts a
+portrait row at exactly the 200 mm setback, where tile (quantised to courses) starts at
+202 mm and a coarser grid pushes it much higher.
 
 ## The two things that catch people
 
@@ -77,7 +97,7 @@ trough at 60 mm of shift).
 | `spacing_tables.json` | All 30 extracted tables (tin, tile, Klip-Lok) |
 | `tables_compact.json` | Tin + tile only, the form embedded in the app |
 | `panels.json` | Panel library with clamp zones |
-| `test*.js` | 145 tests across six suites |
+| `test*.js` | 169 tests across seven suites |
 
 `engine.js` / `layout.js` / `placement.js` are the tested reference implementation; the
 app carries its own copy of the same logic so it can be one file. They are cross-checked:

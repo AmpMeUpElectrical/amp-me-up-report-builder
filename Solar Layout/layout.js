@@ -70,7 +70,10 @@ function orientation(panel, o) {
  * the 200 mm setback runs from the capping edge, not from the first full tile.
  */
 function tileGrid({ planeLength, planeWidth, gauge, coverWidth,
+                    faceL, faceW, coverW,
                     excludeTopCourses = 1, excludeBottomCourses = 0, band = null }) {
+  planeLength = planeLength ?? faceL; planeWidth = planeWidth ?? faceW;
+  coverWidth = coverWidth ?? coverW;
   const courses = Math.floor(planeLength / gauge);
   const tilesPerCourse = Math.floor(planeWidth / coverWidth);
 
@@ -327,7 +330,52 @@ function railSeparationsWithTolerance(panel, trussPitch, tolerance) {
   return { window: w, options: out };
 }
 
+
+/* ---------- which direction is fixed, which is free ---------- */
+
+/**
+ * Where a foot may land, in each direction.
+ *
+ * A structural member is continuous along its own length, so placement ALONG it
+ * is free and placement ACROSS it is fixed to the member spacing. One idea
+ * covers every roof:
+ *
+ *   tile                hooks screw to the truss top chord AND sit at a tile
+ *                       course, so BOTH directions are fixed — a 2D grid.
+ *   tin, purlins        purlins are spaced up the roof; a foot slides anywhere
+ *   across the slope    along one, so across-slope is free, up-slope is fixed.
+ *   tin, purlins        purlins are spaced across the roof; a foot slides
+ *   up the slope        anywhere along one, so up-slope is free, across is fixed.
+ *
+ * `up` is measured from the gutter, `across` from the left capping edge.
+ */
+function structure(job) {
+  if (job.roof === 'tile') {
+    const courses = tileGrid(job);
+    const iface = interfacePositions({
+      planeWidth: job.faceW, trussPitch: job.trussPitch, trussOffset: job.trussOffset || 0,
+      slide: job.hookShift ?? HOOK_MAX_OFFSET, tile: job.tile || { profile: 'flat' },
+    });
+    return {
+      up:     { free: false, lines: courses.usableLines.map(l => l.y) },
+      across: { free: false, positions: iface.positions.map(p => p.x),
+                pitch: job.trussPitch, shift: job.hookShift ?? HOOK_MAX_OFFSET },
+      iface, courses,
+    };
+  }
+
+  const span = job.tinDir === 'up' ? job.faceW : job.faceL;
+  const lines = [];
+  for (let v = job.purlinOffset || 0; v <= span + 1e-6; v += job.purlinPitch) if (v >= 0) lines.push(v);
+
+  return job.tinDir === 'up'
+    ? { up:     { free: true, lines: [] },
+        across: { free: false, positions: lines, pitch: job.purlinPitch, shift: 0 } }
+    : { up:     { free: false, lines },
+        across: { free: true, positions: [], pitch: null, shift: 0 } };
+}
+
 module.exports = { ROW_GAP, PANEL_GAP, orientation, tileGrid, rowSpec, packRows,
   interfacePositions, railSeparationsWithTolerance, slideRequired, spansOf,
-  EDGE_SETBACK_MIN, edgeSetback, railBand, canFitRailPair,
+  EDGE_SETBACK_MIN, edgeSetback, railBand, canFitRailPair, structure,
   troughReachability, HOOK_SLOT_SPAN, HOOK_MAX_OFFSET };

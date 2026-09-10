@@ -176,29 +176,38 @@
           <div><label class="fl">Roof pitch (deg)</label><input class="f num" id="pitch" type="number" value="22"></div>
         </div>
         <div class="fgrid g4">
-          <div><label class="fl">Building height h (m)</label><input class="f num" id="bh" type="number" value="5" step="0.1"></div>
+          <div><label class="fl">Gutter height above ground (m)</label><input class="f num" id="hEave" type="number" value="4.1" step="0.1"></div>
+          <div><label class="fl">Ridge height above ground (m)</label><input class="f num" id="hRidge" type="number" value="5.9" step="0.1"></div>
           <div><label class="fl">Building width b (m)</label><input class="f num" id="bb" type="number" value="12" step="0.1"></div>
           <div><label class="fl">Building depth d (m)</label><input class="f num" id="bd" type="number" value="10" step="0.1"></div>
+        </div>
+        <div class="fgrid g4">
           <div><label class="fl">Panel gap above roof s (mm)</label><input class="f num" id="gapS" type="number" value="50"></div>
         </div>
-        <p class="fnote">h, b and d set the wind zone bands and the h/d ratio. s is the gap under the panel
-          &mdash; the certification bans a panel within 2s of any edge or the ridge, so the setback used is
-          whichever is larger of 200&nbsp;mm and 2s.</p>
+        <p class="fnote" id="hNote"></p>
+        <p class="fnote">The certification defines h as the <b>average roof height above ground</b> (Note&nbsp;9,
+          Figure&nbsp;1) &mdash; not the gutter and not the ridge, but halfway between, so it does include the roof.
+          Measure both and the planner takes the average. b and d are the building's plan dimensions at the walls.
+          s is the gap under the panel &mdash; the certification bans a panel within 2s of any edge or the ridge,
+          so the setback used is whichever is larger of 200&nbsp;mm and 2s.</p>
       </div>
 
       <div class="block">
         <h3>Roof face</h3>
-        <div class="fgrid g4">
+        <div class="fgrid g2">
           <div><label class="fl">Width, capping to capping (mm)</label><input class="f num" id="faceW" type="number" value="8000"></div>
           <div><label class="fl">Length, gutter to ridge (mm)</label><input class="f num" id="faceL" type="number" value="5000"></div>
-          <div><label class="fl">Truss / rafter spacing (mm)</label><input class="f num" id="trussPitch" type="number" value="600"></div>
-          <div><label class="fl">First truss from left edge (mm)</label><input class="f num" id="trussOffset" type="number" value="0"></div>
         </div>
-        <p class="fnote">Trusses and rafters run up the slope, so their spacing is measured across the roof.</p>
       </div>
 
       <div class="block" id="tileBlock">
         <h3>Tile</h3>
+        <div class="fgrid g2">
+          <div><label class="fl">Truss / rafter spacing (mm)</label><input class="f num" id="trussPitch" type="number" value="600"></div>
+          <div><label class="fl">First truss from left edge (mm)</label><input class="f num" id="trussOffset" type="number" value="0"></div>
+        </div>
+        <p class="fnote">Tile hooks must be fixed to the truss top chord, so the across-slope fixing positions
+          are the trusses. They run up the slope, so their spacing is measured across the roof.</p>
         <div class="fgrid g4">
           <div><label class="fl">Exposed length of a tile (mm)</label><input class="f num" id="gauge" type="number" value="330"></div>
           <div><label class="fl">Tile cover width (mm)</label><input class="f num" id="coverW" type="number" value="300"></div>
@@ -219,8 +228,13 @@
       <div class="block" id="tinBlock" style="display:none">
         <h3>Tin</h3>
         <div class="fgrid g4">
+          <div><label class="fl">Purlins / battens run</label>
+            <select class="f" id="tinDir">
+              <option value="across">Across the slope &mdash; parallel to the gutter</option>
+              <option value="up">Up the slope</option>
+            </select></div>
           <div><label class="fl">Purlin / batten spacing (mm)</label><input class="f num" id="purlinPitch" type="number" value="900"></div>
-          <div><label class="fl">First purlin from gutter (mm)</label><input class="f num" id="purlinOffset" type="number" value="300"></div>
+          <div><label class="fl" id="purlinOffsetLbl">First purlin from gutter (mm)</label><input class="f num" id="purlinOffset" type="number" value="300"></div>
           <div><label class="fl">Fixing into</label>
             <select class="f" id="fixing">
               <option value="timber-35+">Timber, 35&nbsp;mm+ embedment</option>
@@ -232,8 +246,8 @@
               <option value="steel-0.55">Steel purlin 0.55&nbsp;mm</option>
             </select></div>
         </div>
-        <p class="fnote">Purlins and battens run across the slope, so their spacing is measured up the roof.
-          Thin steel derates the certified spacing hard &mdash; 0.55&nbsp;mm is 27% of the table value.</p>
+        <p class="fnote" id="tinDirNote"></p>
+        <p class="fnote">Thin steel derates the certified spacing hard &mdash; 0.55&nbsp;mm is 27% of the table value.</p>
       </div>
 
       <div class="block">
@@ -252,7 +266,7 @@
               <option value="0.333">1/3 of the span</option>
               <option value="0">No overhang</option>
             </select></div>
-          <div><label class="fl">Tile fixing</label>
+          <div id="fixingTileWrap"><label class="fl">Tile fixing</label>
             <select class="f" id="fixingTile">
               <option value="timber-35+">Timber, 35&nbsp;mm+ embedment</option>
               <option value="timber-20">Timber, 20&nbsp;mm embedment</option>
@@ -540,6 +554,35 @@ function troughReachability(job){
 }
 
 /**
+ * Where a foot may land, in each direction.
+ *
+ * A foot must sit on a structural member. A member running one way is
+ * continuous along its own length, so placement ALONG it is free and placement
+ * ACROSS it is fixed to the member spacing. That single idea covers every case:
+ *
+ *   tile              hooks screw to the truss top chord AND sit at a tile
+ *                     course, so BOTH directions are fixed — a 2D grid.
+ *   tin, purlins      purlins are spaced up the roof; a foot slides anywhere
+ *   across the slope  along one, so across-slope is free, up-slope is fixed.
+ *   tin, purlins      purlins are spaced across the roof; a foot slides anywhere
+ *   up the slope      along one, so up-slope is free, across-slope is fixed.
+ */
+function structure(job, tileLines, iface){
+  if(job.roof === 'tile')
+    return { up:{ free:false, lines:tileLines.map(l=>l.y) },
+             across:{ free:false, positions:iface.positions.map(p=>p.x), pitch:job.trussPitch,
+                      shift:job.hookShift } };
+
+  const lines = [];
+  const span = job.tinDir==='up' ? job.faceW : job.faceL;
+  for(let v=job.purlinOffset; v<=span+1e-6; v+=job.purlinPitch) if(v>=0) lines.push(v);
+
+  return job.tinDir==='up'
+    ? { up:{ free:true, lines:[] }, across:{ free:false, positions:lines, pitch:job.purlinPitch, shift:0 } }
+    : { up:{ free:false, lines }, across:{ free:true, positions:[], pitch:null, shift:0 } };
+}
+
+/**
  * Place feet along one rail run. A span must satisfy the tightest zone it
  * crosses, not just its endpoints.
  */
@@ -619,6 +662,20 @@ function solveFeet(opts){
  * PORTRAIT: rails run across-slope, so their up-slope position is quantised to
  * tile courses / purlin lines. The panel edge sits a further L beyond each rail.
  */
+/**
+ * When the up-slope direction is free (tin with purlins running up the slope),
+ * a portrait rail can sit at any height, so the row slides like a landscape one
+ * and starts exactly at the setback.
+ */
+function portraitRowsFree(panel, job, setback, bottom){
+  const A = panel.length, {minFromEnd:Lmin, maxFromEnd:Lmax} = panel.clamp;
+  const L = (Lmin+Lmax)/2;
+  const top = bottom + A;
+  if(top > job.faceL - setback) return null;
+  return { orientation:'portrait', railY:[r1(bottom+L), r1(top-L)], separation:r1(A-2*L),
+           clampFromEnd:r1(L), panelBottom:r1(bottom), panelTop:r1(top), depth:A };
+}
+
 function portraitRows(panel, lines, job, setback){
   const A = panel.length, {minFromEnd:Lmin, maxFromEnd:Lmax} = panel.clamp;
   const out = [];
@@ -655,15 +712,16 @@ function panelsAcross(panel, orientation, job, setback){
  * Stack rows up the roof, greedily taking whichever orientation places the most
  * panels for the depth it costs, then whichever starts lowest.
  */
-function stackFrom(panel, job, setback, allow, lines, y0, portraitAll, across){
+function stackFrom(panel, job, setback, allow, lines, y0, portraitAll, across, upFree){
   const rows = [];
   let y = y0, guard = 0;
   while(guard++ < 40){
     const cands = [];
     if(allow.includes('landscape') && across.landscape>0 && y+panel.width <= job.faceL-setback)
       cands.push({ ...landscapeRowAt(panel,y), n:across.landscape });
-    if(across.portrait>0){
-      const p = portraitAll.find(r=>r.panelBottom>=y-0.01);
+    if(across.portrait>0 && allow.includes('portrait')){
+      const p = upFree ? portraitRowsFree(panel, job, setback, y)
+                       : portraitAll.find(r=>r.panelBottom>=y-0.01);
       if(p) cands.push({ ...p, n:across.portrait });
     }
     if(!cands.length) break;
@@ -682,17 +740,18 @@ function stackFrom(panel, job, setback, allow, lines, y0, portraitAll, across){
  * the setback, the zone band boundaries, and each fixing line — and keep
  * whichever stack the caller scores highest.
  */
-function stackCandidates(panel, job, setback, allow, lines){
+function stackCandidates(panel, job, setback, allow, lines, upFree){
   const across = { portrait: panelsAcross(panel,'portrait',job,setback).panels,
                    landscape: panelsAcross(panel,'landscape',job,setback).panels };
-  const portraitAll = allow.includes('portrait') ? portraitRows(panel, lines, job, setback) : [];
+  const portraitAll = (allow.includes('portrait') && !upFree)
+                        ? portraitRows(panel, lines, job, setback) : [];
   const zm = zoneMap(job);
   const starts = new Set([setback, Math.ceil(zm.half), Math.ceil(zm.a)]);
   lines.forEach(l=>{ if(l.y>=setback) starts.add(l.y); });
   portraitAll.forEach(r=>starts.add(r.panelBottom));
   const limit = job.faceL - setback - Math.min(panel.width, panel.length);
   return [...starts].filter(v=>v>=setback && v<=limit).sort((a,b)=>a-b)
-    .map(y0=>stackFrom(panel, job, setback, allow, lines, y0, portraitAll, across));
+    .map(y0=>stackFrom(panel, job, setback, allow, lines, y0, portraitAll, across, upFree));
 }
 
 /* ============================================================================
@@ -706,7 +765,10 @@ function readJob(){
   const env = certifiedEnvelope(panel);
   return {
     roof, region:v('region'), tc:+v('tc'), pitch:n('pitch'),
-    h:n('bh'), b:n('bb'), d:n('bd'), gapS:n('gapS'),
+    // Note 9 / Figure 1: h is the AVERAGE roof height above ground — mid-way
+    // between gutter and ridge, so the roof itself is included.
+    hEave:n('hEave'), hRidge:n('hRidge'), h:(n('hEave')+n('hRidge'))/2,
+    b:n('bb'), d:n('bd'), gapS:n('gapS'), tinDir:v('tinDir'),
     faceW:n('faceW'), faceL:n('faceL'),
     trussPitch:n('trussPitch'), trussOffset:n('trussOffset'),
     gauge:n('gauge'), coverW:n('coverW'), tileProfile:v('tileProfile'),
@@ -740,19 +802,28 @@ function solve(){
   for(const z of ZONES) if(zoneMax[z].belowFloor)
     warnings.push(`${ZONE_LABEL[z]} zone: ${zoneMax[z].notes.find(n=>n.includes('one third'))}`);
 
-  // Up-slope fixing lines: tile courses, or purlin lines on tin
+  // Across-slope interface positions (tile: trusses, shifted into troughs)
+  const iface = interfacePositions(job);
+
+  // Up-slope fixing lines
   let lines, gridInfo = null;
   if(job.roof==='tile'){
     const g = tileGrid(job); gridInfo = g; lines = g.usable;
     if(!g.courses) issues.push('The roof face is shorter than one tile course.');
-  } else {
+  } else if(job.tinDir==='across'){
     lines = [];
-    for(let y=job.purlinOffset; y<=job.faceL; y+=job.purlinPitch) if(y>0) lines.push({y, course:null, usable:true});
+    for(let y=job.purlinOffset; y<=job.faceL; y+=job.purlinPitch) if(y>0) lines.push({y, usable:true});
     gridInfo = { courses:lines.length, lines, usable:lines, tilesPerCourse:null };
+  } else {
+    lines = [];   // purlins run up-slope: nothing quantises the up-slope direction
+    gridInfo = { courses:0, lines:[], usable:[], tilesPerCourse:null };
   }
 
-  // Across-slope interface positions
-  const iface = interfacePositions(job);
+  const st = structure(job, lines, iface);
+  if(!st.up.free && !lines.length)
+    issues.push('No up-slope fixing line falls on this roof face.');
+  if(!st.across.free && !st.across.positions.length)
+    issues.push('No across-slope fixing position falls on this roof face.');
   const reach = (job.roof==='tile' && job.tileProfile==='profiled') ? troughReachability(job) : null;
   if(reach && !reach.always)
     warnings.push(`On this tile, a hook can only reach ${reach.reach} mm from a truss but may need ${reach.worst} mm. ${iface.blocked.length} truss position(s) unusable. A trough of at least ${reach.minTroughWidth} mm would clear it.`);
@@ -763,7 +834,7 @@ function solve(){
   // higher-yielding orientation can be the one that cannot be fixed at all —
   // without these single-orientation passes the layout would come back empty.
   const allowSets = allow.length>1 ? [allow, ['portrait'], ['landscape']] : [allow];
-  const stacks = allowSets.flatMap(a=>stackCandidates(job.panel, job, sb.mm, a, lines));
+  const stacks = allowSets.flatMap(a=>stackCandidates(job.panel, job, sb.mm, a, lines, st.up.free));
 
   // Rails and feet for each row.
   //
@@ -800,13 +871,13 @@ function solve(){
     }
 
     if(row.orientation==='portrait'){
-      const xs = iface.positions.map(p=>p.x);
       const runStart = inset, runEnd = inset+widthUsed;
       for(const y of row.railY){
         const maxAt = x => zoneMax[zm.at(x,y)].mm;
-        const s2 = job.roof==='tile'
-          ? solveFeet({ start:runStart, end:runEnd, maxAt, members:xs, cant:job.cant })
-          : solveFeet({ start:runStart, end:runEnd, maxAt, free:true });
+        // Feet run ACROSS the roof along a horizontal rail.
+        const s2 = st.across.free
+          ? solveFeet({ start:runStart, end:runEnd, maxAt, free:true })
+          : solveFeet({ start:runStart, end:runEnd, maxAt, members:st.across.positions, cant:job.cant });
         if(!s2.ok){ out.ok=false; out.problems.push(`Rail at ${y} mm: ${s2.why}`); }
         const f0 = s2.feet.length?Math.min(runStart,s2.feet[0]):runStart;
         const f1 = s2.feet.length?Math.max(runEnd,s2.feet[s2.feet.length-1]):runEnd;
@@ -815,28 +886,40 @@ function solve(){
                          feet:s2.feet, spans:s2.spans||[], ok:s2.ok, overhang:s2.overhang });
       }
     } else {
-      const opts = [];
-      for(let k=1;k*job.trussPitch<=sep.max+2*job.hookShift;k++){
-        const nominal = k*job.trussPitch;
-        const lo = Math.max(nominal-2*job.hookShift, sep.min);
-        const hi = Math.min(nominal+2*job.hookShift, sep.max);
-        if(lo<=hi) opts.push({k, use:Math.min(Math.max(nominal,lo),hi)});
+      // Landscape: the two rails run UP-SLOPE, so their separation is set by the
+      // across-slope fixing grid — unless that direction is free, in which case
+      // any separation inside the clamp window will do.
+      let pick;
+      if(st.across.free){
+        pick = { k:null, use:Math.round((sep.min+sep.max)/2) };
+      } else {
+        const opts = [];
+        for(let k=1;k*st.across.pitch<=sep.max+2*st.across.shift;k++){
+          const nominal = k*st.across.pitch;
+          const lo = Math.max(nominal-2*st.across.shift, sep.min);
+          const hi = Math.min(nominal+2*st.across.shift, sep.max);
+          if(lo<=hi) opts.push({k, use:Math.min(Math.max(nominal,lo),hi)});
+        }
+        if(!opts.length){
+          out.ok=false;
+          const what = job.roof==='tile' ? 'trusses' : 'purlins';
+          const shiftNote = st.across.shift ? ` even with ${st.across.shift} mm of hook shift` : '';
+          out.problems.push(`No rail separation works: ${what} at ${st.across.pitch} mm cannot land the two rails ${sep.min}–${sep.max} mm apart${shiftNote}.`);
+          return out;
+        }
+        pick = opts[0];
       }
-      if(!opts.length){
-        out.ok=false;
-        out.problems.push(`No rail separation works: trusses at ${job.trussPitch} mm cannot land the two rails ${sep.min}–${sep.max} mm apart, even with ${job.hookShift} mm of hook shift.`);
-        return out;
-      }
-      const pick = opts[0];
-      const mem = lines.map(l=>l.y);
+      const mem = st.up.lines;
       for(let i2=0;i2<out.panels;i2++){
         const px = inset + i2*out.panelPitchX;
         const centre = px + job.panel.length/2;
         for(const sgn of [-1,1]){
           const x = centre + sgn*pick.use/2;
           const maxAt = yy => zoneMax[zm.at(x,yy)].mm;
-          const sol = solveFeet({ start:row.panelBottom, end:row.panelTop, maxAt,
-                                  members:mem, cant:job.cant });
+          // Feet run UP the roof along a vertical rail.
+          const sol = st.up.free
+            ? solveFeet({ start:row.panelBottom, end:row.panelTop, maxAt, free:true })
+            : solveFeet({ start:row.panelBottom, end:row.panelTop, maxAt, members:mem, cant:job.cant });
           if(!sol.ok){ out.ok=false; out.problems.push(`Rail at ${Math.round(x)} mm across: ${sol.why}`); }
           const g0 = sol.feet.length?Math.min(row.panelBottom,sol.feet[0]):row.panelBottom;
           const g1 = sol.feet.length?Math.max(row.panelTop,sol.feet[sol.feet.length-1]):row.panelTop;
@@ -846,7 +929,9 @@ function solve(){
         }
       }
       out.railSeparation = pick.use;
-      out.railSeparationNote = `${pick.k} truss bay(s) at ${job.trussPitch} mm, set to ${Math.round(pick.use)} mm (clamp window ${sep.min}–${sep.max} mm)`;
+      out.railSeparationNote = pick.k===null
+        ? `free across the slope — set to ${Math.round(pick.use)} mm (clamp window ${sep.min}–${sep.max} mm)`
+        : `${pick.k} ${job.roof==='tile'?'truss':'purlin'} bay(s) at ${st.across.pitch} mm, set to ${Math.round(pick.use)} mm (clamp window ${sep.min}–${sep.max} mm)`;
     }
     return out;
   }
@@ -921,6 +1006,20 @@ function toggleRoof(){
   $('tileBlock').style.display = tile?'':'none';
   $('tinBlock').style.display = tile?'none':'';
   $('troughRow').style.display = (tile && $('tileProfile').value==='profiled')?'':'none';
+  $('fixingTileWrap').style.display = tile?'':'none';   // tin has its own fixing field
+
+  const up = $('tinDir').value==='up';
+  $('purlinOffsetLbl').innerHTML = up ? 'First purlin from left edge (mm)' : 'First purlin from gutter (mm)';
+  $('tinDirNote').innerHTML = up
+    ? 'Purlins run up the slope, so their spacing is measured across the roof. A foot can sit anywhere along a purlin, so up-slope placement is free and the across-slope position is the fixed one.'
+    : 'Purlins run across the slope, so their spacing is measured up the roof. A foot can sit anywhere along a purlin, so across-slope placement is free and the up-slope position is the fixed one.';
+
+  const eave = parseFloat($('hEave').value)||0, ridge = parseFloat($('hRidge').value)||0;
+  const hh = (eave+ridge)/2, dd = parseFloat($('bd').value)||1;
+  $('hNote').innerHTML = ridge < eave
+    ? '<span style="color:var(--bad)">The ridge cannot be lower than the gutter.</span>'
+    : 'Average roof height <b>h = ' + hh.toFixed(2) + ' m</b> (halfway between ' + eave.toFixed(2) +
+      ' and ' + ridge.toFixed(2) + '). h/d = ' + (hh/dd).toFixed(2) + '.';
 }
 
 /* ---------- rendering ---------- */
@@ -1006,9 +1105,13 @@ function drawPlan(R){
   // setback boundary
   s += `<rect x="${X(sb.mm)}" y="${Y(L-sb.mm)}" width="${(W-2*sb.mm)*scale}" height="${(L-2*sb.mm)*scale}" fill="none" stroke="#c0392b" stroke-width="1" stroke-dasharray="6 4"/>`;
 
-  // structure: trusses up-slope
-  for(let x=job.trussOffset;x<=W;x+=job.trussPitch)
-    s += `<line x1="${X(x)}" y1="${Y(0)}" x2="${X(x)}" y2="${Y(L)}" stroke="#8a8a84" stroke-width=".8" stroke-dasharray="3 3"/>`;
+  // structure running up the slope (tile trusses, or tin purlins laid up-slope)
+  if(job.roof==='tile' || job.tinDir==='up'){
+    const pitch = job.roof==='tile' ? job.trussPitch : job.purlinPitch;
+    const off   = job.roof==='tile' ? job.trussOffset : job.purlinOffset;
+    if(pitch>0) for(let x=off;x<=W;x+=pitch)
+      s += `<line x1="${X(x)}" y1="${Y(0)}" x2="${X(x)}" y2="${Y(L)}" stroke="#8a8a84" stroke-width=".8" stroke-dasharray="3 3"/>`;
+  }
   // tile courses / purlins across-slope
   const upLines = R.gridInfo.lines||[];
   upLines.forEach(l=>{
@@ -1110,7 +1213,16 @@ function renderCompliance(R){
     <tr><td>Valid until</td><td class="b">${CERT.validUntil}</td><td></td></tr>
     <tr><td>Roof type</td><td class="b">${job.roof}</td><td>fixing: ${esc(job.fixing)}</td></tr>
     <tr><td>Wind region / terrain</td><td class="b">${job.region} / TC${job.tc}</td><td></td></tr>
-    <tr><td>Building h / b / d</td><td class="b">${job.h} / ${job.b} / ${job.d} m</td><td>h/d = ${(job.h/job.d).toFixed(2)}, height band ${esc(zoneMax.internal.band||'—')}</td></tr>
+    <tr><td>Average roof height h</td><td class="b">${job.h.toFixed(2)} m</td><td>gutter ${job.hEave.toFixed(2)} m, ridge ${job.hRidge.toFixed(2)} m &mdash; Note 9 / Figure 1, average roof height above ground</td></tr>
+    <tr><td>Building b / d</td><td class="b">${job.b} / ${job.d} m</td><td>h/d = ${(job.h/job.d).toFixed(2)}, height band ${esc(zoneMax.internal.band||'—')}</td></tr>
+    <tr><td>Roof structure</td><td class="b">${job.roof==='tile'
+        ? 'trusses at '+fmt(job.trussPitch)+' mm'
+        : 'purlins at '+fmt(job.purlinPitch)+' mm, running '+(job.tinDir==='up'?'up the slope':'across the slope')}</td>
+      <td>${job.roof==='tile'
+        ? 'hooks fixed to the truss top chord, at a tile course'
+        : (job.tinDir==='up'
+            ? 'a foot slides anywhere along a purlin, so up-slope placement is free'
+            : 'a foot slides anywhere along a purlin, so across-slope placement is free')}</td></tr>
     <tr><td>Panel</td><td class="b">${esc(job.panel.model)}</td><td>read against certified size ${esc(job.panelKey||'—')}</td></tr>
     <tr><td>Setback</td><td class="b">${sb.mm} mm</td><td>${esc(sb.governedBy)}; 2s = ${sb.twoS} mm</td></tr>
     </tbody></table></div>`;
@@ -1209,9 +1321,9 @@ function run(){
 
 /* ---------- persistence ---------- */
 const KEY = 'amu-solar-layout-v1';
-const FIELDS = ['roof','region','tc','pitch','bh','bb','bd','gapS','faceW','faceL','trussPitch',
+const FIELDS = ['roof','region','tc','pitch','hEave','hRidge','bb','bd','gapS','faceW','faceL','trussPitch',
   'trussOffset','gauge','coverW','tileProfile','troughW','troughOffset','hookW','hookShift',
-  'purlinPitch','purlinOffset','fixing','fixingTile','panel','orient','cant'];
+  'purlinPitch','purlinOffset','tinDir','fixing','fixingTile','panel','orient','cant'];
 
 function save(){
   try{
