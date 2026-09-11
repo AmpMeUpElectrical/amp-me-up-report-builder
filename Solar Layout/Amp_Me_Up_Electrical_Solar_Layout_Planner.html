@@ -240,7 +240,13 @@
         <p class="fnote">Tile hooks must be fixed to the truss top chord, so the across-slope fixing positions
           are the trusses. They run up the slope, so their spacing is measured across the roof.</p>
         <div class="fgrid g4">
+          <div><label class="fl">Measured over how many courses</label><input class="f num" id="gaugeN" type="number" value="10"></div>
+          <div><label class="fl">Distance over those courses (mm)</label><input class="f num" id="gaugeMM" type="number" placeholder="e.g. 3300"></div>
+          <div><label class="fl">Courses, gutter to ridge</label><input class="f num" id="courseCount" type="number" placeholder="count them"></div>
           <div><label class="fl">Exposed length of a tile (mm)</label><input class="f num" id="gauge" type="number" value="330"></div>
+        </div>
+        <p class="fnote" id="gaugeNote"></p>
+        <div class="fgrid g4">
           <div><label class="fl">Tile cover width (mm)</label><input class="f num" id="coverW" type="number" value="300"></div>
           <div><label class="fl">Tile profile</label>
             <select class="f" id="tileProfile"><option value="flat">Flat &mdash; hook sits anywhere</option><option value="profiled">Profiled (Malibu etc) &mdash; hook must sit in a trough</option></select></div>
@@ -357,8 +363,10 @@
               <td>Tells the planner whether the face is a rectangle, a trapezium or a triangle,
                   and how fast it narrows.</td></tr>
           <tr><td class="b">&#9733; Length, gutter to ridge</td>
-              <td>Up the slope, along the surface &mdash; not the horizontal plan distance.</td>
-              <td>Sets how many rows fit.</td></tr>
+              <td>Up the slope, along the surface &mdash; not the horizontal plan distance. On a
+                  tile roof you can get this from the course count instead: courses &times; gauge,
+                  plus the bit left at the ridge. A long tape pull up a slope sags and wanders.</td>
+              <td>Sets how many rows fit, and where the ridge setback starts.</td></tr>
           <tr><td>Top edge offset</td>
               <td>Only if the face is lopsided &mdash; a gable one side and a hip the other.
                   Distance from the left capping edge to where the ridge starts. Leave blank if
@@ -405,10 +413,18 @@
       <div class="block">
         <h3>4 &mdash; The tiles (tile roofs only)</h3>
         <table class="grid mgrid"><thead><tr><th>Measure</th><th>How</th><th>Why it matters</th></tr></thead><tbody>
-          <tr><td class="b">Exposed length of a tile</td>
-              <td>Up the slope, from one row of tiles to the next. Measure over several rows and
-                  divide &mdash; the gauge is set on site and is rarely a round number.</td>
-              <td>Rails can only sit on a course line, so this quantises every portrait row.</td></tr>
+          <tr><td class="b">&#9733; Exposed length of a tile</td>
+              <td>Do <b>not</b> measure one tile. Hook the tape on a course line, run it up
+                  <b>ten courses</b>, read the distance and let the planner divide. A 5&nbsp;mm
+                  misread on one tile is a 5&nbsp;mm error; over ten courses it is 0.5&nbsp;mm.</td>
+              <td>Rails can only sit on a course line, so this number sets the whole up-slope
+                  grid. Get it right and every rail line is right.</td></tr>
+          <tr><td class="b">&#9733; Courses, gutter to ridge</td>
+              <td>Count them. Easier and more reliable than dragging a tape up the slope, and
+                  it cross-checks your slope length: courses &times; gauge should land just short
+                  of it.</td>
+              <td>Counting <em>up</em> the slope is sound because the course lines are the fixing
+                  grid. Counting <em>across</em> is not &mdash; see the width rows above.</td></tr>
           <tr><td>Tile cover width</td>
               <td>Across the roof, one tile to the next.</td>
               <td>Sets the trough grid on a profiled tile.</td></tr>
@@ -1310,6 +1326,35 @@ function toggleRoof(){
           'so 200&nbsp;mm becomes <b>' + Math.round(200*rakeL) + '&nbsp;mm</b> horizontally on the left rake and <b>' +
           Math.round(200*rakeR) + '&nbsp;mm</b> on the right. Measuring 200&nbsp;mm flat across would breach it.');
 
+  // Gauge from a run of courses. Measuring one course carries the full error of
+  // a single reading; measuring ten and dividing divides that error by ten.
+  const gN = parseFloat($('gaugeN').value)||0, gMM = parseFloat($('gaugeMM').value)||0;
+  if(gN>0 && gMM>0){
+    const derived = gMM/gN;
+    $('gauge').value = Math.round(derived*10)/10;
+  }
+  const gauge = parseFloat($('gauge').value)||0;
+  const nC = parseFloat($('courseCount').value)||0;
+  const faceLen = parseFloat($('faceL').value)||0;
+  let gn = '';
+  if(gN>0 && gMM>0) gn += `${gMM} mm over ${gN} courses = <b>${(gMM/gN).toFixed(1)} mm</b> per course. `;
+  if(nC>0 && gauge>0){
+    const span = nC*gauge;
+    const spare = faceLen - span;
+    const pct = faceLen ? Math.abs(spare)/faceLen*100 : 0;
+    gn += `${nC} courses &times; ${gauge} mm = <b>${Math.round(span)} mm</b>, against ${Math.round(faceLen)} mm measured gutter to ridge &mdash; `;
+    gn += spare < -0.01
+      ? `<span style="color:var(--bad)">${Math.round(-spare)} mm OVER. One of the two numbers is wrong.</span>`
+      : pct > 8
+        ? `<span style="color:var(--warn)">${Math.round(spare)} mm spare at the ridge, which is a lot. Re-check the count or the slope length.</span>`
+        : `${Math.round(spare)} mm spare at the ridge. That looks right.`;
+  } else if(gN>0 && gMM>0){
+    gn += 'Add the course count and it will cross-check against your slope length.';
+  } else {
+    gn = 'Measure the gauge over a run of courses rather than one tile, and the error divides by the number of courses. Counting courses is more reliable than a long tape pull up the slope &mdash; and the course lines are what the rails actually land on.';
+  }
+  $('gaugeNote').innerHTML = gn;
+
   const tol = parseFloat($('clampTol').value)||0;
   const pnl = PANELS.find(x=>x.id===$('panel').value);
   if(pnl){
@@ -1681,7 +1726,7 @@ function run(){
 /* ---------- persistence ---------- */
 const KEY = 'amu-solar-layout-v1';
 const FIELDS = ['roof','region','tc','pitch','hEave','hRidge','bb','bd','gapS','faceW','faceL',
-  'faceShape','faceTopW','faceTopOffset','trussPitch',
+  'faceShape','faceTopW','faceTopOffset','gaugeN','gaugeMM','courseCount','trussPitch',
   'trussOffset','gauge','coverW','tileProfile','troughW','troughOffset','hookW','hookShift',
   'purlinPitch','purlinOffset','tinDir','fixing','fixingTile','panel','orient','cant','sag','clampTol'];
 
