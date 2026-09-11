@@ -97,6 +97,20 @@
   .drawwrap{border:1px solid var(--line);border-radius:8px;background:#fff;padding:10px;overflow-x:auto}
   svg.plan{display:block;min-width:640px;width:100%;height:auto}
 
+  @media(max-width:620px){
+    table.mgrid, table.mgrid tbody, table.mgrid tr, table.mgrid td{display:block;width:100%}
+    table.mgrid thead{display:none}
+    table.mgrid tr{border-bottom:1px solid var(--line);padding:9px 0}
+    table.mgrid tr:last-child{border-bottom:0}
+    table.mgrid td{border:0;padding:1px 0}
+    table.mgrid td:first-child{font-weight:800;font-size:13px}
+    table.mgrid td:nth-child(2){color:var(--dark)}
+    table.mgrid td:nth-child(3){color:var(--muted);font-size:11.5px;padding-top:3px}
+    table.mgrid td:nth-child(3)::before{content:'Why: ';font-weight:700;color:var(--hint)}
+    .tabs{padding:0 6px}
+    .tab{padding:11px 9px;font-size:12.5px}
+  }
+
   .foot{padding:14px 20px 20px;font-size:11px;color:var(--hint);border-top:1px solid var(--line);line-height:1.7}
 
   #printOnly{display:none}
@@ -332,7 +346,7 @@
 
       <div class="block">
         <h3>1 &mdash; The roof face</h3>
-        <table class="grid"><thead><tr><th>Measure</th><th>How</th><th>Why it matters</th></tr></thead><tbody>
+        <table class="grid mgrid"><thead><tr><th>Measure</th><th>How</th><th>Why it matters</th></tr></thead><tbody>
           <tr><td class="b">&#9733; Width at the gutter</td>
               <td>Capping edge to capping edge, along the gutter line. <b>Not</b> by counting tiles.</td>
               <td>The edge tile usually overlaps a big part of the capping. Counting whole tiles
@@ -357,7 +371,7 @@
 
       <div class="block">
         <h3>2 &mdash; The building</h3>
-        <table class="grid"><thead><tr><th>Measure</th><th>How</th><th>Why it matters</th></tr></thead><tbody>
+        <table class="grid mgrid"><thead><tr><th>Measure</th><th>How</th><th>Why it matters</th></tr></thead><tbody>
           <tr><td class="b">&#9733; Gutter height and ridge height</td>
               <td>Both above <b>ground level</b>. The planner averages them.</td>
               <td>The certification's h is the average roof height, not the gutter and not the
@@ -372,7 +386,7 @@
 
       <div class="block">
         <h3>3 &mdash; The structure under it</h3>
-        <table class="grid"><thead><tr><th>Measure</th><th>How</th><th>Why it matters</th></tr></thead><tbody>
+        <table class="grid mgrid"><thead><tr><th>Measure</th><th>How</th><th>Why it matters</th></tr></thead><tbody>
           <tr><td class="b">&#9733; Member spacing</td>
               <td>Tile: truss / rafter centres, measured across the roof. Tin: purlin or batten
                   centres. Check several bays &mdash; they are not always even.</td>
@@ -390,7 +404,7 @@
 
       <div class="block">
         <h3>4 &mdash; The tiles (tile roofs only)</h3>
-        <table class="grid"><thead><tr><th>Measure</th><th>How</th><th>Why it matters</th></tr></thead><tbody>
+        <table class="grid mgrid"><thead><tr><th>Measure</th><th>How</th><th>Why it matters</th></tr></thead><tbody>
           <tr><td class="b">Exposed length of a tile</td>
               <td>Up the slope, from one row of tiles to the next. Measure over several rows and
                   divide &mdash; the gauge is set on site and is rarely a round number.</td>
@@ -412,7 +426,7 @@
 
       <div class="block">
         <h3>5 &mdash; Note these too</h3>
-        <table class="grid"><tbody>
+        <table class="grid mgrid"><tbody>
           <tr><td class="b">Panel model</td><td>The exact code off the label, not just the wattage.
             Two panels the same size can have completely different clamp zones.</td></tr>
           <tr><td class="b">Obstructions</td><td>Vents, whirlybirds, aerials, skylights, plumbing
