@@ -194,10 +194,21 @@
 
       <div class="block">
         <h3>Roof face</h3>
-        <div class="fgrid g2">
-          <div><label class="fl">Width, capping to capping (mm)</label><input class="f num" id="faceW" type="number" value="8000"></div>
+        <div class="fgrid g4">
+          <div><label class="fl">Face shape</label>
+            <select class="f" id="faceShape">
+              <option value="rectangle">Rectangle &mdash; gable end to end</option>
+              <option value="trapezium">Trapezium &mdash; hip main face</option>
+              <option value="triangle">Triangle &mdash; hip end</option>
+            </select></div>
+          <div><label class="fl">Width at the gutter (mm)</label><input class="f num" id="faceW" type="number" value="8000"></div>
+          <div id="faceTopWWrap"><label class="fl">Width at the ridge (mm)</label><input class="f num" id="faceTopW" type="number" value="4000"></div>
           <div><label class="fl">Length, gutter to ridge (mm)</label><input class="f num" id="faceL" type="number" value="5000"></div>
         </div>
+        <div class="fgrid g4" id="faceOffsetWrap">
+          <div><label class="fl">Top edge offset from left (mm)</label><input class="f num" id="faceTopOffset" type="number" placeholder="blank = centred"></div>
+        </div>
+        <p class="fnote" id="faceNote"></p>
       </div>
 
       <div class="block" id="tileBlock">
@@ -443,20 +454,72 @@ function maxSpacing(job, zone){
 }
 
 /**
- * Roof zones. a = min(0.2b, 0.2d) if h/b or h/d >= 0.2, else 2h.
- * Edge = outer a/2, Intermediate = next a/2, Corner = outer a/2 both ways.
- * At pitch >= 10 deg the ridge counts as an edge too.
+ * The roof face as a quadrilateral: bottom edge at the gutter, top edge at the
+ * ridge, two raking edges. One model covers the lot — rectangle (top width =
+ * bottom width), trapezium (hip main face), triangle (hip end, top width 0).
+ * An asymmetric face, gable one side and hip the other, is just a top offset
+ * of 0.
  */
-function zoneMap(job){
+function face(job){
+  const Wb = job.faceW, L = job.faceL;
+  const Wt = job.faceShape==='rectangle' ? Wb
+           : job.faceShape==='triangle'  ? 0
+           : job.faceTopW;
+  const offL = (job.faceTopOffset===null || job.faceTopOffset===undefined)
+                 ? (Wb-Wt)/2 : job.faceTopOffset;
+  const BL={x:0,y:0}, BR={x:Wb,y:0}, TL={x:offL,y:L}, TR={x:offL+Wt,y:L};
+  const leftAt  = y => BL.x + (TL.x-BL.x)*(y/L);
+  const rightAt = y => BR.x + (TR.x-BR.x)*(y/L);
+  const perp = (A,B,x,y) => {
+    const vx=B.x-A.x, vy=B.y-A.y, len=Math.hypot(vx,vy);
+    return len ? Math.abs(vx*(y-A.y)-vy*(x-A.x))/len : Math.hypot(x-A.x,y-A.y);
+  };
+  const rakeFactor = dx => Math.hypot(dx,L)/L;
+  const lf = rakeFactor(TL.x-BL.x), rf = rakeFactor(TR.x-BR.x);
+
+  return {
+    Wb, Wt, L, offL, corners:{BL,BR,TL,TR}, isTriangle: Wt<=0,
+    leftAt, rightAt, widthAt: y => rightAt(y)-leftAt(y),
+    leftRakeFactor: lf, rightRakeFactor: rf,
+    // A setback is measured PERPENDICULAR to the edge but laid out horizontally,
+    // so on a rake the horizontal inset needed is larger by 1/cos of the angle.
+    insets(sb){ return { left: sb*lf, right: sb*rf }; },
+    bandAt(y, sb){ const i=this.insets(sb); return { min:leftAt(y)+i.left, max:rightAt(y)-i.right }; },
+    // A face that narrows going up is limited by the TOP of each row.
+    bandOver(y0,y1,sb){
+      const a=this.bandAt(y0,sb), b=this.bandAt(y1,sb);
+      const min=Math.max(a.min,b.min), max=Math.min(a.max,b.max);
+      return { min, max, width:Math.max(0,max-min) };
+    },
+    distances(x,y){
+      return { gutter:y, ridge: this.isTriangle?Infinity:(L-y),
+               left:perp(BL,TL,x,y), right:perp(BR,TR,x,y) };
+    },
+    contains(x,y){
+      if(y<-1e-6 || y>L+1e-6) return false;
+      return x>=leftAt(y)-1e-6 && x<=rightAt(y)+1e-6;
+    },
+    area(){ return (Wb+Wt)/2*L; },
+    polygon(){ return this.isTriangle ? [BL,BR,{x:offL,y:L}] : [BL,BR,TR,TL]; },
+  };
+}
+
+/**
+ * Roof zones. a = min(0.2b, 0.2d) if h/b or h/d >= 0.2, else 2h — that comes
+ * from the BUILDING, so the face shape does not change it. What the shape does
+ * change is that the bands are measured perpendicular to the real edges, so on
+ * a hip the edge band follows the rake in rather than running straight up.
+ */
+function zoneMap(job, f){
   const b = job.b*1000, d = job.d*1000, h = job.h*1000;
   const a = (h/b>=0.2 || h/d>=0.2) ? Math.min(0.2*b,0.2*d) : 2*h;
   const half = a/2, ridgeIsEdge = job.pitch>=10;
+  const bandOf = t => t<half?0 : t<a?1 : 2;
   return { a, half, ridgeIsEdge,
     at(x,y){
-      const dx = Math.min(x, job.faceW-x);
-      let dy = y;
-      if(ridgeIsEdge) dy = Math.min(y, job.faceL-y);
-      const bandOf = t => t<half?0 : t<a?1 : 2;
+      const dist = f.distances(x,y);
+      const dx = Math.min(dist.left, dist.right);
+      const dy = ridgeIsEdge ? Math.min(dist.gutter, dist.ridge) : dist.gutter;
       const bx = bandOf(dx), by = bandOf(dy);
       if(bx===0 && by===0) return 'corner';
       const worst = Math.min(bx,by);
@@ -700,11 +763,13 @@ function landscapeRowAt(panel, bottom){
            panelBottom:r1(bottom), panelTop:r1(bottom+panel.width), depth:panel.width };
 }
 
-function panelsAcross(panel, orientation, job, setback){
-  const usable = job.faceW - 2*setback;
+function panelsAcross(panel, orientation, job, setback, f, y0, y1){
+  // On a face that narrows, how many fit depends on the row's height.
+  const band = f ? f.bandOver(y0 ?? 0, y1 ?? job.faceL, setback)
+                 : { min:setback, max:job.faceW-setback, width:job.faceW-2*setback };
   const w = orientation==='portrait' ? panel.width : panel.length;
-  const n = Math.floor((usable+PANEL_GAP)/(w+PANEL_GAP));
-  return { panels:Math.max(0,n), usable,
+  const n = Math.floor((band.width+PANEL_GAP)/(w+PANEL_GAP));
+  return { panels:Math.max(0,n), usable:band.width, band,
            widthUsed: n>0 ? n*w+(n-1)*PANEL_GAP : 0 };
 }
 
@@ -712,17 +777,23 @@ function panelsAcross(panel, orientation, job, setback){
  * Stack rows up the roof, greedily taking whichever orientation places the most
  * panels for the depth it costs, then whichever starts lowest.
  */
-function stackFrom(panel, job, setback, allow, lines, y0, portraitAll, across, upFree){
+function stackFrom(panel, job, setback, allow, lines, y0, portraitAll, across, upFree, f){
   const rows = [];
   let y = y0, guard = 0;
+  const nAt = (o,a,b) => panelsAcross(panel,o,job,setback,f,a,b).panels;
   while(guard++ < 40){
     const cands = [];
-    if(allow.includes('landscape') && across.landscape>0 && y+panel.width <= job.faceL-setback)
-      cands.push({ ...landscapeRowAt(panel,y), n:across.landscape });
-    if(across.portrait>0 && allow.includes('portrait')){
+    if(allow.includes('landscape') && y+panel.width <= job.faceL-setback){
+      const n = nAt('landscape', y, y+panel.width);
+      if(n>0) cands.push({ ...landscapeRowAt(panel,y), n });
+    }
+    if(allow.includes('portrait')){
       const p = upFree ? portraitRowsFree(panel, job, setback, y)
                        : portraitAll.find(r=>r.panelBottom>=y-0.01);
-      if(p) cands.push({ ...p, n:across.portrait });
+      if(p){
+        const n = nAt('portrait', p.panelBottom, p.panelTop);
+        if(n>0) cands.push({ ...p, n });
+      }
     }
     if(!cands.length) break;
     cands.sort((a,b)=> (b.n-a.n) || (a.panelTop-b.panelTop));
@@ -740,18 +811,17 @@ function stackFrom(panel, job, setback, allow, lines, y0, portraitAll, across, u
  * the setback, the zone band boundaries, and each fixing line — and keep
  * whichever stack the caller scores highest.
  */
-function stackCandidates(panel, job, setback, allow, lines, upFree){
-  const across = { portrait: panelsAcross(panel,'portrait',job,setback).panels,
-                   landscape: panelsAcross(panel,'landscape',job,setback).panels };
+function stackCandidates(panel, job, setback, allow, lines, upFree, f){
+  const across = null;   // computed per row now — the face may narrow going up
   const portraitAll = (allow.includes('portrait') && !upFree)
                         ? portraitRows(panel, lines, job, setback) : [];
-  const zm = zoneMap(job);
+  const zm = zoneMap(job, f);
   const starts = new Set([setback, Math.ceil(zm.half), Math.ceil(zm.a)]);
   lines.forEach(l=>{ if(l.y>=setback) starts.add(l.y); });
   portraitAll.forEach(r=>starts.add(r.panelBottom));
   const limit = job.faceL - setback - Math.min(panel.width, panel.length);
   return [...starts].filter(v=>v>=setback && v<=limit).sort((a,b)=>a-b)
-    .map(y0=>stackFrom(panel, job, setback, allow, lines, y0, portraitAll, across, upFree));
+    .map(y0=>stackFrom(panel, job, setback, allow, lines, y0, portraitAll, across, upFree, f));
 }
 
 /* ============================================================================
@@ -770,6 +840,8 @@ function readJob(){
     hEave:n('hEave'), hRidge:n('hRidge'), h:(n('hEave')+n('hRidge'))/2,
     b:n('bb'), d:n('bd'), gapS:n('gapS'), tinDir:v('tinDir'),
     faceW:n('faceW'), faceL:n('faceL'),
+    faceShape:v('faceShape'), faceTopW:n('faceTopW'),
+    faceTopOffset: document.getElementById('faceTopOffset').value.trim()==='' ? null : n('faceTopOffset'),
     trussPitch:n('trussPitch'), trussOffset:n('trussOffset'),
     gauge:n('gauge'), coverW:n('coverW'), tileProfile:v('tileProfile'),
     troughW:n('troughW'), troughOffset:n('troughOffset'), hookW:n('hookW'),
@@ -791,7 +863,10 @@ function solve(){
   if(!wt.ok) issues.push(`Panel is ${wt.kgm2} kg/m², over the 15 kg/m² certification limit.`);
 
   const sb = edgeSetback(job.gapS);
-  const zm = zoneMap(job);
+  const f = face(job);
+  if(f.Wt < 0 || f.Wt > f.Wb + 1e-6)
+    issues.push('The ridge width must be between 0 and the gutter width.');
+  const zm = zoneMap(job, f);
   const sep = railSeparationWindow(job.panel);
 
   // Zone maxima, for the report
@@ -834,7 +909,7 @@ function solve(){
   // higher-yielding orientation can be the one that cannot be fixed at all —
   // without these single-orientation passes the layout would come back empty.
   const allowSets = allow.length>1 ? [allow, ['portrait'], ['landscape']] : [allow];
-  const stacks = allowSets.flatMap(a=>stackCandidates(job.panel, job, sb.mm, a, lines, st.up.free));
+  const stacks = allowSets.flatMap(a=>stackCandidates(job.panel, job, sb.mm, a, lines, st.up.free, f));
 
   // Rails and feet for each row.
   //
@@ -849,17 +924,26 @@ function solve(){
   function fitRow(row, inset){
     const out = { ...row, rails:[], ok:true, problems:[], inset };
     const pw = row.orientation==='portrait' ? job.panel.width : job.panel.length;
-    const usable = job.faceW - 2*inset;
-    const n = Math.floor((usable+PANEL_GAP)/(pw+PANEL_GAP));
+    // The usable band is taken over the whole row, so a face that narrows going
+    // up is limited by the row's top edge, not its bottom.
+    const band = f.bandOver(row.panelBottom, row.panelTop, inset);
+    const n = Math.floor((band.width+PANEL_GAP)/(pw+PANEL_GAP));
     out.panels = Math.max(0,n);
-    if(!out.panels){ out.ok=false; out.problems.push(`No panel fits across at a ${inset} mm inset.`); return out; }
-    out.panelStartX = inset;
-    out.panelPitchX = pw+PANEL_GAP;
+    out.band = band;
+    if(!out.panels){
+      out.ok=false;
+      out.problems.push(`No panel fits across at a ${inset} mm setback — only ${Math.round(band.width)} mm of usable width at this height.`);
+      return out;
+    }
     const widthUsed = n*pw+(n-1)*PANEL_GAP;
+    // Centre the array in the band. On a hip that keeps it square to the rakes;
+    // on a rectangle it is simply what you would do anyway.
+    out.panelStartX = r1(band.min + (band.width - widthUsed)/2);
+    out.panelPitchX = pw+PANEL_GAP;
 
     // Refuse outright to lay panels across a zone the certification marks unsuitable.
     const unsuitable = new Set();
-    for(let x=inset; x<=inset+widthUsed; x+=100)
+    for(let x=out.panelStartX; x<=out.panelStartX+widthUsed; x+=100)
       for(let y=row.panelBottom; y<=row.panelTop; y+=100){
         const z = zm.at(x,y);
         if(zoneMax[z].mm===null) unsuitable.add(z);
@@ -871,13 +955,15 @@ function solve(){
     }
 
     if(row.orientation==='portrait'){
-      const runStart = inset, runEnd = inset+widthUsed;
+      const runStart = out.panelStartX, runEnd = out.panelStartX+widthUsed;
       for(const y of row.railY){
         const maxAt = x => zoneMax[zm.at(x,y)].mm;
         // Feet run ACROSS the roof along a horizontal rail.
+        // Only fixing positions that actually fall on the face at this height.
+        const onFace = st.across.positions.filter(x=>f.contains(x,y));
         const s2 = st.across.free
           ? solveFeet({ start:runStart, end:runEnd, maxAt, free:true })
-          : solveFeet({ start:runStart, end:runEnd, maxAt, members:st.across.positions, cant:job.cant });
+          : solveFeet({ start:runStart, end:runEnd, maxAt, members:onFace, cant:job.cant });
         if(!s2.ok){ out.ok=false; out.problems.push(`Rail at ${y} mm: ${s2.why}`); }
         const f0 = s2.feet.length?Math.min(runStart,s2.feet[0]):runStart;
         const f1 = s2.feet.length?Math.max(runEnd,s2.feet[s2.feet.length-1]):runEnd;
@@ -917,9 +1003,10 @@ function solve(){
           const x = centre + sgn*pick.use/2;
           const maxAt = yy => zoneMax[zm.at(x,yy)].mm;
           // Feet run UP the roof along a vertical rail.
+          const onFace = mem.filter(yy=>f.contains(x,yy));
           const sol = st.up.free
             ? solveFeet({ start:row.panelBottom, end:row.panelTop, maxAt, free:true })
-            : solveFeet({ start:row.panelBottom, end:row.panelTop, maxAt, members:mem, cant:job.cant });
+            : solveFeet({ start:row.panelBottom, end:row.panelTop, maxAt, members:onFace, cant:job.cant });
           if(!sol.ok){ out.ok=false; out.problems.push(`Rail at ${Math.round(x)} mm across: ${sol.why}`); }
           const g0 = sol.feet.length?Math.min(row.panelBottom,sol.feet[0]):row.panelBottom;
           const g1 = sol.feet.length?Math.max(row.panelTop,sol.feet[sol.feet.length-1]):row.panelTop;
@@ -974,7 +1061,7 @@ function solve(){
   const depthUsed = kept.length ? kept[kept.length-1].panelTop - kept[0].panelBottom : 0;
   if(!kept.length && laid.length)
     issues.push('No row can be laid out compliantly on this roof face.');
-  return { job, sb, zm, zoneMax, sep, gridInfo, iface, reach, rows:kept, rejected, total,
+  return { job, sb, zm, f, zoneMax, sep, gridInfo, iface, reach, rows:kept, rejected, total,
            depthUsed, issues, warnings };
 }
 </script>
@@ -1013,6 +1100,23 @@ function toggleRoof(){
   $('tinDirNote').innerHTML = up
     ? 'Purlins run up the slope, so their spacing is measured across the roof. A foot can sit anywhere along a purlin, so up-slope placement is free and the across-slope position is the fixed one.'
     : 'Purlins run across the slope, so their spacing is measured up the roof. A foot can sit anywhere along a purlin, so across-slope placement is free and the up-slope position is the fixed one.';
+
+  const shape = $('faceShape').value;
+  $('faceTopWWrap').style.display = shape==='trapezium' ? '' : 'none';
+  $('faceOffsetWrap').style.display = shape==='rectangle' ? 'none' : '';
+  const Wb = parseFloat($('faceW').value)||0, Lf = parseFloat($('faceL').value)||0;
+  const Wt = shape==='rectangle' ? Wb : shape==='triangle' ? 0 : (parseFloat($('faceTopW').value)||0);
+  const offRaw = $('faceTopOffset').value.trim();
+  const off = offRaw==='' ? (Wb-Wt)/2 : (parseFloat(offRaw)||0);
+  const rakeL = Lf ? Math.hypot(off, Lf)/Lf : 1;
+  const rakeR = Lf ? Math.hypot(off+Wt-Wb, Lf)/Lf : 1;
+  $('faceNote').innerHTML = Wt>Wb
+    ? '<span style="color:var(--bad)">The ridge cannot be wider than the gutter.</span>'
+    : (shape==='rectangle'
+        ? 'Both rakes are vertical, so a 200&nbsp;mm setback is 200&nbsp;mm across.'
+        : 'Top edge ' + (offRaw===''?'centred':'offset '+off+' mm') + '. A setback is measured <b>perpendicular</b> to each rake, ' +
+          'so 200&nbsp;mm becomes <b>' + Math.round(200*rakeL) + '&nbsp;mm</b> horizontally on the left rake and <b>' +
+          Math.round(200*rakeR) + '&nbsp;mm</b> on the right. Measuring 200&nbsp;mm flat across would breach it.');
 
   const eave = parseFloat($('hEave').value)||0, ridge = parseFloat($('hRidge').value)||0;
   const hh = (eave+ridge)/2, dd = parseFloat($('bd').value)||1;
@@ -1093,18 +1197,37 @@ function drawPlan(R){
   const X = x => pad + x*scale, Y = y => pad + (L-y)*scale;   // gutter at the bottom
   let s = `<svg class="plan" viewBox="0 0 ${w+pad*2} ${hgt+pad*2}" xmlns="http://www.w3.org/2000/svg">`;
 
-  // zone shading, sampled on a grid
+  const f = R.f;
+  const pts = f.polygon().map(pt=>`${X(pt.x)},${Y(pt.y)}`).join(' ');
+  const clipId = 'faceclip'+Math.random().toString(36).slice(2,8);
+  s += `<defs><clipPath id="${clipId}"><polygon points="${pts}"/></clipPath></defs>`;
+
+  // zone shading, sampled on a grid and clipped to the face
   const step = Math.max(80, W/90);
   const col = {corner:'var(--zc)', edge:'var(--ze)', intermediate:'var(--zi)', internal:'var(--zn)'};
+  s += `<g clip-path="url(#${clipId})">`;
   for(let x=0;x<W;x+=step) for(let y=0;y<L;y+=step){
     const z = zm.at(x+step/2, y+step/2);
     s += `<rect x="${X(x)}" y="${Y(y+step)}" width="${step*scale+.6}" height="${step*scale+.6}" fill="${col[z]}" opacity=".5"/>`;
   }
-  // roof outline
-  s += `<rect x="${X(0)}" y="${Y(L)}" width="${w}" height="${hgt}" fill="none" stroke="#131313" stroke-width="2"/>`;
-  // setback boundary
-  s += `<rect x="${X(sb.mm)}" y="${Y(L-sb.mm)}" width="${(W-2*sb.mm)*scale}" height="${(L-2*sb.mm)*scale}" fill="none" stroke="#c0392b" stroke-width="1" stroke-dasharray="6 4"/>`;
+  s += `</g>`;
 
+  // setback boundary, following the rakes
+  const sbPts = [];
+  for(const yy of [sb.mm, L-sb.mm]){
+    const bnd = f.bandAt(yy, sb.mm);
+    sbPts.push([bnd.min, yy, bnd.max]);
+  }
+  if(sbPts[0][2]>sbPts[0][0] && sbPts[1][2]>sbPts[1][0]){
+    const poly = `${X(sbPts[0][0])},${Y(sbPts[0][1])} ${X(sbPts[0][2])},${Y(sbPts[0][1])} ` +
+                 `${X(sbPts[1][2])},${Y(sbPts[1][1])} ${X(sbPts[1][0])},${Y(sbPts[1][1])}`;
+    s += `<polygon points="${poly}" fill="none" stroke="#c0392b" stroke-width="1" stroke-dasharray="6 4"/>`;
+  }
+
+  // roof outline
+  s += `<polygon points="${pts}" fill="none" stroke="#131313" stroke-width="2"/>`;
+
+  s += `<g clip-path="url(#${clipId})">`;
   // structure running up the slope (tile trusses, or tin purlins laid up-slope)
   if(job.roof==='tile' || job.tinDir==='up'){
     const pitch = job.roof==='tile' ? job.trussPitch : job.purlinPitch;
@@ -1117,6 +1240,7 @@ function drawPlan(R){
   upLines.forEach(l=>{
     s += `<line x1="${X(0)}" y1="${Y(l.y)}" x2="${X(W)}" y2="${Y(l.y)}" stroke="${l.usable?'#c9c7c0':'#e8b4ae'}" stroke-width=".8"/>`;
   });
+  s += `</g>`;
 
   // panels
   rows.forEach(r=>{
@@ -1141,7 +1265,7 @@ function drawPlan(R){
   });
 
   // dimensions
-  s += `<text x="${pad+w/2}" y="${pad+hgt+34}" text-anchor="middle" font-size="13" font-family="sans-serif" font-weight="700">${fmt(W)} mm &#8212; capping to capping</text>`;
+  s += `<text x="${pad+w/2}" y="${pad+hgt+34}" text-anchor="middle" font-size="13" font-family="sans-serif" font-weight="700">${fmt(W)} mm at the gutter${f.Wt!==f.Wb?`, ${fmt(f.Wt)} mm at the ridge`:''} &#8212; capping to capping</text>`;
   s += `<text x="${pad-16}" y="${pad+hgt/2}" text-anchor="middle" font-size="13" font-family="sans-serif" font-weight="700" transform="rotate(-90 ${pad-16} ${pad+hgt/2})">${fmt(L)} mm &#8212; gutter to ridge</text>`;
   s += `<text x="${pad}" y="${pad+hgt+52}" font-size="11" font-family="sans-serif" fill="#6a6a66">Datum: bottom-left corner of the face, at the capping edge and gutter line.</text>`;
   s += `</svg>`;
@@ -1321,7 +1445,8 @@ function run(){
 
 /* ---------- persistence ---------- */
 const KEY = 'amu-solar-layout-v1';
-const FIELDS = ['roof','region','tc','pitch','hEave','hRidge','bb','bd','gapS','faceW','faceL','trussPitch',
+const FIELDS = ['roof','region','tc','pitch','hEave','hRidge','bb','bd','gapS','faceW','faceL',
+  'faceShape','faceTopW','faceTopOffset','trussPitch',
   'trussOffset','gauge','coverW','tileProfile','troughW','troughOffset','hookW','hookShift',
   'purlinPitch','purlinOffset','tinDir','fixing','fixingTile','panel','orient','cant'];
 

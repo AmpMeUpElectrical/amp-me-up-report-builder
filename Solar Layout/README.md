@@ -41,6 +41,33 @@ offer it. Supply a rib pitch and it can be switched back on.
   against the smallest certified size at least as large in *both* dimensions —
   2200×1200 — which is conservative. Worth chasing a Gamcorp addendum.
 
+## Face shape — hips as well as gables
+
+A face is a quadrilateral: a bottom edge at the gutter, a top edge at the ridge, and two
+raking edges. One model covers the lot.
+
+| Shape | |
+|---|---|
+| Rectangle | top width = bottom width — gable end to end |
+| Trapezium | top width < bottom width — a hip main face |
+| Triangle | top width 0 — a hip end |
+| Right trapezoid | top offset 0 — gable one side, hip the other |
+
+Two things a rectangle model gets wrong on a hip:
+
+**The setback is perpendicular to the rake, not horizontal.** On a rake running 4000
+across over 5000 up, a 200 mm setback needs **256 mm** measured horizontally. Inset a
+flat 200 mm and you are only 156 mm off the rake — a breach.
+
+**The zone bands follow the rake in.** At 4000 mm up that same face, a point 300 mm off
+the rake sits at x = 3500, which a rectangle model reads as mid-roof and calls *internal*
+when it is really an edge zone. That under-reads the wind load exactly where it is
+highest.
+
+A row is also limited by its **top** edge, not its bottom, because the face narrows going
+up — and the array is centred in whatever band is left. On a 12000 → 4000 trapezium the
+bottom row takes 7 panels and the row above it only 4.
+
 ## Which direction is fixed, which is free
 
 A structural member is continuous along its own length, so placement *along* it is free
@@ -85,6 +112,9 @@ trough at 60 mm of shift).
   whole panel.
 - Tile gauge is the **exposed length of a tile** — the up-slope distance from one row to
   the next.
+- On a hip, measure the width **at the gutter and at the ridge** (0 at the ridge for a
+  hip end). If the face is not symmetrical, give the top edge's offset from the left;
+  leave it blank and it is centred.
 
 ## Files
 
@@ -94,15 +124,17 @@ trough at 60 mm of shift).
 | `engine.js` | Certified spacing lookup, zones, derates, foot solver |
 | `layout.js` | Tile grid, interface positions, setbacks, row packing |
 | `placement.js` | Orientation-aware placement, capping datum |
+| `face.js` | Face shape (rectangle / trapezium / triangle), perpendicular setbacks, zones on any shape |
 | `spacing_tables.json` | All 30 extracted tables (tin, tile, Klip-Lok) |
 | `tables_compact.json` | Tin + tile only, the form embedded in the app |
 | `panels.json` | Panel library with clamp zones |
-| `test*.js` | 169 tests across seven suites |
+| `test*.js` | 215 tests across eight suites |
 
 `engine.js` / `layout.js` / `placement.js` are the tested reference implementation; the
 app carries its own copy of the same logic so it can be one file. They are cross-checked:
 the app's spacing lookup was compared against the modules across **8,640** combinations
-of roof, terrain, region, height, h/d, fixing, panel and zone — zero mismatches.
+of roof, terrain, region, height, h/d, fixing, panel and zone, and its face geometry
+across **960** shape/point combinations — zero mismatches in either.
 
 Run the tests with the portable node:
 
