@@ -45,32 +45,57 @@ offer it. Supply a rib pitch and it can be switched back on.
   against the smallest certified size at least as large in *both* dimensions —
   2200×1200 — which is conservative. Worth chasing a Gamcorp addendum.
 
-## Face shape — hips as well as gables
+## Face shape — pick a preset
 
-A face is a quadrilateral: a bottom edge at the gutter, a top edge at the ridge, and two
-raking edges. One model covers the lot.
+**One face at a time.** A cut-up roof is designed face by face, not all at once.
 
-| Shape | |
+A face is any closed polygon whose edges each know what they are. You pick a preset and
+type a few lengths; the preset builds the polygon and labels every edge.
+
+| Preset | You type |
 |---|---|
-| Rectangle | top width = bottom width — gable end to end |
-| Trapezium | top width < bottom width — a hip main face |
-| Triangle | top width 0 — a hip end |
-| Right trapezoid | top offset 0 — gable one side, hip the other |
+| Rectangle | width, length |
+| Hip main face | gutter width, ridge width, length, ridge offset |
+| Hip end | gutter width, length to the point, apex offset |
+| Gable one side, hip the other | gutter width, ridge width, length, which side hips |
+| Dutch gable / half hip | gutter width, gable width, length |
+| Valley cutting one corner | width, length, valley run, valley rise, side |
+| Valley cutting both corners | width, length, both runs and rises |
+| Return face between two valleys | gutter width, ridge width, length |
 
-Two things a rectangle model gets wrong on a hip:
+Adding a preset is one entry in `PRESETS` — fields plus a `build()` returning corners and
+edge types. The library is meant to grow as new faces turn up.
 
-**The setback is perpendicular to the rake, not horizontal.** On a rake running 4000
-across over 5000 up, a 200 mm setback needs **256 mm** measured horizontally. Inset a
-flat 200 mm and you are only 156 mm off the rake — a breach.
+Lengths take **tile counts as well as millimetres**: type `12t` for 12 tiles across or
+`15c` for 15 courses up and it converts using the tile figures. On a cut-up roof counting
+beats measuring.
 
-**The zone bands follow the rake in.** At 4000 mm up that same face, a point 300 mm off
-the rake sits at x = 3500, which a rectangle model reads as mid-roof and calls *internal*
-when it is really an edge zone. That under-reads the wind load exactly where it is
-highest.
+The set-up tab draws the shape as you type, with every edge named and dimensioned, so a
+wrong number is obvious before you go any further.
 
-A row is also limited by its **top** edge, not its bottom, because the face narrows going
-up — and the array is centred in whatever band is left. On a 12000 → 4000 trapezium the
-bottom row takes 7 panels and the row above it only 4.
+### Edge types carry the rules
+
+| Edge | Wind zone band? | Setback |
+|---|---|---|
+| Gutter | always | setback **+ rail sag allowance** |
+| Ridge | at pitch ≥ 10° | setback |
+| Hip | always | setback |
+| Gable | always | setback |
+| **Valley** | **no** | setback (water and access) |
+
+A valley is an internal junction where two planes meet — flow does not separate there the
+way it does over a hip or a gable, so no edge band comes off it. It still takes its
+clearance for water. Same trapezium, same point 400 mm in from the raking edge half way
+up: **next to a hip it reads `edge`, next to a valley it reads `internal`.**
+
+A corner is now *within a/2 of two wind edges that actually turn*, which reduces exactly
+to the old rectangle answers and fixes a case the old rule got wrong: on a face narrower
+than `a`, a point mid-way is inside a/2 of both long parallel edges and was being called a
+corner when it is only an edge.
+
+Setbacks are measured **perpendicular to each edge**, not horizontally, so a raking edge
+needs more horizontal inset than its setback. A row is limited by its **narrowest** point,
+not its bottom, and the array is centred in whatever band is left.
 
 ## Clamp zone tolerance
 
@@ -165,11 +190,13 @@ matters. The short version:
 | `engine.js` | Certified spacing lookup, zones, derates, foot solver |
 | `layout.js` | Tile grid, interface positions, setbacks, row packing |
 | `placement.js` | Orientation-aware placement, capping datum |
-| `face.js` | Face shape (rectangle / trapezium / triangle), perpendicular setbacks, zones on any shape |
+| `face.js` | Earlier quadrilateral face model, kept for its tests |
+| `polyface.js` | Face as any polygon with typed edges; per-edge setbacks, spans, zones |
+| `presets.js` | The preset shape library |
 | `spacing_tables.json` | All 30 extracted tables (tin, tile, Klip-Lok) |
 | `tables_compact.json` | Tin + tile only, the form embedded in the app |
 | `panels.json` | Panel library with clamp zones |
-| `test*.js` | 243 tests across nine suites |
+| `test*.js` | 357 tests across eleven suites |
 
 `engine.js` / `layout.js` / `placement.js` are the tested reference implementation; the
 app carries its own copy of the same logic so it can be one file. They are cross-checked:

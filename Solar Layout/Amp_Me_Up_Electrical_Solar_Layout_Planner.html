@@ -214,21 +214,18 @@
 
       <div class="block">
         <h3>Roof face</h3>
-        <div class="fgrid g4">
-          <div><label class="fl">Face shape</label>
-            <select class="f" id="faceShape">
-              <option value="rectangle">Rectangle &mdash; gable end to end</option>
-              <option value="trapezium">Trapezium &mdash; hip main face</option>
-              <option value="triangle">Triangle &mdash; hip end</option>
-            </select></div>
-          <div><label class="fl">Width at the gutter (mm)</label><input class="f num" id="faceW" type="number" value="8000"></div>
-          <div id="faceTopWWrap"><label class="fl">Width at the ridge (mm)</label><input class="f num" id="faceTopW" type="number" value="4000"></div>
-          <div><label class="fl">Length, gutter to ridge (mm)</label><input class="f num" id="faceL" type="number" value="5000"></div>
+        <div class="fgrid g2">
+          <div><label class="fl">Face shape</label><select class="f" id="presetId"></select></div>
+          <div><label class="fl">Valley clearance (mm)</label><input class="f num" id="valleySb" type="number" placeholder="blank = same as the edge setback"></div>
         </div>
-        <div class="fgrid g4" id="faceOffsetWrap">
-          <div><label class="fl">Top edge offset from left (mm)</label><input class="f num" id="faceTopOffset" type="number" placeholder="blank = centred"></div>
-        </div>
-        <p class="fnote" id="faceNote"></p>
+        <p class="fnote" id="presetNote"></p>
+        <div class="fgrid g4" id="presetFields"></div>
+        <p class="fnote">Lengths are in millimetres, but on a tile roof you can count instead of
+          measure: type <b>12t</b> for 12 tiles across, or <b>15c</b> for 15 courses up, and it
+          converts using your tile figures. A valley takes a setback for water flow but gets
+          <b>no wind edge band</b> &mdash; two planes meeting at an internal angle does not
+          separate the flow the way a hip or gable does.</p>
+        <div class="drawwrap" id="shapePreview" style="margin-top:4px"></div>
       </div>
 
       <div class="block" id="tileBlock">
@@ -608,78 +605,258 @@ function maxSpacing(job, zone){
   return { mm:Math.floor(mm), notes, belowFloor, band };
 }
 
+/* ---------------------------------------------------------------------------
+   THE FACE — any closed polygon whose edges each know what they are.
+   A cut-up roof does not give you rectangles.
+   --------------------------------------------------------------------------- */
+
+const WIND_EDGE_TYPES = new Set(['gutter','ridge','hip','gable']);
+const EDGE_LABEL = { gutter:'Gutter', ridge:'Ridge', hip:'Hip', gable:'Gable', valley:'Valley' };
+
 /**
- * The roof face as a quadrilateral: bottom edge at the gutter, top edge at the
- * ridge, two raking edges. One model covers the lot — rectangle (top width =
- * bottom width), trapezium (hip main face), triangle (hip end, top width 0).
- * An asymmetric face, gable one side and hip the other, is just a top offset
- * of 0.
+ * Which edges the wind zone bands are measured from.
+ *
+ * A valley is NOT one. Two planes meeting at an internal angle does not
+ * separate the flow the way a hip or a gable does, so no edge band comes off
+ * it — but it still takes a setback, for water flow and access.
  */
-function face(job){
-  const Wb = job.faceW, L = job.faceL;
-  const Wt = job.faceShape==='rectangle' ? Wb
-           : job.faceShape==='triangle'  ? 0
-           : job.faceTopW;
-  const offL = (job.faceTopOffset===null || job.faceTopOffset===undefined)
-                 ? (Wb-Wt)/2 : job.faceTopOffset;
-  const BL={x:0,y:0}, BR={x:Wb,y:0}, TL={x:offL,y:L}, TR={x:offL+Wt,y:L};
-  const leftAt  = y => BL.x + (TL.x-BL.x)*(y/L);
-  const rightAt = y => BR.x + (TR.x-BR.x)*(y/L);
-  const perp = (A,B,x,y) => {
-    const vx=B.x-A.x, vy=B.y-A.y, len=Math.hypot(vx,vy);
-    return len ? Math.abs(vx*(y-A.y)-vy*(x-A.x))/len : Math.hypot(x-A.x,y-A.y);
-  };
-  const rakeFactor = dx => Math.hypot(dx,L)/L;
-  const lf = rakeFactor(TL.x-BL.x), rf = rakeFactor(TR.x-BR.x);
+function isWindEdge(type, pitch){
+  if(type==='ridge') return pitch>=10;     // Figure 2: the ridge counts at 10 deg and over
+  return WIND_EDGE_TYPES.has(type);
+}
+
+function distToSegment(A,B,x,y){
+  const vx=B.x-A.x, vy=B.y-A.y, L2=vx*vx+vy*vy;
+  if(L2===0) return Math.hypot(x-A.x, y-A.y);
+  let t=((x-A.x)*vx+(y-A.y)*vy)/L2;
+  t=Math.max(0,Math.min(1,t));
+  return Math.hypot(x-(A.x+t*vx), y-(A.y+t*vy));
+}
+function edgeAngle(A,B){ let a=Math.atan2(B.y-A.y,B.x-A.x)*180/Math.PI; return ((a%180)+180)%180; }
+function angleBetween(a,b){ const d=Math.abs(a-b)%180; return d>90?180-d:d; }
+
+function polyFace({points, edgeTypes, pitch=22}){
+  const n = points.length;
+  const edges = points.map((p,i)=>{
+    const q = points[(i+1)%n];
+    return { i, A:p, B:q, type:edgeTypes[i], wind:isWindEdge(edgeTypes[i],pitch),
+             angle:edgeAngle(p,q), length:Math.hypot(q.x-p.x,q.y-p.y) };
+  }).filter(e=>e.length>1e-6);
+
+  let area2=0;
+  for(let i=0;i<n;i++){ const p=points[i], q=points[(i+1)%n]; area2 += p.x*q.y - q.x*p.y; }
+
+  const xs=points.map(p=>p.x), ys=points.map(p=>p.y);
+  const bounds={minX:Math.min(...xs),maxX:Math.max(...xs),minY:Math.min(...ys),maxY:Math.max(...ys)};
 
   return {
-    Wb, Wt, L, offL, corners:{BL,BR,TL,TR}, isTriangle: Wt<=0,
-    leftAt, rightAt, widthAt: y => rightAt(y)-leftAt(y),
-    leftRakeFactor: lf, rightRakeFactor: rf,
-    // A setback is measured PERPENDICULAR to the edge but laid out horizontally,
-    // so on a rake the horizontal inset needed is larger by 1/cos of the angle.
-    insets(sb){ return { left: sb*lf, right: sb*rf }; },
-    bandAt(y, sb){ const i=this.insets(sb); return { min:leftAt(y)+i.left, max:rightAt(y)-i.right }; },
-    // A face that narrows going up is limited by the TOP of each row.
-    bandOver(y0,y1,sb){
-      const a=this.bandAt(y0,sb), b=this.bandAt(y1,sb);
-      const min=Math.max(a.min,b.min), max=Math.min(a.max,b.max);
-      return { min, max, width:Math.max(0,max-min) };
-    },
-    distances(x,y){
-      return { gutter:y, ridge: this.isTriangle?Infinity:(L-y),
-               left:perp(BL,TL,x,y), right:perp(BR,TR,x,y) };
-    },
+    points, edges, pitch, bounds,
+    area: Math.abs(area2)/2,
+    Wb: bounds.maxX-bounds.minX, L: bounds.maxY-bounds.minY,
+
     contains(x,y){
-      if(y<-1e-6 || y>L+1e-6) return false;
-      return x>=leftAt(y)-1e-6 && x<=rightAt(y)+1e-6;
+      for(const e of edges) if(distToSegment(e.A,e.B,x,y)<1e-7) return true;
+      let inside=false;
+      for(let i=0,j=n-1;i<n;j=i++){
+        const pi=points[i], pj=points[j];
+        if((pi.y>y)!==(pj.y>y)){
+          const xx = pi.x + (y-pi.y)/(pj.y-pi.y)*(pj.x-pi.x);
+          if(x<xx) inside=!inside;
+        }
+      }
+      return inside;
     },
-    area(){ return (Wb+Wt)/2*L; },
-    polygon(){ return this.isTriangle ? [BL,BR,{x:offL,y:L}] : [BL,BR,TR,TL]; },
+
+    clearOfEdges(x,y,sbFor){
+      if(!this.contains(x,y)) return false;
+      for(const e of edges) if(distToSegment(e.A,e.B,x,y) < sbFor(e.type)-1e-6) return false;
+      return true;
+    },
+
+    /** Usable spans across the face at height y, after each edge's own setback. */
+    spansAt(y, sbFor){
+      const cands=new Set([bounds.minX-1,bounds.maxX+1]);
+      for(const e of edges){
+        const sb=sbFor(e.type), dx=e.B.x-e.A.x, dy=e.B.y-e.A.y;
+        if(Math.abs(dy)>1e-9){
+          const t=(y-e.A.y)/dy;
+          if(t>=-0.001 && t<=1.001) cands.add(e.A.x+t*dx);
+        }
+        const Ls=Math.hypot(dx,dy);
+        if(Ls>1e-9){
+          const nx=-dy/Ls, ny=dx/Ls;
+          for(const sgn of [1,-1]){
+            const ox=sgn*nx*sb, oy=sgn*ny*sb;
+            const ay=e.A.y+oy, by=e.B.y+oy;
+            if(Math.abs(by-ay)>1e-9){
+              const t=(y-ay)/(by-ay);
+              if(t>=-0.5 && t<=1.5) cands.add(e.A.x+ox+t*dx);
+            }
+          }
+        }
+      }
+      const sorted=[...cands].sort((a,b)=>a-b), spans=[];
+      for(let i=0;i<sorted.length-1;i++){
+        const lo=sorted[i], hi=sorted[i+1];
+        if(hi-lo<0.5) continue;
+        if(this.clearOfEdges((lo+hi)/2,y,sbFor)){
+          const last=spans[spans.length-1];
+          if(last && Math.abs(last.max-lo)<0.5) last.max=hi;
+          else spans.push({min:lo,max:hi});
+        }
+      }
+      return spans.map(sp=>({...sp,width:sp.max-sp.min}));
+    },
+
+    bandAt(y, sbFor){
+      const sp=this.spansAt(y,sbFor);
+      let best=null; for(const x of sp) if(!best||x.width>best.width) best=x;
+      return best||{min:0,max:0,width:0};
+    },
+
+    /** The widest band common to a whole row — its narrowest point governs. */
+    bandOver(y0,y1,sbFor,steps=10){
+      const at=[]; for(let k=0;k<=steps;k++) at.push(y0+(y1-y0)*k/steps);
+      let running=this.spansAt(at[0],sbFor);
+      for(let k=1;k<at.length && running.length;k++){
+        const here=this.spansAt(at[k],sbFor), next=[];
+        for(const a of running) for(const b of here){
+          const min=Math.max(a.min,b.min), max=Math.min(a.max,b.max);
+          if(max-min>0.5) next.push({min,max,width:max-min});
+        }
+        running=next;
+      }
+      let best=null; for(const x of running) if(!best||x.width>best.width) best=x;
+      return best||{min:0,max:0,width:0};
+    },
+
+    polygon(){ return points; },
   };
 }
 
 /**
- * Roof zones. a = min(0.2b, 0.2d) if h/b or h/d >= 0.2, else 2h — that comes
- * from the BUILDING, so the face shape does not change it. What the shape does
- * change is that the bands are measured perpendicular to the real edges, so on
- * a hip the edge band follows the rake in rather than running straight up.
+ * Zones on a face of any shape.
+ *
+ * `a` still comes from the building's plan dimensions — the face shape does not
+ * change it. A point is in the corner zone when it is within a/2 of TWO wind
+ * edges that actually turn a corner; two parallel edges of a narrow face do not
+ * make one. Valleys are not wind edges, so a panel may sit closer to a valley
+ * than to a hip — it still has to clear the valley setback for water.
  */
 function zoneMap(job, f){
-  const b = job.b*1000, d = job.d*1000, h = job.h*1000;
-  const a = (h/b>=0.2 || h/d>=0.2) ? Math.min(0.2*b,0.2*d) : 2*h;
-  const half = a/2, ridgeIsEdge = job.pitch>=10;
-  const bandOf = t => t<half?0 : t<a?1 : 2;
-  return { a, half, ridgeIsEdge,
+  const b=job.b*1000, d=job.d*1000, h=job.h*1000;
+  const a=(h/b>=0.2||h/d>=0.2)?Math.min(0.2*b,0.2*d):2*h;
+  const half=a/2;
+  return { a, half, ridgeIsEdge: job.pitch>=10,
     at(x,y){
-      const dist = f.distances(x,y);
-      const dx = Math.min(dist.left, dist.right);
-      const dy = ridgeIsEdge ? Math.min(dist.gutter, dist.ridge) : dist.gutter;
-      const bx = bandOf(dx), by = bandOf(dy);
-      if(bx===0 && by===0) return 'corner';
-      const worst = Math.min(bx,by);
-      return worst===0?'edge' : worst===1?'intermediate':'internal';
+      const wind=f.edges.filter(e=>e.wind)
+        .map(e=>({d:distToSegment(e.A,e.B,x,y), angle:e.angle}))
+        .sort((p,q)=>p.d-q.d);
+      if(!wind.length) return 'internal';
+      const nearest=wind[0].d;
+      let corner=false;
+      if(nearest<half){
+        for(let i=1;i<wind.length;i++){
+          if(wind[i].d>=half) break;
+          if(angleBetween(wind[0].angle,wind[i].angle)>30){ corner=true; break; }
+        }
+      }
+      if(corner) return 'corner';
+      if(nearest<half) return 'edge';
+      if(nearest<a) return 'intermediate';
+      return 'internal';
     } };
+}
+
+/* ---------------------------------------------------------------------------
+   PRESET SHAPES — pick the shape, type a few lengths.
+   Adding one later is a single entry: fields, and a build() returning the
+   corners and the type of each edge.
+   --------------------------------------------------------------------------- */
+const PT = (x,y) => ({x,y});
+const FL = (key,label,def,hint) => ({key,label,def,hint});
+
+const PRESETS = [
+  { id:'rect', name:'Rectangle', note:'Gable both ends, or a simple skillion.',
+    fields:[FL('W','Width, capping to capping',8000),FL('L','Gutter to ridge',5000)],
+    build:({W,L})=>({ points:[PT(0,0),PT(W,0),PT(W,L),PT(0,L)],
+                      edgeTypes:['gutter','gable','ridge','gable'] }) },
+
+  { id:'hip-main', name:'Hip main face', note:'Long face of a hip roof, a hip each side.',
+    fields:[FL('W','Width at the gutter',12000),FL('T','Width at the ridge',4000),
+            FL('L','Gutter to ridge',5000),FL('off','Ridge offset from left',null,'blank = centred')],
+    build:({W,T,L,off})=>{ const o=(off===null||off===undefined)?(W-T)/2:off;
+      return { points:[PT(0,0),PT(W,0),PT(o+T,L),PT(o,L)],
+               edgeTypes:['gutter','hip','ridge','hip'] }; } },
+
+  { id:'hip-end', name:'Hip end', note:'The triangular end. Two hips meeting at a point.',
+    fields:[FL('W','Width at the gutter',8000),FL('L','Gutter to the point',4000),
+            FL('off','Apex offset from left',null,'blank = centred')],
+    build:({W,L,off})=>{ const o=(off===null||off===undefined)?W/2:off;
+      return { points:[PT(0,0),PT(W,0),PT(o,L)], edgeTypes:['gutter','hip','hip'] }; } },
+
+  { id:'gable-hip', name:'Gable one side, hip the other',
+    note:'Runs into a gable at one end, hips off at the other.',
+    fields:[FL('W','Width at the gutter',10000),FL('T','Width at the ridge',6000),
+            FL('L','Gutter to ridge',5000),FL('side','Which side hips',"r","l or r")],
+    build:({W,T,L,side})=>{ const hipRight=String(side).toLowerCase()!=='l';
+      return hipRight
+        ? { points:[PT(0,0),PT(W,0),PT(T,L),PT(0,L)], edgeTypes:['gutter','hip','ridge','gable'] }
+        : { points:[PT(0,0),PT(W,0),PT(W,L),PT(W-T,L)], edgeTypes:['gutter','gable','ridge','hip'] }; } },
+
+  { id:'dutch', name:'Dutch gable / half hip',
+    note:'Hips part way up, then a small gable at the top.',
+    fields:[FL('W','Width at the gutter',10000),FL('T','Width of the gable on top',3000),
+            FL('L','Gutter to the gable',4500)],
+    build:({W,T,L})=>{ const o=(W-T)/2;
+      return { points:[PT(0,0),PT(W,0),PT(o+T,L),PT(o,L)],
+               edgeTypes:['gutter','hip','gable','hip'] }; } },
+
+  { id:'valley-one', name:'Valley cutting one corner',
+    note:'A wing running in, slicing one bottom corner off.',
+    fields:[FL('W','Width, capping to capping',12000),FL('L','Gutter to ridge',5000),
+            FL('run','Valley run along the gutter',3000),FL('rise','Valley rise up the side',2000),
+            FL('side','Which side',"l","l or r")],
+    build:({W,L,run,rise,side})=>{ const left=String(side).toLowerCase()!=='r';
+      return left
+        ? { points:[PT(run,0),PT(W,0),PT(W,L),PT(0,L),PT(0,rise)],
+            edgeTypes:['gutter','gable','ridge','gable','valley'] }
+        : { points:[PT(0,0),PT(W-run,0),PT(W,rise),PT(W,L),PT(0,L)],
+            edgeTypes:['gutter','valley','gable','ridge','gable'] }; } },
+
+  { id:'valley-both', name:'Valley cutting both corners',
+    note:'A wing each side, slicing both bottom corners off.',
+    fields:[FL('W','Width, capping to capping',14000),FL('L','Gutter to ridge',5000),
+            FL('runL','Left valley run',3000),FL('riseL','Left valley rise',2000),
+            FL('runR','Right valley run',3000),FL('riseR','Right valley rise',2000)],
+    build:({W,L,runL,riseL,runR,riseR})=>({
+      points:[PT(runL,0),PT(W-runR,0),PT(W,riseR),PT(W,L),PT(0,L),PT(0,riseL)],
+      edgeTypes:['gutter','valley','gable','ridge','gable','valley'] }) },
+
+  { id:'valley-trap', name:'Return face between two valleys',
+    note:'The face of a wing, bounded by a valley each side.',
+    fields:[FL('W','Width at the gutter',7000),FL('T','Width at the ridge',2500),
+            FL('L','Gutter to ridge',4000)],
+    build:({W,T,L})=>{ const o=(W-T)/2;
+      return { points:[PT(0,0),PT(W,0),PT(o+T,L),PT(o,L)],
+               edgeTypes:['gutter','valley','ridge','valley'] }; } },
+];
+
+function presetById(id){ return PRESETS.find(p=>p.id===id) || PRESETS[0]; }
+
+function buildShape(id, dims){
+  const p = presetById(id), filled = {};
+  for(const fld of p.fields){
+    const v = dims[fld.key];
+    filled[fld.key] = (v===undefined||v===''||v===null) ? fld.def : v;
+  }
+  return { ...p.build(filled), preset:p, dims:filled };
+}
+
+/** Build the face for a job from its chosen preset. */
+function face(job){
+  const shape = buildShape(job.presetId, job.dims);
+  return polyFace({ points:shape.points, edgeTypes:shape.edgeTypes, pitch:job.pitch });
 }
 
 /* ============================================================================
@@ -698,11 +875,20 @@ const PANEL_GAP = 20;
  * lower than that and breaches. The ridge and rakes do not: sagging carries the
  * panel away from the ridge, and straight down does not close a rake gap.
  */
-function edgeSetback(gapS, sag){
+function edgeSetback(gapS, sag, valley){
   const twoS = 2*gapS;
   const base = Math.max(EDGE_SETBACK_MIN, twoS);
-  return { mm:base, twoS, sag:sag||0, gutter:base+(sag||0), ridge:base, rake:base,
-           governedBy: twoS>EDGE_SETBACK_MIN ? `certification 2s (s = ${gapS} mm)` : '200 mm edge rule' };
+  const v = (valley===undefined||valley===null||valley==='') ? base : valley;
+  return { mm:base, twoS, sag:sag||0, gutter:base+(sag||0), ridge:base, rake:base, valley:v,
+           governedBy: twoS>EDGE_SETBACK_MIN ? `certification 2s (s = ${gapS} mm)` : '200 mm edge rule',
+           // The clearance each edge type needs. The gutter carries the sag
+           // allowance; a valley is water and access, not wind.
+           forType(inset){
+             return (type) => type==='gutter' ? this.gutter
+                            : type==='valley' ? this.valley
+                            : type==='ridge'  ? this.ridge
+                            : (inset ?? this.rake);      // hip and gable
+           } };
 }
 
 /**
@@ -958,10 +1144,10 @@ function landscapeRowAt(panel, bottom){
            panelBottom:r1(bottom), panelTop:r1(bottom+panel.width), depth:panel.width };
 }
 
-function panelsAcross(panel, orientation, job, setback, f, y0, y1){
+function panelsAcross(panel, orientation, job, sbFor, f, y0, y1){
+  const setback = sbFor;
   // On a face that narrows, how many fit depends on the row's height.
-  const band = f ? f.bandOver(y0 ?? 0, y1 ?? job.faceL, setback)
-                 : { min:setback, max:job.faceW-setback, width:job.faceW-2*setback };
+  const band = f.bandOver(y0 ?? 0, y1 ?? job.faceL, setback);
   const w = orientation==='portrait' ? panel.width : panel.length;
   const n = Math.floor((band.width+PANEL_GAP)/(w+PANEL_GAP));
   return { panels:Math.max(0,n), usable:band.width, band,
@@ -975,7 +1161,7 @@ function panelsAcross(panel, orientation, job, setback, f, y0, y1){
 function stackFrom(panel, job, sb, allow, lines, y0, portraitAll, across, upFree, f, tolPct){
   const rows = [];
   let y = Math.max(y0, sb.gutter), guard = 0;
-  const nAt = (o,a,b) => panelsAcross(panel,o,job,sb.rake,f,a,b).panels;
+  const nAt = (o,a,b) => panelsAcross(panel,o,job,sb.forType(sb.rake),f,a,b).panels;
   while(guard++ < 40){
     const cands = [];
     if(allow.includes('landscape') && y+panel.width <= job.faceL-sb.ridge){
@@ -1035,9 +1221,9 @@ function readJob(){
     hEave:n('hEave'), hRidge:n('hRidge'), h:(n('hEave')+n('hRidge'))/2,
     b:n('bb'), d:n('bd'), gapS:n('gapS'), sag:n('sag'), clampTol:n('clampTol'),
     tinDir:v('tinDir'),
-    faceW:n('faceW'), faceL:n('faceL'),
-    faceShape:v('faceShape'), faceTopW:n('faceTopW'),
-    faceTopOffset: document.getElementById('faceTopOffset').value.trim()==='' ? null : n('faceTopOffset'),
+    faceW:0, faceL:0,                      // filled from the face's bounding box
+    presetId: v('presetId'), presetName: presetById(v('presetId')).name,
+    dims: readDims(), valleySb: n('valleySb'),
     trussPitch:n('trussPitch'), trussOffset:n('trussOffset'),
     gauge:n('gauge'), coverW:n('coverW'), tileProfile:v('tileProfile'),
     troughW:n('troughW'), troughOffset:n('troughOffset'), hookW:n('hookW'),
@@ -1059,10 +1245,12 @@ function solve(strictPass){
   const wt = checkPanelWeight(job.panel);
   if(!wt.ok) issues.push(`Panel is ${wt.kgm2} kg/m², over the 15 kg/m² certification limit.`);
 
-  const sb = edgeSetback(job.gapS, job.sag);
+  const sb = edgeSetback(job.gapS, job.sag, job.valleySb);
   const f = face(job);
-  if(f.Wt < 0 || f.Wt > f.Wb + 1e-6)
-    issues.push('The ridge width must be between 0 and the gutter width.');
+  // The bounding box of the face drives the tile / purlin grids and the drawing.
+  job.faceW = Math.round(f.Wb);
+  job.faceL = Math.round(f.L);
+  if(!(f.area > 0)) issues.push('Those dimensions do not make a usable face.');
   const zm = zoneMap(job, f);
   const sep = railSeparationWindow(job.panel, job.clampTol);
   const specSep = railSeparationWindow(job.panel, 0);
@@ -1124,7 +1312,7 @@ function solve(strictPass){
     const pw = row.orientation==='portrait' ? job.panel.width : job.panel.length;
     // The usable band is taken over the whole row, so a face that narrows going
     // up is limited by the row's top edge, not its bottom.
-    const band = f.bandOver(row.panelBottom, row.panelTop, inset);
+    const band = f.bandOver(row.panelBottom, row.panelTop, sb.forType(inset));
     const n = Math.floor((band.width+PANEL_GAP)/(pw+PANEL_GAP));
     out.panels = Math.max(0,n);
     out.band = band;
@@ -1278,6 +1466,7 @@ function solve(strictPass){
    ============================================================================ */
 const $ = id => document.getElementById(id);
 let RESULT = null;
+let runSoon = () => {};
 
 function fmt(n){ return (Math.round(n*10)/10).toLocaleString('en-AU'); }
 function esc(s){ return String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
@@ -1296,6 +1485,80 @@ function panelInfo(){
   toggleRoof();
 }
 
+/**
+ * Lengths may be typed in millimetres, or counted: "12t" is 12 tiles across,
+ * "15c" is 15 courses up the slope. Counting beats measuring on a cut-up roof.
+ */
+function parseLen(raw){
+  const t = String(raw ?? '').trim().toLowerCase();
+  if(t==='') return null;
+  const m = t.match(/^([\d.]+)\s*([tc]?)$/);
+  if(!m) return null;
+  const v = parseFloat(m[1]);
+  if(!isFinite(v)) return null;
+  if(m[2]==='t') return v * (parseFloat($('coverW').value)||0);
+  if(m[2]==='c') return v * (parseFloat($('gauge').value)||0);
+  return v;
+}
+
+function initPresets(){
+  $('presetId').innerHTML = PRESETS.map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join('');
+}
+
+/** Render the chosen preset's own fields, keeping anything already typed. */
+function renderPresetFields(){
+  const p = presetById($('presetId').value);
+  const keep = {};
+  document.querySelectorAll('#presetFields input').forEach(i=>{ keep[i.dataset.k]=i.value; });
+  $('presetNote').textContent = p.note;
+  $('presetFields').innerHTML = p.fields.map(fld=>{
+    const val = keep[fld.key] ?? (fld.def===null||fld.def===undefined ? '' : fld.def);
+    const ph  = fld.hint ? fld.hint : '';
+    return `<div><label class="fl">${esc(fld.label)}</label>
+      <input class="f num" data-k="${fld.key}" value="${esc(val)}" placeholder="${esc(ph)}"></div>`;
+  }).join('');
+  document.querySelectorAll('#presetFields input').forEach(i=>{
+    i.addEventListener('input', ()=>{ drawShapePreview(); runSoon(); });
+  });
+}
+
+function readDims(){
+  const d = {};
+  document.querySelectorAll('#presetFields input').forEach(i=>{
+    const raw = i.value.trim();
+    // 'side' style fields are letters, not lengths.
+    d[i.dataset.k] = /^[lr]$/i.test(raw) ? raw : parseLen(raw);
+  });
+  return d;
+}
+
+/** A small outline of the shape, so a wrong number is obvious immediately. */
+function drawShapePreview(){
+  try{
+    const shape = buildShape($('presetId').value, readDims());
+    const f = polyFace({points:shape.points, edgeTypes:shape.edgeTypes,
+                        pitch:parseFloat($('pitch').value)||22});
+    const W=f.Wb||1, L=f.L||1, pad=34, sc=Math.min(560/W, 200/L);
+    const X=x=>pad+x*sc, Y=y=>pad+(L-y)*sc;
+    const vw = W*sc+pad*2, vh = L*sc+pad*2;
+    // Cap at 1:1 so the preview never scales up and blows the labels out.
+    let g = `<svg class="plan" style="min-width:0;max-width:${Math.round(vw)}px;margin:0 auto" viewBox="0 0 ${vw} ${vh}" xmlns="http://www.w3.org/2000/svg">`;
+    g += `<polygon points="${f.points.map(p=>`${X(p.x)},${Y(p.y)}`).join(' ')}" fill="rgba(247,132,25,.10)" stroke="#131313" stroke-width="1.6"/>`;
+    for(const e of f.edges){
+      const mx=(e.A.x+e.B.x)/2, my=(e.A.y+e.B.y)/2;
+      const nx=-(e.B.y-e.A.y), ny=(e.B.x-e.A.x), nl=Math.hypot(nx,ny)||1;
+      const sgn=((mx-W/2)*nx+(my-L/2)*ny)>0?1:-1;
+      g += `<line x1="${X(e.A.x)}" y1="${Y(e.A.y)}" x2="${X(e.B.x)}" y2="${Y(e.B.y)}" stroke="${e.wind?'#131313':'#2b6cb0'}" stroke-width="${e.wind?2:3}"/>`;
+      g += `<text x="${X(mx+sgn*nx/nl*(18/sc))}" y="${Y(my+sgn*ny/nl*(18/sc))}" text-anchor="middle" font-size="10" font-family="sans-serif" fill="${e.wind?'#6a6a66':'#2b6cb0'}">${EDGE_LABEL[e.type]} ${Math.round(e.length)}</text>`;
+    }
+    g += `<text x="${pad}" y="${L*sc+pad*2-6}" font-size="10.5" font-family="sans-serif" fill="#9a9a94">Blue edges take a setback but no wind band. Area ${(f.area/1e6).toFixed(1)} m&sup2;.</text>`;
+    g += `</svg>`;
+    $('shapePreview').innerHTML = g;
+  }catch(e){
+    $('shapePreview').innerHTML = `<div class="fnote" style="color:var(--bad)">That shape will not close &mdash; check the lengths.</div>`;
+  }
+}
+
 function toggleRoof(){
   const tile = $('roof').value==='tile';
   $('tileBlock').style.display = tile?'':'none';
@@ -1309,23 +1572,6 @@ function toggleRoof(){
     ? 'Purlins run up the slope, so their spacing is measured across the roof. A foot can sit anywhere along a purlin, so up-slope placement is free and the across-slope position is the fixed one.'
     : 'Purlins run across the slope, so their spacing is measured up the roof. A foot can sit anywhere along a purlin, so across-slope placement is free and the up-slope position is the fixed one.';
 
-  const shape = $('faceShape').value;
-  $('faceTopWWrap').style.display = shape==='trapezium' ? '' : 'none';
-  $('faceOffsetWrap').style.display = shape==='rectangle' ? 'none' : '';
-  const Wb = parseFloat($('faceW').value)||0, Lf = parseFloat($('faceL').value)||0;
-  const Wt = shape==='rectangle' ? Wb : shape==='triangle' ? 0 : (parseFloat($('faceTopW').value)||0);
-  const offRaw = $('faceTopOffset').value.trim();
-  const off = offRaw==='' ? (Wb-Wt)/2 : (parseFloat(offRaw)||0);
-  const rakeL = Lf ? Math.hypot(off, Lf)/Lf : 1;
-  const rakeR = Lf ? Math.hypot(off+Wt-Wb, Lf)/Lf : 1;
-  $('faceNote').innerHTML = Wt>Wb
-    ? '<span style="color:var(--bad)">The ridge cannot be wider than the gutter.</span>'
-    : (shape==='rectangle'
-        ? 'Both rakes are vertical, so a 200&nbsp;mm setback is 200&nbsp;mm across.'
-        : 'Top edge ' + (offRaw===''?'centred':'offset '+off+' mm') + '. A setback is measured <b>perpendicular</b> to each rake, ' +
-          'so 200&nbsp;mm becomes <b>' + Math.round(200*rakeL) + '&nbsp;mm</b> horizontally on the left rake and <b>' +
-          Math.round(200*rakeR) + '&nbsp;mm</b> on the right. Measuring 200&nbsp;mm flat across would breach it.');
-
   // Gauge from a run of courses. Measuring one course carries the full error of
   // a single reading; measuring ten and dividing divides that error by ten.
   const gN = parseFloat($('gaugeN').value)||0, gMM = parseFloat($('gaugeMM').value)||0;
@@ -1335,10 +1581,15 @@ function toggleRoof(){
   }
   const gauge = parseFloat($('gauge').value)||0;
   const nC = parseFloat($('courseCount').value)||0;
-  const faceLen = parseFloat($('faceL').value)||0;
+  // The slope length now comes from the chosen shape, not a standalone field.
+  let faceLen = 0;
+  try{
+    const sh = buildShape($('presetId').value, readDims());
+    faceLen = Math.max(...sh.points.map(p=>p.y)) - Math.min(...sh.points.map(p=>p.y));
+  }catch(e){ faceLen = 0; }
   let gn = '';
   if(gN>0 && gMM>0) gn += `${gMM} mm over ${gN} courses = <b>${(gMM/gN).toFixed(1)} mm</b> per course. `;
-  if(nC>0 && gauge>0){
+  if(nC>0 && gauge>0 && faceLen>0){
     const span = nC*gauge;
     const spare = faceLen - span;
     const pct = faceLen ? Math.abs(spare)/faceLen*100 : 0;
@@ -1477,7 +1728,7 @@ function drawPlan(R){
   // setback boundary, following the rakes
   const sbPts = [];
   for(const yy of [sb.gutter, L-sb.ridge]){
-    const bnd = f.bandAt(yy, sb.rake);
+    const bnd = f.bandAt(yy, sb.forType(sb.rake));
     sbPts.push([bnd.min, yy, bnd.max]);
   }
   if(sbPts[0][2]>sbPts[0][0] && sbPts[1][2]>sbPts[1][0]){
@@ -1486,8 +1737,17 @@ function drawPlan(R){
     s += `<polygon points="${poly}" fill="none" stroke="#c0392b" stroke-width="1" stroke-dasharray="6 4"/>`;
   }
 
-  // roof outline
+  // roof outline, with each edge named so the types can be checked at a glance
   s += `<polygon points="${pts}" fill="none" stroke="#131313" stroke-width="2"/>`;
+  for(const e of f.edges){
+    const mx=(e.A.x+e.B.x)/2, my=(e.A.y+e.B.y)/2;
+    const nx=-(e.B.y-e.A.y), ny=(e.B.x-e.A.x);
+    const nl=Math.hypot(nx,ny)||1;
+    const cx=f.Wb/2, cy=f.L/2;
+    const sgn=((mx-cx)*nx+(my-cy)*ny)>0 ? 1 : -1;
+    const ox=sgn*nx/nl*260, oy=sgn*ny/nl*260;
+    s += `<text x="${X(mx+ox)}" y="${Y(my+oy)}" text-anchor="middle" font-size="10.5" font-family="sans-serif" fill="${e.wind?'#6a6a66':'#2b6cb0'}">${EDGE_LABEL[e.type]||e.type}${e.wind?'':' (no wind band)'}</text>`;
+  }
 
   s += `<g clip-path="url(#${clipId})">`;
   // structure running up the slope (tile trusses, or tin purlins laid up-slope)
@@ -1527,7 +1787,8 @@ function drawPlan(R){
   });
 
   // dimensions
-  s += `<text x="${pad+w/2}" y="${pad+hgt+34}" text-anchor="middle" font-size="13" font-family="sans-serif" font-weight="700">${fmt(W)} mm at the gutter${f.Wt!==f.Wb?`, ${fmt(f.Wt)} mm at the ridge`:''} &#8212; capping to capping</text>`;
+  const gut = f.edges.find(e=>e.type==='gutter');
+  s += `<text x="${pad+w/2}" y="${pad+hgt+34}" text-anchor="middle" font-size="13" font-family="sans-serif" font-weight="700">${esc(R.job.presetName||'')} &#8212; ${fmt(gut?gut.length:W)} mm along the gutter, ${fmt(L)} mm up the slope</text>`;
   s += `<text x="${pad-16}" y="${pad+hgt/2}" text-anchor="middle" font-size="13" font-family="sans-serif" font-weight="700" transform="rotate(-90 ${pad-16} ${pad+hgt/2})">${fmt(L)} mm &#8212; gutter to ridge</text>`;
   s += `<text x="${pad}" y="${pad+hgt+52}" font-size="11" font-family="sans-serif" fill="#6a6a66">Datum: bottom-left corner of the face, at the capping edge and gutter line.</text>`;
   s += `</svg>`;
@@ -1726,13 +1987,15 @@ function run(){
 /* ---------- persistence ---------- */
 const KEY = 'amu-solar-layout-v1';
 const FIELDS = ['roof','region','tc','pitch','hEave','hRidge','bb','bd','gapS','faceW','faceL',
-  'faceShape','faceTopW','faceTopOffset','gaugeN','gaugeMM','courseCount','trussPitch',
+  'presetId','valleySb','gaugeN','gaugeMM','courseCount','trussPitch',
   'trussOffset','gauge','coverW','tileProfile','troughW','troughOffset','hookW','hookShift',
   'purlinPitch','purlinOffset','tinDir','fixing','fixingTile','panel','orient','cant','sag','clampTol'];
 
 function save(){
   try{
     const o = {}; FIELDS.forEach(f=>o[f]=$(f).value);
+    o.__dims = {};
+    document.querySelectorAll('#presetFields input').forEach(i=>o.__dims[i.dataset.k]=i.value);
     localStorage.setItem(KEY, JSON.stringify(o));
     $('saveNote').textContent = 'Saved on this device';
   }catch(e){ $('saveNote').textContent = ''; }
@@ -1740,15 +2003,26 @@ function save(){
 function load(){
   try{
     const o = JSON.parse(localStorage.getItem(KEY)||'null');
-    if(o) FIELDS.forEach(f=>{ if(o[f]!==undefined && $(f)) $(f).value = o[f]; });
+    if(o){
+      FIELDS.forEach(f=>{ if(o[f]!==undefined && $(f)) $(f).value = o[f]; });
+      if(o.__dims){
+        renderPresetFields();
+        document.querySelectorAll('#presetFields input').forEach(i=>{
+          if(o.__dims[i.dataset.k]!==undefined) i.value = o.__dims[i.dataset.k];
+        });
+      }
+    }
   }catch(e){}
 }
 
 document.addEventListener('DOMContentLoaded',()=>{
   buildTables();
   initPanels();
+  initPresets();
   load();
+  renderPresetFields();
   toggleRoof();
+  drawShapePreview();
   panelInfo();
 
   $('hdrDate').textContent = new Date().toLocaleDateString('en-AU',{day:'2-digit',month:'short',year:'numeric'});
@@ -1762,9 +2036,11 @@ document.addEventListener('DOMContentLoaded',()=>{
   // The solver searches many starting heights and insets, so a full solve is a
   // few hundred milliseconds — too slow to run on every keystroke.
   let t=null;
-  const runSoon = ()=>{ clearTimeout(t); t=setTimeout(run,180); };
+  runSoon = ()=>{ clearTimeout(t); t=setTimeout(run,180); };
   FIELDS.forEach(f=>{ const el=$(f); if(el) el.addEventListener('input',()=>{ toggleRoof(); panelInfo(); runSoon(); }); });
   $('roof').addEventListener('change',()=>{ toggleRoof(); runSoon(); });
+  $('presetId').addEventListener('change',()=>{ renderPresetFields(); drawShapePreview(); runSoon(); });
+  ['gauge','coverW','pitch'].forEach(id=>$(id).addEventListener('input', drawShapePreview));
   $('tileProfile').addEventListener('change',()=>{ toggleRoof(); runSoon(); });
 
   $('btnPrint').addEventListener('click',()=>window.print());
