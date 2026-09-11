@@ -155,6 +155,7 @@
       <button class="tab" data-p="markup">Mark-up sheet</button>
       <button class="tab" data-p="compliance">Compliance</button>
       <button class="tab" data-p="materials">Materials</button>
+      <button class="tab" data-p="measure">What to measure</button>
     </div>
 
     <!-- ============================ SET-UP ============================ -->
@@ -183,7 +184,12 @@
         </div>
         <div class="fgrid g4">
           <div><label class="fl">Panel gap above roof s (mm)</label><input class="f num" id="gapS" type="number" value="50"></div>
+          <div><label class="fl">Rail sag allowance (mm)</label><input class="f num" id="sag" type="number" value="30"></div>
         </div>
+        <p class="fnote">Loaded rails pull down, so the finished panel sits lower than the set-out.
+          The sag allowance is added to the <b>gutter</b> setback only &mdash; set out to 200&nbsp;mm exactly
+          and you can finish at 170&nbsp;mm, which breaches. It is not added at the ridge or the rakes,
+          where sagging moves the panel <em>away</em> from the edge.</p>
         <p class="fnote" id="hNote"></p>
         <p class="fnote">The certification defines h as the <b>average roof height above ground</b> (Note&nbsp;9,
           Figure&nbsp;1) &mdash; not the gutter and not the ridge, but halfway between, so it does include the roof.
@@ -271,6 +277,10 @@
               <option value="portrait">Portrait only</option>
               <option value="landscape">Landscape only</option>
             </select></div>
+          <div><label class="fl">Clamp zone tolerance (% of panel length)</label>
+            <input class="f" id="clampTol" type="range" min="0" max="10" step="0.5" value="0"
+                   style="padding:0;height:30px">
+            <div class="fnote" id="clampTolNote" style="margin:2px 0 0"></div></div>
           <div><label class="fl">Rail cantilever limit</label>
             <select class="f" id="cant">
               <option value="0.25">1/4 of the span</option>
@@ -310,6 +320,121 @@
     <!-- ============================ MATERIALS ============================ -->
     <div class="pane" id="p-materials">
       <div id="matOut"></div>
+    </div>
+
+
+    <!-- ============================ MEASURE ============================ -->
+    <div class="pane" id="p-measure">
+      <h2 class="sect">What to measure</h2>
+      <p class="hint">Everything in millimetres. If a number is awkward to get, put in your best
+        estimate and mark it &mdash; but the four starred items change the answer most, so get
+        those right.</p>
+
+      <div class="block">
+        <h3>1 &mdash; The roof face</h3>
+        <table class="grid"><thead><tr><th>Measure</th><th>How</th><th>Why it matters</th></tr></thead><tbody>
+          <tr><td class="b">&#9733; Width at the gutter</td>
+              <td>Capping edge to capping edge, along the gutter line. <b>Not</b> by counting tiles.</td>
+              <td>The edge tile usually overlaps a big part of the capping. Counting whole tiles
+                  under-measures and on a tight roof that costs a whole panel.</td></tr>
+          <tr><td class="b">&#9733; Width at the ridge</td>
+              <td>Same again along the ridge. On a hip end this is <b>0</b> &mdash; the rakes meet
+                  at a point. On a gable it equals the gutter width.</td>
+              <td>Tells the planner whether the face is a rectangle, a trapezium or a triangle,
+                  and how fast it narrows.</td></tr>
+          <tr><td class="b">&#9733; Length, gutter to ridge</td>
+              <td>Up the slope, along the surface &mdash; not the horizontal plan distance.</td>
+              <td>Sets how many rows fit.</td></tr>
+          <tr><td>Top edge offset</td>
+              <td>Only if the face is lopsided &mdash; a gable one side and a hip the other.
+                  Distance from the left capping edge to where the ridge starts. Leave blank if
+                  it looks symmetrical.</td>
+              <td>An asymmetric face has a different setback on each rake.</td></tr>
+          <tr><td>Roof pitch</td><td>Pitch gauge or a phone app on the surface.</td>
+              <td>At 10&deg; and over the ridge counts as an edge for wind zoning.</td></tr>
+        </tbody></table>
+      </div>
+
+      <div class="block">
+        <h3>2 &mdash; The building</h3>
+        <table class="grid"><thead><tr><th>Measure</th><th>How</th><th>Why it matters</th></tr></thead><tbody>
+          <tr><td class="b">&#9733; Gutter height and ridge height</td>
+              <td>Both above <b>ground level</b>. The planner averages them.</td>
+              <td>The certification's h is the average roof height, not the gutter and not the
+                  ridge. Reading the ridge alone can put you a whole band out and give you
+                  spacings you are not entitled to.</td></tr>
+          <tr><td>Building width b and depth d</td>
+              <td>Plan dimensions at the walls, in metres. Pace it or off the plan.</td>
+              <td>These set the wind zone band width a, and h/d picks which half of the table
+                  you read.</td></tr>
+        </tbody></table>
+      </div>
+
+      <div class="block">
+        <h3>3 &mdash; The structure under it</h3>
+        <table class="grid"><thead><tr><th>Measure</th><th>How</th><th>Why it matters</th></tr></thead><tbody>
+          <tr><td class="b">&#9733; Member spacing</td>
+              <td>Tile: truss / rafter centres, measured across the roof. Tin: purlin or batten
+                  centres. Check several bays &mdash; they are not always even.</td>
+              <td>This is the one that bites. A foot can only land on structure, so the spacing
+                  decides whether you can meet the certified maximum or need noggins.</td></tr>
+          <tr><td class="b">Which way the purlins run</td>
+              <td>Tin only. Parallel to the gutter, or up the slope?</td>
+              <td>It flips which direction is free. Get it backwards and the whole layout is
+                  wrong.</td></tr>
+          <tr><td>First member from the edge</td>
+              <td>Left capping edge to the first truss, or gutter to the first purlin.</td>
+              <td>Sets where the whole grid starts. Guessing zero can shift every foot.</td></tr>
+        </tbody></table>
+      </div>
+
+      <div class="block">
+        <h3>4 &mdash; The tiles (tile roofs only)</h3>
+        <table class="grid"><thead><tr><th>Measure</th><th>How</th><th>Why it matters</th></tr></thead><tbody>
+          <tr><td class="b">Exposed length of a tile</td>
+              <td>Up the slope, from one row of tiles to the next. Measure over several rows and
+                  divide &mdash; the gauge is set on site and is rarely a round number.</td>
+              <td>Rails can only sit on a course line, so this quantises every portrait row.</td></tr>
+          <tr><td>Tile cover width</td>
+              <td>Across the roof, one tile to the next.</td>
+              <td>Sets the trough grid on a profiled tile.</td></tr>
+          <tr><td class="b">Profiled or flat?</td>
+              <td>Malibu and similar have a raised crown and a flat trough. Flat tiles do not.</td>
+              <td>On a profiled tile the hook must land in the trough, so it gets slid off the
+                  truss &mdash; and the real spans stop matching the truss pitch.</td></tr>
+          <tr><td>Trough width and first trough position</td>
+              <td>Profiled tiles only. Width of the flat part the hook can sit in, and the
+                  distance from the left capping edge to the first trough centre.</td>
+              <td>Decides whether every truss can even reach a trough. Too narrow and some
+                  trusses are unusable, which opens the spans right out.</td></tr>
+        </tbody></table>
+      </div>
+
+      <div class="block">
+        <h3>5 &mdash; Note these too</h3>
+        <table class="grid"><tbody>
+          <tr><td class="b">Panel model</td><td>The exact code off the label, not just the wattage.
+            Two panels the same size can have completely different clamp zones.</td></tr>
+          <tr><td class="b">Obstructions</td><td>Vents, whirlybirds, aerials, skylights, plumbing
+            stacks. The planner does not route around them yet &mdash; note them and check the
+            plan by eye.</td></tr>
+          <tr><td class="b">Fixing</td><td>Timber or steel, and roughly what gauge. Thin steel
+            derates the certified spacing hard.</td></tr>
+          <tr><td class="b">Shading</td><td>Outside this tool, but worth noting while you are up
+            there.</td></tr>
+        </tbody></table>
+      </div>
+
+      <div class="banner">
+        <b>Quick version for the roof.</b>
+        <ul>
+          <li>Gutter width, ridge width, slope length &mdash; capping edge to capping edge</li>
+          <li>Gutter height and ridge height off the ground</li>
+          <li>Truss or purlin centres, and which way they run</li>
+          <li>Tile: exposed length, cover width, flat or profiled (and the trough if profiled)</li>
+          <li>Panel model code</li>
+        </ul>
+      </div>
     </div>
 
     <div id="printOnly"><div class="pbody" id="printBody"></div></div>
@@ -534,14 +659,48 @@ const EDGE_SETBACK_MIN = 200;   // no panel edge within 200 mm of gutter or roof
 const ROW_GAP = 20;             // Amp Me Up standard, and >= AIKO's 10 mm minimum
 const PANEL_GAP = 20;
 
-function edgeSetback(gapS){
+/**
+ * Edge setbacks.
+ *
+ * `mm` is the governing setback: the 200 mm site rule or the certification's 2s
+ * rule, whichever is larger. The GUTTER gets the rail sag allowance on top —
+ * a loaded rail pulls down, so a panel set out at exactly 200 mm finishes
+ * lower than that and breaches. The ridge and rakes do not: sagging carries the
+ * panel away from the ridge, and straight down does not close a rake gap.
+ */
+function edgeSetback(gapS, sag){
   const twoS = 2*gapS;
-  return { mm:Math.max(EDGE_SETBACK_MIN, twoS), twoS,
+  const base = Math.max(EDGE_SETBACK_MIN, twoS);
+  return { mm:base, twoS, sag:sag||0, gutter:base+(sag||0), ridge:base, rake:base,
            governedBy: twoS>EDGE_SETBACK_MIN ? `certification 2s (s = ${gapS} mm)` : '200 mm edge rule' };
 }
 
-function railSeparationWindow(p){
-  return { min:p.length-2*p.clamp.maxFromEnd, max:p.length-2*p.clamp.minFromEnd };
+/**
+ * Clamp window, optionally widened past the manufacturer's spec.
+ *
+ * Logan's call: a clamp slightly outside the stated zone risks micro-fractures
+ * in the panel rather than the wind integrity of the array, and the roof
+ * sometimes leaves no choice. The tolerance is a percentage of panel length,
+ * matching how Jinko states the zone (A/5 ~ A/4). Anything used is reported.
+ */
+function clampWindow(panel, tolPct){
+  const t = (tolPct||0)/100 * panel.length;
+  const min = Math.max(0, panel.clamp.minFromEnd - t);
+  const max = Math.min(panel.length/2, panel.clamp.maxFromEnd + t);
+  return { min, max, tolMm:t, tolPct:tolPct||0,
+           specMin:panel.clamp.minFromEnd, specMax:panel.clamp.maxFromEnd };
+}
+
+/** How far outside the manufacturer's spec a given clamp distance sits. */
+function outsideSpec(panel, L){
+  if(L < panel.clamp.minFromEnd) return { by:panel.clamp.minFromEnd-L, side:'closer to the end than' };
+  if(L > panel.clamp.maxFromEnd) return { by:L-panel.clamp.maxFromEnd, side:'further in than' };
+  return null;
+}
+
+function railSeparationWindow(p, tolPct){
+  const w = clampWindow(p, tolPct);
+  return { min:p.length-2*w.max, max:p.length-2*w.min, window:w };
 }
 
 /**
@@ -730,27 +889,33 @@ function solveFeet(opts){
  * a portrait rail can sit at any height, so the row slides like a landscape one
  * and starts exactly at the setback.
  */
-function portraitRowsFree(panel, job, setback, bottom){
-  const A = panel.length, {minFromEnd:Lmin, maxFromEnd:Lmax} = panel.clamp;
-  const L = (Lmin+Lmax)/2;
+function portraitRowsFree(panel, job, sb, bottom, tolPct){
+  const A = panel.length, w = clampWindow(panel, tolPct);
+  const L = (w.min+w.max)/2;
   const top = bottom + A;
-  if(top > job.faceL - setback) return null;
+  if(bottom < sb.gutter - 0.01) return null;
+  if(top > job.faceL - sb.ridge) return null;
   return { orientation:'portrait', railY:[r1(bottom+L), r1(top-L)], separation:r1(A-2*L),
-           clampFromEnd:r1(L), panelBottom:r1(bottom), panelTop:r1(top), depth:A };
+           clampFromEnd:r1(L), outside:outsideSpec(panel,L),
+           panelBottom:r1(bottom), panelTop:r1(top), depth:A };
 }
 
-function portraitRows(panel, lines, job, setback){
-  const A = panel.length, {minFromEnd:Lmin, maxFromEnd:Lmax} = panel.clamp;
+function portraitRows(panel, lines, job, sb, tolPct){
+  const A = panel.length, w = clampWindow(panel, tolPct);
   const out = [];
   for(let i=0;i<lines.length;i++) for(let j=i+1;j<lines.length;j++){
     const y1=lines[i].y, y2=lines[j].y, sep=y2-y1, L=(A-sep)/2;
-    if(L<Lmin||L>Lmax) continue;
+    if(L<w.min||L>w.max) continue;
     const bottom=y1-L, top=y2+L;
-    if(bottom<setback || top>job.faceL-setback) continue;
+    if(bottom<sb.gutter || top>job.faceL-sb.ridge) continue;
     out.push({ orientation:'portrait', railY:[y1,y2], separation:sep, clampFromEnd:r1(L),
+               outside:outsideSpec(panel,L),
                panelBottom:r1(bottom), panelTop:r1(top), depth:A });
   }
-  return out.sort((a,b)=>a.panelBottom-b.panelBottom);
+  // Sort by height, then by how far outside the manufacturer's zone the clamp
+  // sits — never spend tolerance that buys nothing.
+  return out.sort((a,b)=> (a.panelBottom-b.panelBottom) ||
+                          ((a.outside?a.outside.by:0)-(b.outside?b.outside.by:0)));
 }
 
 /**
@@ -777,18 +942,18 @@ function panelsAcross(panel, orientation, job, setback, f, y0, y1){
  * Stack rows up the roof, greedily taking whichever orientation places the most
  * panels for the depth it costs, then whichever starts lowest.
  */
-function stackFrom(panel, job, setback, allow, lines, y0, portraitAll, across, upFree, f){
+function stackFrom(panel, job, sb, allow, lines, y0, portraitAll, across, upFree, f, tolPct){
   const rows = [];
-  let y = y0, guard = 0;
-  const nAt = (o,a,b) => panelsAcross(panel,o,job,setback,f,a,b).panels;
+  let y = Math.max(y0, sb.gutter), guard = 0;
+  const nAt = (o,a,b) => panelsAcross(panel,o,job,sb.rake,f,a,b).panels;
   while(guard++ < 40){
     const cands = [];
-    if(allow.includes('landscape') && y+panel.width <= job.faceL-setback){
+    if(allow.includes('landscape') && y+panel.width <= job.faceL-sb.ridge){
       const n = nAt('landscape', y, y+panel.width);
       if(n>0) cands.push({ ...landscapeRowAt(panel,y), n });
     }
     if(allow.includes('portrait')){
-      const p = upFree ? portraitRowsFree(panel, job, setback, y)
+      const p = upFree ? portraitRowsFree(panel, job, sb, y, tolPct)
                        : portraitAll.find(r=>r.panelBottom>=y-0.01);
       if(p){
         const n = nAt('portrait', p.panelBottom, p.panelTop);
@@ -811,17 +976,17 @@ function stackFrom(panel, job, setback, allow, lines, y0, portraitAll, across, u
  * the setback, the zone band boundaries, and each fixing line — and keep
  * whichever stack the caller scores highest.
  */
-function stackCandidates(panel, job, setback, allow, lines, upFree, f){
+function stackCandidates(panel, job, sb, allow, lines, upFree, f, tolPct){
   const across = null;   // computed per row now — the face may narrow going up
   const portraitAll = (allow.includes('portrait') && !upFree)
-                        ? portraitRows(panel, lines, job, setback) : [];
+                        ? portraitRows(panel, lines, job, sb, tolPct) : [];
   const zm = zoneMap(job, f);
-  const starts = new Set([setback, Math.ceil(zm.half), Math.ceil(zm.a)]);
-  lines.forEach(l=>{ if(l.y>=setback) starts.add(l.y); });
+  const starts = new Set([sb.gutter, Math.ceil(zm.half), Math.ceil(zm.a)]);
+  lines.forEach(l=>{ if(l.y>=sb.gutter) starts.add(l.y); });
   portraitAll.forEach(r=>starts.add(r.panelBottom));
-  const limit = job.faceL - setback - Math.min(panel.width, panel.length);
-  return [...starts].filter(v=>v>=setback && v<=limit).sort((a,b)=>a-b)
-    .map(y0=>stackFrom(panel, job, setback, allow, lines, y0, portraitAll, across, upFree, f));
+  const limit = job.faceL - sb.ridge - Math.min(panel.width, panel.length);
+  return [...starts].filter(v=>v>=sb.gutter && v<=limit).sort((a,b)=>a-b)
+    .map(y0=>stackFrom(panel, job, sb, allow, lines, y0, portraitAll, across, upFree, f, tolPct));
 }
 
 /* ============================================================================
@@ -838,7 +1003,8 @@ function readJob(){
     // Note 9 / Figure 1: h is the AVERAGE roof height above ground — mid-way
     // between gutter and ridge, so the roof itself is included.
     hEave:n('hEave'), hRidge:n('hRidge'), h:(n('hEave')+n('hRidge'))/2,
-    b:n('bb'), d:n('bd'), gapS:n('gapS'), tinDir:v('tinDir'),
+    b:n('bb'), d:n('bd'), gapS:n('gapS'), sag:n('sag'), clampTol:n('clampTol'),
+    tinDir:v('tinDir'),
     faceW:n('faceW'), faceL:n('faceL'),
     faceShape:v('faceShape'), faceTopW:n('faceTopW'),
     faceTopOffset: document.getElementById('faceTopOffset').value.trim()==='' ? null : n('faceTopOffset'),
@@ -853,8 +1019,9 @@ function readJob(){
   };
 }
 
-function solve(){
+function solve(strictPass){
   const job = readJob();
+  if(strictPass) job.clampTol = 0;
   const issues = [], warnings = [];
   if(!job.panelKey){ issues.push(job.envelope.note); return { job, issues, warnings, rows:[] }; }
   if(job.envelope.note) warnings.push(job.envelope.note);
@@ -862,12 +1029,13 @@ function solve(){
   const wt = checkPanelWeight(job.panel);
   if(!wt.ok) issues.push(`Panel is ${wt.kgm2} kg/m², over the 15 kg/m² certification limit.`);
 
-  const sb = edgeSetback(job.gapS);
+  const sb = edgeSetback(job.gapS, job.sag);
   const f = face(job);
   if(f.Wt < 0 || f.Wt > f.Wb + 1e-6)
     issues.push('The ridge width must be between 0 and the gutter width.');
   const zm = zoneMap(job, f);
-  const sep = railSeparationWindow(job.panel);
+  const sep = railSeparationWindow(job.panel, job.clampTol);
+  const specSep = railSeparationWindow(job.panel, 0);
 
   // Zone maxima, for the report
   const zoneMax = {};
@@ -909,7 +1077,7 @@ function solve(){
   // higher-yielding orientation can be the one that cannot be fixed at all —
   // without these single-orientation passes the layout would come back empty.
   const allowSets = allow.length>1 ? [allow, ['portrait'], ['landscape']] : [allow];
-  const stacks = allowSets.flatMap(a=>stackCandidates(job.panel, job, sb.mm, a, lines, st.up.free, f));
+  const stacks = allowSets.flatMap(a=>stackCandidates(job.panel, job, sb, a, lines, st.up.free, f, job.clampTol));
 
   // Rails and feet for each row.
   //
@@ -918,8 +1086,8 @@ function solve(){
   // to hold the array in off the rake rather than to add noggins — so the
   // search tries the setback first, then the edge band, then the full zone
   // dimension, and keeps whichever compliant option places the most panels.
-  const insetChoices = [...new Set([sb.mm, Math.ceil(zm.half), Math.ceil(zm.a)])]
-                        .filter(v=>v>=sb.mm).sort((x,y)=>x-y);
+  const insetChoices = [...new Set([sb.rake, Math.ceil(zm.half), Math.ceil(zm.a)])]
+                        .filter(v=>v>=sb.rake).sort((x,y)=>x-y);
 
   function fitRow(row, inset){
     const out = { ...row, rails:[], ok:true, problems:[], inset };
@@ -1031,8 +1199,8 @@ function solve(){
     good.sort((x,y)=>(y.panels-x.panels)||(x.inset-y.inset));
     const chosen = good[0] || tries[0];
     chosen.index = idx+1;
-    if(good.length && chosen.inset>sb.mm)
-      chosen.insetNote = `Held in ${chosen.inset} mm from each rake — at the ${sb.mm} mm setback the array cannot be fixed compliantly with ${job.trussPitch} mm centres.`;
+    if(good.length && chosen.inset>sb.rake)
+      chosen.insetNote = `Held in ${chosen.inset} mm from each rake — at the ${sb.rake} mm setback the array cannot be fixed compliantly with ${job.trussPitch} mm centres.`;
     if(!good.length){
       chosen.rejected = true;
       // Report the least-bad attempt's reason, de-duplicated.
@@ -1049,9 +1217,13 @@ function solve(){
     const laidStack = layOut(stack);
     const keep = laidStack.filter(r=>!r.rejected);
     const n = keep.reduce((a,r)=>a+(r.panels||0),0);
-    if(!best || n>best.n) best = { n, laid:laidStack, keep };
+    // Tolerance is only worth spending if it buys panels: among equal layouts,
+    // take the one that sits furthest inside the manufacturer's clamp zone.
+    const breach = keep.reduce((a,r)=>a+(r.outside?r.outside.by:0),0);
+    if(!best || n>best.n || (n===best.n && breach<best.breach))
+      best = { n, breach, laid:laidStack, keep };
   }
-  if(!best) best = { n:0, laid:[], keep:[] };
+  if(!best) best = { n:0, breach:0, laid:[], keep:[] };
   const laid = best.laid;
   const kept = best.keep;
   kept.forEach((r,i)=>r.index=i+1);
@@ -1061,8 +1233,13 @@ function solve(){
   const depthUsed = kept.length ? kept[kept.length-1].panelTop - kept[0].panelBottom : 0;
   if(!kept.length && laid.length)
     issues.push('No row can be laid out compliantly on this roof face.');
-  return { job, sb, zm, f, zoneMax, sep, gridInfo, iface, reach, rows:kept, rejected, total,
-           depthUsed, issues, warnings };
+  // Anything sitting outside the manufacturer's clamp zone, so it can be stated.
+  const breaches = kept.filter(r=>r.outside)
+    .map(r=>({ row:r.index, by:Math.round(r.outside.by), side:r.outside.side,
+               clampFromEnd:r.clampFromEnd }));
+
+  return { job, sb, zm, f, zoneMax, sep, specSep, gridInfo, iface, reach,
+           rows:kept, rejected, total, breaches, depthUsed, issues, warnings };
 }
 </script>
 <script>
@@ -1086,6 +1263,7 @@ function panelInfo(){
     `<b>${esc(p.model)}</b> &mdash; ${p.length}&times;${p.width}&times;${p.frameHeight} mm, ${p.weightKg} kg (${w.kgm2} kg/m&sup2;, limit 15).<br>` +
     `Clamp zone <b>${p.clamp.minFromEnd}&ndash;${p.clamp.maxFromEnd} mm</b> from each short edge (${esc(p.clamp.rule)}), so the two rails sit <b>${s.min}&ndash;${s.max} mm</b> apart. Source: ${esc(p.clamp.source)}.` +
     (env.note?`<br><span style="color:var(--warn)">${esc(env.note)}</span>`:'');
+  toggleRoof();
 }
 
 function toggleRoof(){
@@ -1118,6 +1296,16 @@ function toggleRoof(){
           'so 200&nbsp;mm becomes <b>' + Math.round(200*rakeL) + '&nbsp;mm</b> horizontally on the left rake and <b>' +
           Math.round(200*rakeR) + '&nbsp;mm</b> on the right. Measuring 200&nbsp;mm flat across would breach it.');
 
+  const tol = parseFloat($('clampTol').value)||0;
+  const pnl = PANELS.find(x=>x.id===$('panel').value);
+  if(pnl){
+    const mm = Math.round(tol/100*pnl.length);
+    const lo = Math.max(0, pnl.clamp.minFromEnd-mm), hi = Math.min(pnl.length/2, pnl.clamp.maxFromEnd+mm);
+    $('clampTolNote').innerHTML = tol===0
+      ? `<b>0%</b> &mdash; inside the manual, ${pnl.clamp.minFromEnd}&ndash;${pnl.clamp.maxFromEnd} mm`
+      : `<b>${tol}%</b> = &plusmn;${mm} mm &rarr; <b>${Math.round(lo)}&ndash;${Math.round(hi)} mm</b>, outside the manual`;
+  }
+
   const eave = parseFloat($('hEave').value)||0, ridge = parseFloat($('hRidge').value)||0;
   const hh = (eave+ridge)/2, dd = parseFloat($('bd').value)||1;
   $('hNote').innerHTML = ridge < eave
@@ -1135,10 +1323,25 @@ function renderLayout(R){
   if(R.issues.length) h += `<div class="banner bad"><b>Cannot lay out this roof.</b><ul>${R.issues.map(i=>`<li>${esc(i)}</li>`).join('')}</ul></div>`;
   if(R.warnings.length) h += `<div class="banner"><b>Read before you set out.</b><ul>${R.warnings.map(i=>`<li>${esc(i)}</li>`).join('')}</ul></div>`;
 
+  if(R.breaches && R.breaches.length){
+    h += `<div class="banner"><b>Outside the panel manufacturer's clamp zone.</b>
+      The ${R.job.clampTol}% tolerance has been used. This is a designer's decision and is
+      outside the installation manual &mdash; the risk is micro-fracturing the panel rather than
+      the wind integrity of the array, but it is on you to accept it.
+      <ul>${R.breaches.map(b=>`<li>Row ${b.row}: clamp ${fmt(b.clampFromEnd)} mm from the short edge, ${b.by} mm ${esc(b.side)} the stated zone (${R.specSep.window.specMin}&ndash;${R.specSep.window.specMax} mm)</li>`).join('')}</ul></div>`;
+  }
+  if(R.tolGain && R.tolGain.extra>0){
+    h += `<div class="banner good"><b>The clamp tolerance is buying you ${R.tolGain.extra} extra panel${R.tolGain.extra===1?'':'s'}.</b>
+      Within the manufacturer's zone this roof takes ${R.tolGain.strict}; at ${R.job.clampTol}% it takes ${R.total}.</div>`;
+  } else if(R.tolGain && R.job.clampTol>0 && R.tolGain.extra===0){
+    h += `<div class="banner"><b>The clamp tolerance is not gaining anything here.</b>
+      This roof takes ${R.tolGain.strict} panels either way, so leave the slider at 0 and stay inside the manual.</div>`;
+  }
+
   const bad = rows.filter(r=>!r.ok).length;
   h += `<div class="cards">
     <div class="card hero"><div class="k">Panels</div><div class="v">${total}</div><div class="s">${rows.length} row${rows.length===1?'':'s'}${rows.length>1&&new Set(rows.map(r=>r.orientation)).size>1?', mixed orientation':''}</div></div>
-    <div class="card"><div class="k">Setback</div><div class="v">${sb.mm}</div><div class="s">mm, ${esc(sb.governedBy)}</div></div>
+    <div class="card"><div class="k">Setback</div><div class="v">${sb.mm}</div><div class="s">mm, ${esc(sb.governedBy)}${sb.sag?` &mdash; ${sb.gutter} mm at the gutter with ${sb.sag} mm sag`:''}</div></div>
     <div class="card"><div class="k">Zone dimension a</div><div class="v">${fmt(zm.a)}</div><div class="s">mm &mdash; edge band ${fmt(zm.half)} mm</div></div>
     <div class="card ${bad?'fail':'pass'}"><div class="k">Set-out</div><div class="v">${bad?'CHECK':'OK'}</div><div class="s">${bad?bad+' row(s) with a problem':'every span within the certified maximum'}</div></div>
   </div>`;
@@ -1184,7 +1387,7 @@ function renderLayout(R){
   }
 
   if(!rows.length && !R.issues.length)
-    h += `<div class="banner bad">No row fits this roof face. The usable depth after setbacks is ${fmt(job.faceL-2*sb.mm)} mm.</div>`;
+    h += `<div class="banner bad">No row fits this roof face. The usable depth after setbacks is ${fmt(job.faceL-sb.gutter-sb.ridge)} mm.</div>`;
 
   $('layoutOut').innerHTML = h;
 }
@@ -1214,8 +1417,8 @@ function drawPlan(R){
 
   // setback boundary, following the rakes
   const sbPts = [];
-  for(const yy of [sb.mm, L-sb.mm]){
-    const bnd = f.bandAt(yy, sb.mm);
+  for(const yy of [sb.gutter, L-sb.ridge]){
+    const bnd = f.bandAt(yy, sb.rake);
     sbPts.push([bnd.min, yy, bnd.max]);
   }
   if(sbPts[0][2]>sbPts[0][0] && sbPts[1][2]>sbPts[1][0]){
@@ -1246,7 +1449,7 @@ function drawPlan(R){
   rows.forEach(r=>{
     const pw = (r.orientation==='portrait'?job.panel.width:job.panel.length);
     for(let i=0;i<r.panels;i++){
-      const px = (r.panelStartX ?? sb.mm) + i*(pw+PANEL_GAP);
+      const px = (r.panelStartX ?? sb.rake) + i*(pw+PANEL_GAP);
       s += `<rect x="${X(px)}" y="${Y(r.panelTop)}" width="${pw*scale}" height="${(r.panelTop-r.panelBottom)*scale}" fill="rgba(19,19,19,.10)" stroke="#131313" stroke-width="1"/>`;
     }
   });
@@ -1280,7 +1483,8 @@ function renderMarkup(R){
 
   h += `<div class="block"><h3>Set-out datum</h3><table class="grid"><tbody>
     <tr><td>Roof face</td><td class="n b">${fmt(job.faceW)} &times; ${fmt(job.faceL)} mm</td></tr>
-    <tr><td>Setback from every edge</td><td class="n b">${sb.mm} mm</td></tr>
+    <tr><td>Setback, ridge and rakes</td><td class="n b">${sb.rake} mm</td></tr>
+    <tr><td>Setback at the gutter</td><td class="n b">${sb.gutter} mm</td><td>${sb.sag?`includes ${sb.sag} mm rail sag allowance`:'no sag allowance set'}</td></tr>
     <tr><td>Rows</td><td class="n b">${rows.length}</td></tr>
     <tr><td>Panels</td><td class="n b">${R.total}</td></tr>
     </tbody></table>
@@ -1294,7 +1498,7 @@ function renderMarkup(R){
     h += `<tr><td class="b">Panel bottom edge</td><td class="n">&mdash;</td><td class="n b">${fmt(r.panelBottom)}</td><td>chalk this line first</td></tr>`;
     h += `<tr><td class="b">Panel top edge</td><td class="n">&mdash;</td><td class="n b">${fmt(r.panelTop)}</td><td></td></tr>`;
     for(let i=0;i<r.panels;i++){
-      const px = (r.panelStartX ?? sb.mm)+i*(pw+PANEL_GAP);
+      const px = (r.panelStartX ?? sb.rake)+i*(pw+PANEL_GAP);
       h += `<tr><td>Panel ${i+1} left edge</td><td class="n">${fmt(px)}</td><td class="n">${fmt(r.panelBottom)}</td><td>${fmt(px+pw)} mm at its right edge</td></tr>`;
     }
     r.rails.forEach((rail,k)=>{
@@ -1349,6 +1553,11 @@ function renderCompliance(R){
             : 'a foot slides anywhere along a purlin, so across-slope placement is free')}</td></tr>
     <tr><td>Panel</td><td class="b">${esc(job.panel.model)}</td><td>read against certified size ${esc(job.panelKey||'—')}</td></tr>
     <tr><td>Setback</td><td class="b">${sb.mm} mm</td><td>${esc(sb.governedBy)}; 2s = ${sb.twoS} mm</td></tr>
+    <tr><td>Setback at the gutter</td><td class="b">${sb.gutter} mm</td><td>${sb.sag?`${sb.mm} mm plus ${sb.sag} mm rail sag allowance — the finished panel sits lower than the set-out`:'no sag allowance set'}</td></tr>
+    <tr><td>Clamp zone</td><td class="b">${job.clampTol?`${R.sep.window.min.toFixed(0)}–${R.sep.window.max.toFixed(0)} mm`:`${R.specSep.window.specMin}–${R.specSep.window.specMax} mm`}</td>
+      <td>${job.clampTol
+        ? `manufacturer spec is ${R.specSep.window.specMin}–${R.specSep.window.specMax} mm; widened by ${job.clampTol}% of panel length (${Math.round(R.sep.window.tolMm)} mm) at the designer's discretion`
+        : 'manufacturer specification, no tolerance applied'}</td></tr>
     </tbody></table></div>`;
 
   h += `<div class="block"><h3>Checks</h3><table class="grid"><thead><tr><th>Check</th><th>Result</th></tr></thead><tbody>`;
@@ -1362,6 +1571,13 @@ function renderCompliance(R){
     : note('Panel size within certification', `${job.panel.length}×${job.panel.width} mm is not a certified size; read against the larger ${job.panelKey.replace('mx','m × ')} table, which is conservative`);
   h += chk('Every panel edge ≥ setback from gutter, ridge and rake', rows.every(r=>r.panelBottom>=sb.mm && r.panelTop<=job.faceL-sb.mm), `${sb.mm} mm`);
   h += chk('Two rails per panel', true, 'certification requires a minimum of two');
+  h += chk('Panel edge clear of the gutter by the sag allowance',
+           rows.every(r=>r.panelBottom>=sb.gutter-0.01),
+           `${sb.gutter} mm set out so the finished panel still clears ${sb.mm} mm`);
+  if(R.breaches.length)
+    h += `<tr><td>Clamp zone within manufacturer specification</td><td><span class="pill wa">Outside spec</span> <span style="font-size:11.5px;color:var(--muted)">${R.breaches.length} row(s), worst ${Math.max(...R.breaches.map(b=>b.by))} mm &mdash; accepted at the designer's discretion</span></td></tr>`;
+  else
+    h += chk('Clamp zone within manufacturer specification', true, 'every clamp inside the stated zone');
   h += chk('Rail separation inside the panel clamp zone', rows.every(r=>r.orientation!=='portrait' || (r.separation>=R.sep.min && r.separation<=R.sep.max)), `${R.sep.min}–${R.sep.max} mm`);
   h += chk('Array inside the roof face', rows.every(r=>r.panelTop<=job.faceL-sb.mm), `array depth ${fmt(R.depthUsed)} mm`);
   if(R.reach) h += chk('Every truss can reach a trough', R.reach.always, R.reach.always?'yes':`short by ${R.reach.shortBy} mm; needs a ${R.reach.minTroughWidth} mm trough`);
@@ -1430,7 +1646,12 @@ function renderPrint(R){
 /* ---------- run ---------- */
 function run(){
   try{
-    RESULT = solve();
+    RESULT = solve(false);
+    // What is the tolerance actually buying? Re-solve inside the manual and compare.
+    if(RESULT.job.clampTol > 0){
+      const strict = solve(true);
+      RESULT.tolGain = { strict: strict.total, extra: RESULT.total - strict.total };
+    }
     renderLayout(RESULT);
     renderMarkup(RESULT);
     renderCompliance(RESULT);
@@ -1448,7 +1669,7 @@ const KEY = 'amu-solar-layout-v1';
 const FIELDS = ['roof','region','tc','pitch','hEave','hRidge','bb','bd','gapS','faceW','faceL',
   'faceShape','faceTopW','faceTopOffset','trussPitch',
   'trussOffset','gauge','coverW','tileProfile','troughW','troughOffset','hookW','hookShift',
-  'purlinPitch','purlinOffset','tinDir','fixing','fixingTile','panel','orient','cant'];
+  'purlinPitch','purlinOffset','tinDir','fixing','fixingTile','panel','orient','cant','sag','clampTol'];
 
 function save(){
   try{

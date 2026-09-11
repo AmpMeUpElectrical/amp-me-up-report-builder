@@ -32,7 +32,11 @@ offer it. Supply a rib pitch and it can be switched back on.
   is mostly 100%.
 - **Spacing floor.** Never below one third of the panel width — below that the tool
   refers you to the engineer rather than returning a smaller number.
-- **Setback** = `max(200 mm, 2s)` from gutter, ridge and rake.
+- **Setback** = `max(200 mm, 2s)` from gutter, ridge and rake, plus a **rail sag allowance
+  at the gutter only** (default 30 mm). A loaded rail pulls down, so a panel set out at
+  exactly 200 mm finishes lower than that and breaches. The ridge and rakes get no
+  allowance — sagging carries the panel *away* from the ridge. The gutter line is the one
+  that must always be compliant.
 - **Building height h** is the *average roof height above ground* (Note 9, Figure 1) — not
   the gutter and not the ridge, but halfway between, so the roof is included. Enter the
   gutter and ridge heights and the planner takes the average; reading the ridge alone can
@@ -67,6 +71,37 @@ highest.
 A row is also limited by its **top** edge, not its bottom, because the face narrows going
 up — and the array is centred in whatever band is left. On a 12000 → 4000 trapezium the
 bottom row takes 7 panels and the row above it only 4.
+
+## Clamp zone tolerance
+
+The manufacturer's clamp zone can be widened by a percentage of panel length, at the
+designer's discretion. Logan's reasoning: a clamp slightly outside the stated zone risks
+micro-fracturing the panel rather than the wind integrity of the array, and the roof
+sometimes leaves no choice. Wind loading is governed by the 200 mm edge setback, which is
+never relaxed.
+
+The tool will not spend tolerance that buys nothing — among layouts with the same panel
+count it takes the one furthest inside the manufacturer's zone — and it always states
+what the tolerance is worth:
+
+> *The clamp tolerance is buying you 2 extra panels. Within the manufacturer's zone this
+> roof takes 9; at 5% it takes 11.*
+
+Every breach is listed per row with the actual distance and direction, e.g. *"Row 1:
+clamp 353 mm from the short edge, 29 mm closer to the end than the stated zone
+(382–476 mm)"*, and the compliance tab marks it **Outside spec**, not Pass.
+
+On an 8000 × 5000 tile face with 600 mm trusses, portrait only:
+
+| Tile gauge | In spec | At 2.5% | At 5% | At 10% |
+|---|---|---|---|---|
+| 300 mm | 0 | 11 (+29 mm) | 11 (+29 mm) | 11 (+29 mm) |
+| 330 mm | 11 | 11 | 11 | 11 |
+| 360 mm | 11 | 11 | 11 | 12 (+117 mm) |
+| 400 mm | 0 | 11 (+29 mm) | 12 (+77 mm) | 12 (+77 mm) |
+
+A 300 mm gauge goes from impossible to a full array for 29 mm. A 330 mm gauge gains
+nothing at any tolerance, so it uses none.
 
 ## Which direction is fixed, which is free
 
@@ -107,6 +142,9 @@ trough at 60 mm of shift).
 
 ## Measuring
 
+The app has a **What to measure** tab with the full checklist and why each number
+matters. The short version:
+
 - Roof face **capping edge to capping edge**. Do not derive the width by counting whole
   tiles — the edge tile usually overlaps the capping, and on a 6150 mm face that costs a
   whole panel.
@@ -115,6 +153,9 @@ trough at 60 mm of shift).
 - On a hip, measure the width **at the gutter and at the ridge** (0 at the ridge for a
   hip end). If the face is not symmetrical, give the top edge's offset from the left;
   leave it blank and it is centred.
+- Gutter height **and** ridge height above ground — the planner averages them.
+- Member spacing, and on tin **which way the purlins run**.
+- The panel's exact model code, not just its wattage.
 
 ## Files
 
@@ -128,7 +169,7 @@ trough at 60 mm of shift).
 | `spacing_tables.json` | All 30 extracted tables (tin, tile, Klip-Lok) |
 | `tables_compact.json` | Tin + tile only, the form embedded in the app |
 | `panels.json` | Panel library with clamp zones |
-| `test*.js` | 215 tests across eight suites |
+| `test*.js` | 243 tests across nine suites |
 
 `engine.js` / `layout.js` / `placement.js` are the tested reference implementation; the
 app carries its own copy of the same logic so it can be one file. They are cross-checked:

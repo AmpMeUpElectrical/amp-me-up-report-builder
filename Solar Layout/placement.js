@@ -22,9 +22,14 @@ const E = require('./engine.js');
  *
  * `lines` are the usable up-slope fixing lines (tile courses / screw lines).
  */
-function portraitRows(panel, { lines, planeLength, setback }) {
+function portraitRows(panel, { lines, planeLength, setback, gutterSetback, ridgeSetback, tolPct = 0 }) {
   const A = panel.length;
-  const { minFromEnd: Lmin, maxFromEnd: Lmax } = panel.clamp;
+  const L2 = require('./layout.js');
+  const w = L2.clampWindow(panel, tolPct);
+  const Lmin = w.min, Lmax = w.max;
+  // The gutter may carry a sag allowance the ridge does not.
+  const sbGutter = gutterSetback ?? setback;
+  const sbRidge  = ridgeSetback  ?? setback;
   const out = [];
   for (let i = 0; i < lines.length; i++) {
     for (let j = i + 1; j < lines.length; j++) {
@@ -33,11 +38,12 @@ function portraitRows(panel, { lines, planeLength, setback }) {
       const L = (A - sep) / 2;                       // symmetric clamping
       if (L < Lmin || L > Lmax) continue;
       const bottom = y1 - L, top = y2 + L;
-      if (bottom < setback) continue;
-      if (top > planeLength - setback) continue;
+      if (bottom < sbGutter) continue;
+      if (top > planeLength - sbRidge) continue;
       out.push({
         orientation: 'portrait', railY: [y1, y2], separation: sep,
         clampFromEnd: Math.round(L * 10) / 10,
+        outside: L2.outsideSpec(panel, L),
         panelBottom: Math.round(bottom * 10) / 10,
         panelTop: Math.round(top * 10) / 10,
         depth: A,

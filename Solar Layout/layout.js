@@ -106,14 +106,49 @@ function tileGrid({ planeLength, planeWidth, gauge, coverWidth,
 
 /* ---------- setbacks ---------- */
 
-/** Governing edge setback: the 200 mm site rule vs the certification's 2s rule. */
-function edgeSetback({ panelGapS = 50 }) {
+/**
+ * Governing edge setback: the 200 mm site rule vs the certification's 2s rule.
+ *
+ * The GUTTER gets a rail sag allowance on top. A loaded rail pulls down, so the
+ * finished panel sits lower than the set-out — set out to exactly 200 mm and it
+ * can finish at 170 mm, which breaches. The ridge and the rakes get no
+ * allowance: sagging carries the panel away from the ridge, and straight-down
+ * movement does not close a gap to a rake.
+ */
+function edgeSetback({ panelGapS = 50, sag = 0 }) {
   const twoS = 2 * panelGapS;
+  const base = Math.max(EDGE_SETBACK_MIN, twoS);
   return {
-    mm: Math.max(EDGE_SETBACK_MIN, twoS),
+    mm: base,
+    gutter: base + sag, ridge: base, rake: base, sag,
     governedBy: twoS > EDGE_SETBACK_MIN ? `certification 2s (s = ${panelGapS} mm)` : '200 mm edge rule',
     twoS, siteRule: EDGE_SETBACK_MIN,
   };
+}
+
+/**
+ * The clamp window, optionally widened past the manufacturer's specification.
+ *
+ * Logan's call: a clamp slightly outside the stated zone risks micro-fracturing
+ * the panel rather than the wind integrity of the array, and the roof sometimes
+ * leaves no choice. The tolerance is a percentage of panel length, matching how
+ * Jinko states the zone (A/5 ~ A/4). Whatever is used gets reported.
+ */
+function clampWindow(panel, tolPct = 0) {
+  const t = tolPct / 100 * panel.length;
+  return {
+    min: Math.max(0, panel.clamp.minFromEnd - t),
+    max: Math.min(panel.length / 2, panel.clamp.maxFromEnd + t),
+    tolMm: t, tolPct,
+    specMin: panel.clamp.minFromEnd, specMax: panel.clamp.maxFromEnd,
+  };
+}
+
+/** How far outside the manufacturer's specification a clamp distance sits. */
+function outsideSpec(panel, L) {
+  if (L < panel.clamp.minFromEnd) return { by: panel.clamp.minFromEnd - L, side: 'closer to the end than' };
+  if (L > panel.clamp.maxFromEnd) return { by: L - panel.clamp.maxFromEnd, side: 'further in than' };
+  return null;
 }
 
 /**
@@ -378,4 +413,5 @@ function structure(job) {
 module.exports = { ROW_GAP, PANEL_GAP, orientation, tileGrid, rowSpec, packRows,
   interfacePositions, railSeparationsWithTolerance, slideRequired, spansOf,
   EDGE_SETBACK_MIN, edgeSetback, railBand, canFitRailPair, structure,
+  clampWindow, outsideSpec,
   troughReachability, HOOK_SLOT_SPAN, HOOK_MAX_OFFSET };

@@ -325,12 +325,18 @@ function checkPanelWeight(panel) {
  * manufacturer's clamp zone. Both clamps sit `minFromEnd..maxFromEnd` in from
  * the short edges, so the rails may sit anywhere in this window.
  */
-function railSeparationWindow(panel) {
-  const { minFromEnd, maxFromEnd } = panel.clamp;
+function railSeparationWindow(panel, tolPct = 0) {
+  // A tolerance widens the clamp window, and therefore the rail separations the
+  // roof can offer. tolPct is a percentage of panel length; 0 is the manual.
+  const t = tolPct / 100 * panel.length;
+  const minFromEnd = Math.max(0, panel.clamp.minFromEnd - t);
+  const maxFromEnd = Math.min(panel.length / 2, panel.clamp.maxFromEnd + t);
   return {
     min: panel.length - 2 * maxFromEnd,
     max: panel.length - 2 * minFromEnd,
     fromEnd: [minFromEnd, maxFromEnd],
+    tolPct, tolMm: t,
+    spec: [panel.clamp.minFromEnd, panel.clamp.maxFromEnd],
   };
 }
 
