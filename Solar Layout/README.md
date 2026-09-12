@@ -128,6 +128,25 @@ On an 8000 × 5000 tile face with 600 mm trusses, portrait only:
 A 300 mm gauge goes from impossible to a full array for 29 mm. A 330 mm gauge gains
 nothing at any tolerance, so it uses none.
 
+## 3D view
+
+The same layout stood up at its real pitch, with the panels sitting proud of the tiles by
+their standoff. Drag to orbit.
+
+**It does not change the maths.** Every calculation happens in the plane of the face, so
+3D adds nothing to the layout's accuracy. What it adds is verification — that the roof you
+described is the roof you are standing on — and something a client can read.
+
+It is drawn with a small hand-rolled orthographic projector rather than a 3D library, so
+the app stays one offline file. Faces are ordered by layer first (skirt, roof, setback,
+rails, feet, panels) then back-to-front within a layer; sorting on depth alone fails
+because the roof face is one large polygon spanning the whole depth range and overdraws
+anything nearer than its centre.
+
+One real measuring point it surfaces: a face 5000 mm up a 22° slope is only 4636 mm
+across the ground. Measuring from the ground gives you the plan figure, and the face is
+longer by 1/cos(pitch). The view states both.
+
 ## Which direction is fixed, which is free
 
 A structural member is continuous along its own length, so placement *along* it is free

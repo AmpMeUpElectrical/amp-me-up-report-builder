@@ -169,6 +169,7 @@
       <button class="tab" data-p="markup">Mark-up sheet</button>
       <button class="tab" data-p="compliance">Compliance</button>
       <button class="tab" data-p="materials">Materials</button>
+      <button class="tab" data-p="view3d">3D view</button>
       <button class="tab" data-p="measure">What to measure</button>
     </div>
 
@@ -339,6 +340,41 @@
       <div id="matOut"></div>
     </div>
 
+
+    <!-- ============================ 3D VIEW ============================ -->
+    <div class="pane" id="p-view3d">
+      <h2 class="sect">3D view</h2>
+      <p class="hint">The same layout, stood up at its real pitch. This does not change the
+        maths &mdash; every calculation happens in the plane of the face &mdash; it is here so you
+        can see that the roof you have described is the roof you are standing on, and so a client
+        can read it. Drag to orbit.</p>
+      <div class="block">
+        <div class="fgrid g4">
+          <div><label class="fl">Turn</label><input class="f" id="v3az" type="range" min="-180" max="180" step="1" value="-32" style="padding:0;height:30px"></div>
+          <div><label class="fl">Tilt</label><input class="f" id="v3el" type="range" min="12" max="88" step="1" value="52" style="padding:0;height:30px"></div>
+          <div><label class="fl">Show</label>
+            <select class="f" id="v3show">
+              <option value="all">Panels, rails and feet</option>
+              <option value="panels">Panels only</option>
+              <option value="bare">Bare roof face</option>
+            </select></div>
+          <div><label class="fl">Zone colour</label>
+            <select class="f" id="v3zone">
+              <option value="on">Colour panels by wind zone</option>
+              <option value="off">Plain panels</option>
+            </select></div>
+        </div>
+        <div class="drawwrap" id="view3d" style="cursor:grab"></div>
+        <div class="legend">
+          <span><i class="sw" style="background:var(--zc)"></i>Corner</span>
+          <span><i class="sw" style="background:var(--ze)"></i>Edge</span>
+          <span><i class="sw" style="background:var(--zi)"></i>Intermediate</span>
+          <span><i class="sw" style="background:var(--zn)"></i>Internal</span>
+          <span><i class="sw" style="background:#8d8d86"></i>Wall</span>
+        </div>
+        <p class="fnote" id="v3note"></p>
+      </div>
+    </div>
 
     <!-- ============================ MEASURE ============================ -->
     <div class="pane" id="p-measure">
@@ -1940,6 +1976,164 @@ function renderMaterials(R){
   $('matOut').innerHTML = h;
 }
 
+/* ============================================================================
+   3D — a small orthographic projector. No library: a roof is flat planes and
+   rectangles, which SVG draws perfectly well once the points are projected and
+   the faces are sorted back to front. Keeps the app a single offline file.
+   ============================================================================ */
+
+/**
+ * A point in the face's own 2D coordinates, lifted into the world.
+ *
+ * y runs UP THE SLOPE, so it contributes both horizontal depth and height:
+ * a face 5000 mm up a 22 deg pitch only reaches 4636 mm across the ground but
+ * climbs 1873 mm. `lift` pushes a point out along the face normal — that is how
+ * the panels sit proud of the tiles by their standoff.
+ */
+function faceTo3D(x, y, pitchDeg, lift = 0, eave = 0) {
+  const p = pitchDeg * Math.PI / 180;
+  const nY = -Math.sin(p), nZ = Math.cos(p);        // unit normal of the roof plane
+  return { x: x,
+           y: y * Math.cos(p) + nY * lift,
+           z: eave + y * Math.sin(p) + nZ * lift };
+}
+
+/** Orthographic camera: azimuth and elevation in degrees. */
+function camera(azDeg, elDeg) {
+  const a = azDeg * Math.PI / 180, e = elDeg * Math.PI / 180;
+  const ca = Math.cos(a), sa = Math.sin(a), ce = Math.cos(e), se = Math.sin(e);
+  return {
+    project(P) {
+      const sx =  P.x * ca - P.y * sa;
+      const ry =  P.x * sa + P.y * ca;
+      return { x: sx, y: -(P.z * ce - ry * se), depth: ry * ce + P.z * se };
+    },
+  };
+}
+
+function draw3D(R){
+  const host = $('view3d');
+  if(!R || !R.f){ host.innerHTML = '<div class="fnote">Nothing to draw yet.</div>'; return; }
+  const f = R.f, job = R.job, zm = R.zm, sb = R.sb;
+  const pitch = job.pitch || 22;
+  const eave = (job.hEave || 0) * 1000;
+  const show = $('v3show').value, zoneOn = $('v3zone').value === 'on';
+  const cam = camera(parseFloat($('v3az').value), parseFloat($('v3el').value));
+
+  const ZC = { corner:'#e2504a', edge:'#ef9a3d', intermediate:'#f2d06b', internal:'#a8d8b0' };
+  const faces = [];   // {pts:[{x,y}], depth, fill, stroke, sw, op}
+
+  const add = (pts3, fill, stroke, sw, op, layer = 0) => {
+    const pr = pts3.map(p => cam.project(p));
+    faces.push({ pts: pr, layer, depth: pr.reduce((a,p)=>a+p.depth,0)/pr.length,
+                 fill, stroke, sw, op });
+  };
+
+  // A short skirt under the face rather than the full wall — enough to read as a
+  // building without the wall swallowing the view.
+  const skirt = Math.min(eave, 900);
+  if(skirt > 0){
+    for(const e of f.edges){
+      if(e.type === 'ridge') continue;                 // a ridge has no wall under it
+      const A = faceTo3D(e.A.x, e.A.y, pitch, 0, eave);
+      const B = faceTo3D(e.B.x, e.B.y, pitch, 0, eave);
+      add([A, B, {...B, z:B.z-skirt}, {...A, z:A.z-skirt}], '#cfcdc6', '#a9a7a0', 0.7, 0.9, 0);
+    }
+  }
+
+  // The roof face itself — the substrate everything else sits on.
+  add(f.points.map(p => faceTo3D(p.x, p.y, pitch, 0, eave)), '#efece4', '#131313', 1.6, 1, 1);
+
+  // Setback boundary, as a line loop on the surface.
+  const sbFor = sb.forType(sb.rake);
+  const loop = [];
+  for(let k=0;k<=40;k++){
+    const y = f.bounds.minY + (f.bounds.maxY-f.bounds.minY)*k/40;
+    const b = f.bandAt(y, sbFor);
+    if(b.width>0) loop.push({y, min:b.min, max:b.max});
+  }
+  if(loop.length>1){
+    const ring = [...loop.map(l=>({x:l.min,y:l.y})), ...loop.slice().reverse().map(l=>({x:l.max,y:l.y}))];
+    const pr = ring.map(p=>cam.project(faceTo3D(p.x,p.y,pitch,6,eave)));
+    faces.push({ pts:pr, layer:2, depth: pr.reduce((a,p)=>a+p.depth,0)/pr.length,
+                 fill:'none', stroke:'#c0392b', sw:1, op:1, dash:'6 4' });
+  }
+
+  if(show !== 'bare'){
+    const standoff = (job.gapS || 50);
+    for(const row of R.rows){
+      const pw = row.orientation==='portrait' ? job.panel.width : job.panel.length;
+      const ph = row.orientation==='portrait' ? job.panel.length : job.panel.width;
+
+      // Rails and feet sit on the roof, under the panels.
+      if(show === 'all'){
+        for(const rail of row.rails){
+          const q = rail.axis==='horizontal'
+            ? [{x:rail.from,y:rail.y-18},{x:rail.to,y:rail.y-18},{x:rail.to,y:rail.y+18},{x:rail.from,y:rail.y+18}]
+            : [{x:rail.x-18,y:rail.from},{x:rail.x+18,y:rail.from},{x:rail.x+18,y:rail.to},{x:rail.x-18,y:rail.to}];
+          add(q.map(p=>faceTo3D(p.x,p.y,pitch,12,eave)), rail.ok?'#2b6cb0':'#c0392b', 'none', 0, 0.95, 3);
+          for(const ft of rail.feet){
+            const c = rail.axis==='horizontal' ? {x:ft,y:rail.y} : {x:rail.x,y:ft};
+            const s2 = 34;
+            add([{x:c.x-s2,y:c.y-s2},{x:c.x+s2,y:c.y-s2},{x:c.x+s2,y:c.y+s2},{x:c.x-s2,y:c.y+s2}]
+                 .map(p=>faceTo3D(p.x,p.y,pitch,6,eave)), '#131313','none',0,1,4);
+          }
+        }
+      }
+
+      // Panels, lifted off the roof by their standoff so they read as proud.
+      for(let i=0;i<row.panels;i++){
+        const x0 = (row.panelStartX ?? 0) + i*(pw+PANEL_GAP), x1 = x0+pw;
+        const y0 = row.panelBottom, y1 = row.panelBottom+ph;
+        const zone = zm.at((x0+x1)/2, (y0+y1)/2);
+        const top = [{x:x0,y:y0},{x:x1,y:y0},{x:x1,y:y1},{x:x0,y:y1}]
+                      .map(p=>faceTo3D(p.x,p.y,pitch,standoff+30,eave));
+        const bot = [{x:x0,y:y0},{x:x1,y:y0},{x:x1,y:y1},{x:x0,y:y1}]
+                      .map(p=>faceTo3D(p.x,p.y,pitch,standoff,eave));
+        // the four sides of the panel frame, so it has thickness
+        for(let k=0;k<4;k++){
+          const k2=(k+1)%4;
+          add([bot[k],bot[k2],top[k2],top[k]], '#2b2b2b','#1a1a1a',0.4,1,5);
+        }
+        add(top, zoneOn ? ZC[zone] : '#1d3557', '#0d1b2a', 0.6, zoneOn?0.92:1, 6);
+      }
+    }
+  }
+
+  // Layer first (walls, roof, setback, rails, feet, panel sides, panel tops),
+  // then furthest-first within a layer.
+  faces.sort((a,b)=> (a.layer-b.layer) || (a.depth-b.depth));
+
+  const allX = faces.flatMap(fc=>fc.pts.map(p=>p.x));
+  const allY = faces.flatMap(fc=>fc.pts.map(p=>p.y));
+  if(!allX.length){ host.innerHTML=''; return; }
+  const minX=Math.min(...allX), maxX=Math.max(...allX);
+  const minY=Math.min(...allY), maxY=Math.max(...allY);
+  const pad=(maxX-minX)*0.06+400;
+  const vw=(maxX-minX)+pad*2, vh=(maxY-minY)+pad*2;
+
+  let g = `<svg class="plan" viewBox="${minX-pad} ${minY-pad} ${vw} ${vh}" xmlns="http://www.w3.org/2000/svg">`;
+  for(const fc of faces){
+    const d = fc.pts.map(p=>`${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ');
+    g += `<polygon points="${d}" fill="${fc.fill}" stroke="${fc.stroke}" stroke-width="${fc.sw*Math.max(1,vw/900)}"`
+       + (fc.dash?` stroke-dasharray="${fc.dash}"`:'') + ` fill-opacity="${fc.op}" stroke-linejoin="round"/>`;
+  }
+  g += `</svg>`;
+  host.innerHTML = g;
+
+  // Plan versus slope — the measuring point worth knowing.
+  const p = pitch*Math.PI/180;
+  const slope = f.bounds.maxY - f.bounds.minY;
+  const el = parseFloat($('v3el').value);
+  const edgeOn = Math.abs(el - pitch) < 8
+    ? `<br><span style="color:var(--warn)">The tilt is close to the roof pitch, so you are looking almost along the plane. Raise it to see the layout.</span>` : '';
+  $('v3note').innerHTML = edgeOn +
+    `Pitch ${pitch}&deg;. This face is <b>${fmt(slope)} mm up the slope</b> but only `
+    + `<b>${fmt(slope*Math.cos(p))} mm across the ground</b>, and it climbs ${fmt(slope*Math.sin(p))} mm. `
+    + `Measuring a roof from the ground gives you the plan figure &mdash; the face is longer by `
+    + `1/cos(${pitch}&deg;) = ${(1/Math.cos(p)).toFixed(3)}.`;
+}
+
 function renderPrint(R){
   const {job,rows,sb} = R;
   let h = `<h3>Set-out sheet &mdash; ${esc(job.panel.model)} on ${job.roof}</h3>`;
@@ -1976,6 +2170,7 @@ function run(){
     renderMarkup(RESULT);
     renderCompliance(RESULT);
     renderMaterials(RESULT);
+    draw3D(RESULT);
     renderPrint(RESULT);
     save();
   }catch(e){
@@ -2040,6 +2235,29 @@ document.addEventListener('DOMContentLoaded',()=>{
   FIELDS.forEach(f=>{ const el=$(f); if(el) el.addEventListener('input',()=>{ toggleRoof(); panelInfo(); runSoon(); }); });
   $('roof').addEventListener('change',()=>{ toggleRoof(); runSoon(); });
   $('presetId').addEventListener('change',()=>{ renderPresetFields(); drawShapePreview(); runSoon(); });
+  ['v3az','v3el','v3show','v3zone'].forEach(id=>$(id).addEventListener('input',()=>draw3D(RESULT)));
+
+  // Drag to orbit.
+  (()=>{
+    const host = $('view3d');
+    let dragging=false, lx=0, ly=0;
+    const down = e => { dragging=true; const t=e.touches?e.touches[0]:e; lx=t.clientX; ly=t.clientY;
+                        host.style.cursor='grabbing'; };
+    const move = e => {
+      if(!dragging) return;
+      const t=e.touches?e.touches[0]:e;
+      const az=$('v3az'), el=$('v3el');
+      az.value = Math.max(-180, Math.min(180, parseFloat(az.value) + (t.clientX-lx)*0.4));
+      el.value = Math.max(5, Math.min(85, parseFloat(el.value) - (t.clientY-ly)*0.4));
+      lx=t.clientX; ly=t.clientY;
+      draw3D(RESULT);
+      if(e.cancelable) e.preventDefault();
+    };
+    const up = () => { dragging=false; host.style.cursor='grab'; };
+    host.addEventListener('mousedown',down); host.addEventListener('touchstart',down,{passive:true});
+    window.addEventListener('mousemove',move); host.addEventListener('touchmove',move,{passive:false});
+    window.addEventListener('mouseup',up);     window.addEventListener('touchend',up);
+  })();
   ['gauge','coverW','pitch'].forEach(id=>$(id).addEventListener('input', drawShapePreview));
   $('tileProfile').addEventListener('change',()=>{ toggleRoof(); runSoon(); });
 
